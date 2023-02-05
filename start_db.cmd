@@ -1,0 +1,1 @@
+docker-compose -f .\weturf.yml up -d

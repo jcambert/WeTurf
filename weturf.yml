@@ -1,0 +1,31 @@
+﻿version: '3.8'
+services:
+  cache:
+    image: bitnami/redis:latest
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'
+    volumes:
+      - welouxor_cache_data:/bitnami/redis/data
+      
+  data:
+    image:  bitnami/postgresql:latest
+    restart: always
+    environment:
+      - POSTGRESQL_DATABASE=weturf
+      - POSTGRESQL_USERNAME=weturf_root
+      - POSTGRESQL_PASSWORD=myPassword
+
+    ports:
+      - '5432:5432'
+    volumes:
+     - 'welouxor_db_data:/bitnami/postgresql'
+    
+volumes:
+  welouxor_cache_data:
+    driver: local
+  welouxor_db_data:
+    driver: local

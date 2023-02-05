@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>We.Turf</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\We.Turf.Domain\We.Turf.Domain.csproj" />
+    <ProjectReference Include="..\We.Turf.Application.Contracts\We.Turf.Application.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Account.Application" Version="7.0.1" />
+    <PackageReference Include="Volo.Abp.Identity.Application" Version="7.0.1" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="7.0.1" />
+    <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="7.0.1" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="7.0.1" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="7.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+  </ItemGroup>
+
+</Project>

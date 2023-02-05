@@ -1,0 +1,186 @@
+;index_classifier;date;reunion;course;numPmu;place;nom;rapport;specialite;hippo_code
+19;decisiontreeclassifier;2023-02-05;1;2;7.0;1;HISTOIRE D'UNA;2.7;trot monte;VIN
+19;adaboostclassifier;2023-02-05;1;2;7.0;1;HISTOIRE D'UNA;2.7;trot monte;VIN
+5;kneighborsclassifier;2023-02-05;1;4;6.0;1;HAPPY AND LUCKY;12.0;trot monte;VIN
+6;kneighborsclassifier;2023-02-05;1;4;7.0;1;HIRONDELLE DU RIB;17.0;trot monte;VIN
+12;decisiontreeclassifier;2023-02-05;1;4;13.0;1;GRANVILLAISE BLEUE;1.8;trot monte;VIN
+12;adaboostclassifier;2023-02-05;1;4;13.0;1;GRANVILLAISE BLEUE;1.8;trot monte;VIN
+15;sgdclassifier;2023-02-05;1;5;3.0;1;HUDO DU RUEL;8.4;trot attele;VIN
+17;sgdclassifier;2023-02-05;1;5;5.0;1;GOLIATH DU CAUX;6.6;trot attele;VIN
+0;sgdclassifier;2023-02-05;1;6;1.0;1;GIN FIZZ D'UN SOIR;14.0;trot attele;VIN
+22;sgdclassifier;2023-02-05;1;7;1.0;1;HAIDA DU BELLAY;5.3;trot attele;VIN
+24;sgdclassifier;2023-02-05;1;7;3.0;1;GOLDEN GRACE;4.9;trot attele;VIN
+28;sgdclassifier;2023-02-05;1;7;7.0;1;HOTLINE DE CARSI;11.0;trot attele;VIN
+42;sgdclassifier;2023-02-05;1;8;11.0;1;JIOSCO DE PHYT'S;9.7;trot attele;VIN
+43;sgdclassifier;2023-02-05;1;8;12.0;1;JASON GINYU;5.1;trot attele;VIN
+44;sgdclassifier;2023-02-05;1;8;13.0;1;JACOB LUDOIS;11.0;trot attele;VIN
+69;sgdclassifier;2023-02-05;1;9;2.0;1;KEEP GOING;5.2;trot attele;VIN
+2;sgdclassifier;2023-02-05;2;5;3.0;1;GALVANIC;19.0;plat;SHT
+9;sgdclassifier;2023-02-05;2;5;10.0;1;SPEEDY FORTUNE;37.0;plat;SHT
+0;kneighborsclassifier;2023-02-05;2;5;1.0;1;CHILLI BABA;5.45;plat;SHT
+1;kneighborsclassifier;2023-02-05;2;5;2.0;1;FUN TOGETHER;10.0;plat;SHT
+48;kneighborsclassifier;2023-02-05;2;6;1.0;1;SUPREME LUCKY;1.6;plat;SHT
+48;decisiontreeclassifier;2023-02-05;2;6;1.0;1;SUPREME LUCKY;1.6;plat;SHT
+48;adaboostclassifier;2023-02-05;2;6;1.0;1;SUPREME LUCKY;1.6;plat;SHT
+32;decisiontreeclassifier;2023-02-05;2;7;5.0;1;RUNNING GLORY;2.4;plat;SHT
+32;adaboostclassifier;2023-02-05;2;7;5.0;1;RUNNING GLORY;2.4;plat;SHT
+62;sgdclassifier;2023-02-05;2;8;1.0;1;WELLINGTON;3.0;plat;SHT
+63;sgdclassifier;2023-02-05;2;8;2.0;1;LUCKY SWEYNESSE;1.7;plat;SHT
+62;kneighborsclassifier;2023-02-05;2;8;1.0;1;WELLINGTON;3.0;plat;SHT
+63;decisiontreeclassifier;2023-02-05;2;8;2.0;1;LUCKY SWEYNESSE;1.7;plat;SHT
+62;adaboostclassifier;2023-02-05;2;8;1.0;1;WELLINGTON;3.0;plat;SHT
+63;adaboostclassifier;2023-02-05;2;8;2.0;1;LUCKY SWEYNESSE;1.7;plat;SHT
+18;kneighborsclassifier;2023-02-05;2;9;5.0;1;DROMBEG BANNER;7.85;plat;SHT
+20;kneighborsclassifier;2023-02-05;2;9;7.0;1;MASSIVE ACTION;9.65;plat;SHT
+39;sgdclassifier;2023-02-05;2;10;6.0;1;MIGHTY STRIDE;1.6;plat;SHT
+41;sgdclassifier;2023-02-05;2;10;8.0;1;DRAGON'S LUCK;5.95;plat;SHT
+42;sgdclassifier;2023-02-05;2;10;9.0;1;GOLDEN EMPIRE;16.0;plat;SHT
+35;kneighborsclassifier;2023-02-05;2;10;2.0;1;SAKEWIN;37.0;plat;SHT
+41;kneighborsclassifier;2023-02-05;2;10;8.0;1;DRAGON'S LUCK;5.95;plat;SHT
+39;decisiontreeclassifier;2023-02-05;2;10;6.0;1;MIGHTY STRIDE;1.6;plat;SHT
+39;adaboostclassifier;2023-02-05;2;10;6.0;1;MIGHTY STRIDE;1.6;plat;SHT
+85;sgdclassifier;2023-02-05;3;1;6.0;1;AMAGLIANI;20.0;plat;D04
+86;sgdclassifier;2023-02-05;3;1;7.0;1;PREGO;22.0;plat;D04
+80;kneighborsclassifier;2023-02-05;3;1;1.0;1;CHARMBRUCK;11.0;plat;D04
+81;decisiontreeclassifier;2023-02-05;3;1;2.0;1;SWEET AUTHOR;2.3;plat;D04
+81;adaboostclassifier;2023-02-05;3;1;2.0;1;SWEET AUTHOR;2.3;plat;D04
+82;adaboostclassifier;2023-02-05;3;1;3.0;1;FIDELIUS;3.1;plat;D04
+102;sgdclassifier;2023-02-05;3;2;5.0;1;ARADOUS;2.4;plat;D04
+105;sgdclassifier;2023-02-05;3;2;8.0;1;SYNONYMOUS;5.8;plat;D04
+99;kneighborsclassifier;2023-02-05;3;2;2.0;1;MON MISTRAL;4.0;plat;D04
+102;decisiontreeclassifier;2023-02-05;3;2;5.0;1;ARADOUS;2.4;plat;D04
+102;adaboostclassifier;2023-02-05;3;2;5.0;1;ARADOUS;2.4;plat;D04
+90;sgdclassifier;2023-02-05;3;3;3.0;1;WHAT A DUDE;5.7;plat;D04
+92;sgdclassifier;2023-02-05;3;3;5.0;1;LORIELLE;8.8;plat;D04
+93;decisiontreeclassifier;2023-02-05;3;3;6.0;1;OCCASION;1.5;plat;D04
+93;adaboostclassifier;2023-02-05;3;3;6.0;1;OCCASION;1.5;plat;D04
+73;sgdclassifier;2023-02-05;3;4;4.0;1;AGENT SIM;24.0;plat;D04
+76;sgdclassifier;2023-02-05;3;4;7.0;1;OUTFIT;2.7;plat;D04
+77;sgdclassifier;2023-02-05;3;4;8.0;1;ZEVEN FALLS;8.5;plat;D04
+72;kneighborsclassifier;2023-02-05;3;4;3.0;1;NEW TOPMODEL;37.0;plat;D04
+75;kneighborsclassifier;2023-02-05;3;4;6.0;1;ORIENTAL PRINCESS;10.0;plat;D04
+76;kneighborsclassifier;2023-02-05;3;4;7.0;1;OUTFIT;2.7;plat;D04
+76;decisiontreeclassifier;2023-02-05;3;4;7.0;1;OUTFIT;2.7;plat;D04
+76;adaboostclassifier;2023-02-05;3;4;7.0;1;OUTFIT;2.7;plat;D04
+6;sgdclassifier;2023-02-05;4;1;7.0;1;GITANO AA;2.2;obstacle;PAU
+6;decisiontreeclassifier;2023-02-05;4;1;7.0;1;GITANO AA;2.2;obstacle;PAU
+6;adaboostclassifier;2023-02-05;4;1;7.0;1;GITANO AA;2.2;obstacle;PAU
+125;kneighborsclassifier;2023-02-05;4;2;4.0;1;MON OURAGAN;1.8;plat;PAU
+126;kneighborsclassifier;2023-02-05;4;2;5.0;1;PORT ETIENNE;3.6;plat;PAU
+125;decisiontreeclassifier;2023-02-05;4;2;4.0;1;MON OURAGAN;1.8;plat;PAU
+125;adaboostclassifier;2023-02-05;4;2;4.0;1;MON OURAGAN;1.8;plat;PAU
+9;adaboostclassifier;2023-02-05;4;3;2.0;1;PANAREA;2.5;obstacle;PAU
+110;sgdclassifier;2023-02-05;4;4;4.0;1;ALCATOSER;4.6;plat;PAU
+112;sgdclassifier;2023-02-05;4;4;6.0;1;GRAND PRINCE;1.5;plat;PAU
+110;kneighborsclassifier;2023-02-05;4;4;4.0;1;ALCATOSER;4.6;plat;PAU
+112;decisiontreeclassifier;2023-02-05;4;4;6.0;1;GRAND PRINCE;1.5;plat;PAU
+112;adaboostclassifier;2023-02-05;4;4;6.0;1;GRAND PRINCE;1.5;plat;PAU
+35;kneighborsclassifier;2023-02-05;4;5;1.0;1;ILLICO;4.2;obstacle;PAU
+40;kneighborsclassifier;2023-02-05;4;5;6.0;1;DUCK'S BOUILLE;16.0;obstacle;PAU
+36;decisiontreeclassifier;2023-02-05;4;5;2.0;1;IVRESSE D'ESTRUVAL;2.2;obstacle;PAU
+36;adaboostclassifier;2023-02-05;4;5;2.0;1;IVRESSE D'ESTRUVAL;2.2;obstacle;PAU
+20;kneighborsclassifier;2023-02-05;4;6;5.0;1;INAYA JONES;2.8;obstacle;PAU
+20;adaboostclassifier;2023-02-05;4;6;5.0;1;INAYA JONES;2.8;obstacle;PAU
+114;sgdclassifier;2023-02-05;4;7;2.0;1;GRAND BALCON;2.5;plat;PAU
+118;sgdclassifier;2023-02-05;4;7;6.0;1;RAFALE;7.2;plat;PAU
+114;decisiontreeclassifier;2023-02-05;4;7;2.0;1;GRAND BALCON;2.5;plat;PAU
+114;adaboostclassifier;2023-02-05;4;7;2.0;1;GRAND BALCON;2.5;plat;PAU
+137;decisiontreeclassifier;2023-02-05;4;8;8.0;1;WAGGAD;1.9;plat;PAU
+137;adaboostclassifier;2023-02-05;4;8;8.0;1;WAGGAD;1.9;plat;PAU
+49;adaboostclassifier;2023-02-05;4;9;5.0;1;YOUTWO GLASS;2.8;obstacle;PAU
+146;sgdclassifier;2023-02-05;4;11;5.0;1;KING'S CAPRICE;34.0;plat;PAU
+150;sgdclassifier;2023-02-05;4;11;9.0;1;STADE VELODROME;5.2;plat;PAU
+142;kneighborsclassifier;2023-02-05;4;11;1.0;1;CORIMBO;11.0;plat;PAU
+89;sgdclassifier;2023-02-05;5;5;1.0;1;RAMMSTEIN;3.7;trot attele;KRI
+95;sgdclassifier;2023-02-05;5;5;8.0;1;CASHBACK PELLINI;8.1;trot attele;KRI
+98;sgdclassifier;2023-02-05;5;5;11.0;1;LORD BRODDE;2.1;trot attele;KRI
+82;sgdclassifier;2023-02-05;5;6;6.0;1;ASTAIR;4.0;trot attele;KRI
+83;sgdclassifier;2023-02-05;5;6;10.0;1;BOLLINGER MAIL;1.4;trot attele;KRI
+77;sgdclassifier;2023-02-05;5;7;5.0;1;RED LIKE;17.0;trot attele;KRI
+175;sgdclassifier;2023-02-05;6;1;3.0;1;FINGERBAR;6.0;plat;VPR
+176;sgdclassifier;2023-02-05;6;1;7.0;1;LOMU;3.0;plat;VPR
+178;sgdclassifier;2023-02-05;6;1;9.0;1;PRINCESA MAYA;6.0;plat;VPR
+168;sgdclassifier;2023-02-05;6;2;8.0;1;LE PEINTRE;3.8;plat;VPR
+169;sgdclassifier;2023-02-05;6;2;13.0;1;FLORISSANTE;1.5;plat;VPR
+169;decisiontreeclassifier;2023-02-05;6;2;13.0;1;FLORISSANTE;1.5;plat;VPR
+169;adaboostclassifier;2023-02-05;6;2;13.0;1;FLORISSANTE;1.5;plat;VPR
+189;sgdclassifier;2023-02-05;6;3;5.0;1;MR LUCKY;3.0;plat;VPR
+191;sgdclassifier;2023-02-05;6;3;8.0;1;WHISKY SHOT;3.0;plat;VPR
+189;adaboostclassifier;2023-02-05;6;3;5.0;1;MR LUCKY;3.0;plat;VPR
+190;adaboostclassifier;2023-02-05;6;3;6.0;1;DEFENSOR ROJO;3.0;plat;VPR
+183;sgdclassifier;2023-02-05;6;4;8.0;1;PARSIFAL;3.4;plat;VPR
+184;sgdclassifier;2023-02-05;6;4;10.0;1;VIENE PUELCHE;3.4;plat;VPR
+182;kneighborsclassifier;2023-02-05;6;4;3.0;1;TALIM;3.4;plat;VPR
+161;sgdclassifier;2023-02-05;6;5;4.0;1;SNOOKER;2.7;plat;VPR
+164;sgdclassifier;2023-02-05;6;5;9.0;1;TOQUE Y ROTACION;3.2;plat;VPR
+161;adaboostclassifier;2023-02-05;6;5;4.0;1;SNOOKER;2.7;plat;VPR
+164;adaboostclassifier;2023-02-05;6;5;9.0;1;TOQUE Y ROTACION;3.2;plat;VPR
+192;sgdclassifier;2023-02-05;6;6;3.0;1;DUBAI CAT;6.8;plat;VPR
+195;sgdclassifier;2023-02-05;6;6;9.0;1;FIFTY FIFTY;1.3;plat;VPR
+195;kneighborsclassifier;2023-02-05;6;6;9.0;1;FIFTY FIFTY;1.3;plat;VPR
+195;decisiontreeclassifier;2023-02-05;6;6;9.0;1;FIFTY FIFTY;1.3;plat;VPR
+195;adaboostclassifier;2023-02-05;6;6;9.0;1;FIFTY FIFTY;1.3;plat;VPR
+157;sgdclassifier;2023-02-05;6;7;3.0;1;GILLIGAN;2.5;plat;VPR
+159;sgdclassifier;2023-02-05;6;7;9.0;1;POR MASTER;2.5;plat;VPR
+159;decisiontreeclassifier;2023-02-05;6;7;9.0;1;POR MASTER;2.5;plat;VPR
+157;adaboostclassifier;2023-02-05;6;7;3.0;1;GILLIGAN;2.5;plat;VPR
+158;adaboostclassifier;2023-02-05;6;7;8.0;1;NATASHA ROSTOVA;2.5;plat;VPR
+159;adaboostclassifier;2023-02-05;6;7;9.0;1;POR MASTER;2.5;plat;VPR
+198;sgdclassifier;2023-02-05;6;8;8.0;1;EL HABANO;6.0;plat;VPR
+196;kneighborsclassifier;2023-02-05;6;8;1.0;1;EN VECES;6.0;plat;VPR
+199;kneighborsclassifier;2023-02-05;6;8;9.0;1;PUERTO FONCK;1.2;plat;VPR
+199;decisiontreeclassifier;2023-02-05;6;8;9.0;1;PUERTO FONCK;1.2;plat;VPR
+200;decisiontreeclassifier;2023-02-05;6;8;16.0;1;GREEN SPIRIT;1.7;plat;VPR
+199;adaboostclassifier;2023-02-05;6;8;9.0;1;PUERTO FONCK;1.2;plat;VPR
+200;adaboostclassifier;2023-02-05;6;8;16.0;1;GREEN SPIRIT;1.7;plat;VPR
+186;kneighborsclassifier;2023-02-05;6;9;8.0;1;LUIVERAR;6.0;plat;VPR
+187;decisiontreeclassifier;2023-02-05;6;9;9.0;1;GRAN DRAGO;1.2;plat;VPR
+187;adaboostclassifier;2023-02-05;6;9;9.0;1;GRAN DRAGO;1.2;plat;VPR
+170;sgdclassifier;2023-02-05;6;10;3.0;1;MAMA LILI;3.0;plat;VPR
+171;sgdclassifier;2023-02-05;6;10;6.0;1;LUKKA;6.0;plat;VPR
+174;sgdclassifier;2023-02-05;6;10;16.0;1;RAMSES;6.0;plat;VPR
+170;kneighborsclassifier;2023-02-05;6;10;3.0;1;MAMA LILI;3.0;plat;VPR
+173;decisiontreeclassifier;2023-02-05;6;10;9.0;1;PINTAMOS EL CIELO;2.4;plat;VPR
+170;adaboostclassifier;2023-02-05;6;10;3.0;1;MAMA LILI;3.0;plat;VPR
+173;adaboostclassifier;2023-02-05;6;10;9.0;1;PINTAMOS EL CIELO;2.4;plat;VPR
+224;sgdclassifier;2023-02-05;7;5;1.0;1;A LOT OF GOOD MEN;2.4;plat;A10
+226;sgdclassifier;2023-02-05;7;5;3.0;1;BIG PLAYER;32.0;plat;A10
+232;sgdclassifier;2023-02-05;7;5;9.0;1;GUARDING HEAVEN;8.4;plat;A10
+225;kneighborsclassifier;2023-02-05;7;5;2.0;1;LEADING TADDY;4.9;plat;A10
+224;decisiontreeclassifier;2023-02-05;7;5;1.0;1;A LOT OF GOOD MEN;2.4;plat;A10
+224;adaboostclassifier;2023-02-05;7;5;1.0;1;A LOT OF GOOD MEN;2.4;plat;A10
+220;decisiontreeclassifier;2023-02-05;7;6;10.0;1;CRYSTAL'S DREAM;2.4;plat;A10
+220;adaboostclassifier;2023-02-05;7;6;10.0;1;CRYSTAL'S DREAM;2.4;plat;A10
+254;kneighborsclassifier;2023-02-05;7;7;7.0;1;OVERTHOUGHT;76.0;plat;A10
+259;kneighborsclassifier;2023-02-05;7;7;12.0;1;RULELEE;12.0;plat;A10
+201;kneighborsclassifier;2023-02-05;7;8;1.0;1;LIVING THE DREAM;29.0;plat;A10
+208;kneighborsclassifier;2023-02-05;7;8;9.0;1;CORN COB;6.6;plat;A10
+239;kneighborsclassifier;2023-02-05;7;9;2.0;1;HALATORION;1.7;plat;A10
+240;kneighborsclassifier;2023-02-05;7;9;3.0;1;PYM'S ROYALE;70.0;plat;A10
+242;kneighborsclassifier;2023-02-05;7;9;7.0;1;STELLAR VISTA;8.4;plat;A10
+239;decisiontreeclassifier;2023-02-05;7;9;2.0;1;HALATORION;1.7;plat;A10
+239;adaboostclassifier;2023-02-05;7;9;2.0;1;HALATORION;1.7;plat;A10
+270;kneighborsclassifier;2023-02-05;8;4;3.0;1;WONDERFUL DAY;4.3;plat;MXD
+275;sgdclassifier;2023-02-05;8;5;3.0;1;TE QUIERO GUAPO;2.5;plat;MXD
+276;kneighborsclassifier;2023-02-05;8;5;6.0;1;ATIENDAN;2.5;plat;MXD
+275;adaboostclassifier;2023-02-05;8;5;3.0;1;TE QUIERO GUAPO;2.5;plat;MXD
+276;adaboostclassifier;2023-02-05;8;5;6.0;1;ATIENDAN;2.5;plat;MXD
+277;adaboostclassifier;2023-02-05;8;5;8.0;1;BIG TIME;2.5;plat;MXD
+278;sgdclassifier;2023-02-05;8;6;8.0;1;HIGH PERFECTION;1.1;plat;MXD
+279;sgdclassifier;2023-02-05;8;6;9.0;1;PAPA JOEY;3.4;plat;MXD
+260;kneighborsclassifier;2023-02-05;8;7;3.0;1;DON NENE;6.8;plat;MXD
+262;kneighborsclassifier;2023-02-05;8;7;8.0;1;HANSON;6.8;plat;MXD
+263;decisiontreeclassifier;2023-02-05;8;7;9.0;1;FISGON;1.3;plat;MXD
+263;adaboostclassifier;2023-02-05;8;7;9.0;1;FISGON;1.3;plat;MXD
+269;kneighborsclassifier;2023-02-05;8;8;13.0;1;SPECIAL ONE;2.5;plat;MXD
+268;adaboostclassifier;2023-02-05;8;8;9.0;1;MALAKAI;3.0;plat;MXD
+269;adaboostclassifier;2023-02-05;8;8;13.0;1;SPECIAL ONE;2.5;plat;MXD
+280;sgdclassifier;2023-02-05;8;9;3.0;1;CARNAVALERO;6.0;plat;MXD
+282;sgdclassifier;2023-02-05;8;9;9.0;1;MR. BINGO;1.2;plat;MXD
+280;kneighborsclassifier;2023-02-05;8;9;3.0;1;CARNAVALERO;6.0;plat;MXD
+281;kneighborsclassifier;2023-02-05;8;9;8.0;1;SR. INC;6.0;plat;MXD
+282;decisiontreeclassifier;2023-02-05;8;9;9.0;1;MR. BINGO;1.2;plat;MXD
+282;adaboostclassifier;2023-02-05;8;9;9.0;1;MR. BINGO;1.2;plat;MXD
+285;sgdclassifier;2023-02-05;8;10;8.0;1;AMY WINEHOUSE;3.8;plat;MXD
+286;decisiontreeclassifier;2023-02-05;8;10;9.0;1;MADAME CURIE FT;1.5;plat;MXD
+286;adaboostclassifier;2023-02-05;8;10;9.0;1;MADAME CURIE FT;1.5;plat;MXD
