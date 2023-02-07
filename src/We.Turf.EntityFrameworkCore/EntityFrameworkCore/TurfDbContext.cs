@@ -4,6 +4,7 @@ using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using We.Turf.Entities;
 
 namespace We.Turf.EntityFrameworkCore;
 
@@ -37,7 +39,9 @@ public class TurfDbContext :
      * More info: Replacing a DbContext of a module ensures that the related module
      * uses this DbContext on runtime. Otherwise, it will use its own DbContext class.
      */
-
+    public DbSet<Predicted> Predicteds{ get; set; }
+    public DbSet<Resultat> Resultats{ get; set; }
+    public DbSet<ResultatOfPredicted> ResultatOfPredicted { get; set; }
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
@@ -81,5 +85,33 @@ public class TurfDbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+
+        builder.Entity<Predicted>(b =>
+        {
+            b.ToTable(TurfConsts.DbTablePrefix + nameof(Predicted).ToLower(), TurfConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.HasIndex(x => x.Date);
+            b.HasIndex(x => x.Hippodrome);
+            b.HasIndex(x => x.Reunion);
+            b.HasIndex(x => x.Course);
+            b.HasIndex(x => x.Classifier);
+            b.Property(x=>x.Date).HasConversion<DateOnlyConverter,DateOnlyComparer>();
+            //...
+        });
+
+        builder.Entity<Resultat>(b =>{
+            b.ToTable(TurfConsts.DbTablePrefix + nameof(Resultat).ToLower(), TurfConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.HasIndex(x => x.Date);
+            b.HasIndex(x => x.Reunion);
+            b.HasIndex(x => x.Course);
+            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        });
+        builder.Entity<ResultatOfPredicted>(b => {
+            b.HasNoKey();
+            b.ToView("turfresultatofpredicted");
+            b.Property(x=>x.Resultat_Id).HasColumnName("resultat_id");
+            b.Property(x => x.Dividende).HasColumnName("dividende");
+        });
     }
 }

@@ -13,8 +13,8 @@ using We.Turf.EntityFrameworkCore;
 namespace We.Turf.Migrations
 {
     [DbContext(typeof(TurfDbContext))]
-    [Migration("20230204144938_Initial")]
-    partial class Initial
+    [Migration("20230207130756_resultat")]
+    partial class resultat
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1633,6 +1633,96 @@ namespace We.Turf.Migrations
                     b.HasKey("TenantId", "Name");
 
                     b.ToTable("AbpTenantConnectionStrings", (string)null);
+                });
+
+            modelBuilder.Entity("We.Turf.Entities.Predicted", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Classifier")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Course")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<double>("DividenceGagnant")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("DividencePlace")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Hippodrome")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nom")
+                        .HasColumnType("text");
+
+                    b.Property<int>("NumeroPmu")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Place")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Rapport")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Reunion")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Specialite")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Classifier");
+
+                    b.HasIndex("Course");
+
+                    b.HasIndex("Date");
+
+                    b.HasIndex("Hippodrome");
+
+                    b.HasIndex("Reunion");
+
+                    b.ToTable("turfpredicted", (string)null);
+                });
+
+            modelBuilder.Entity("We.Turf.Entities.Resultat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Course")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("NumeroPmu")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Pari")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Rapport")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Reunion")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Course");
+
+                    b.HasIndex("Date");
+
+                    b.HasIndex("Reunion");
+
+                    b.ToTable("turfresultat", (string)null);
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

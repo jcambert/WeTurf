@@ -2,7 +2,7 @@
 
 public static class TurfConsts
 {
-    public const string DbTablePrefix = "App";
+    public const string DbTablePrefix = "turf";
 
     public const string DbSchema = null;
 }

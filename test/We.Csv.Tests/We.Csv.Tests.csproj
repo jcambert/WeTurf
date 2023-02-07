@@ -26,6 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="predicted-light.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="predicted.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace We.Turf.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -406,6 +406,29 @@ namespace We.Turf.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OpenIddictScopes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "turfpredicted",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Classifier = table.Column<string>(type: "text", nullable: true),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Reunion = table.Column<int>(type: "integer", nullable: false),
+                    Course = table.Column<int>(type: "integer", nullable: false),
+                    NumeroPmu = table.Column<int>(type: "integer", nullable: false),
+                    Nom = table.Column<string>(type: "text", nullable: true),
+                    Rapport = table.Column<double>(type: "double precision", nullable: false),
+                    Specialite = table.Column<string>(type: "text", nullable: true),
+                    Hippodrome = table.Column<string>(type: "text", nullable: true),
+                    Place = table.Column<int>(type: "integer", nullable: false),
+                    DividenceGagnant = table.Column<double>(type: "double precision", nullable: false),
+                    DividencePlace = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_turfpredicted", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -953,6 +976,31 @@ namespace We.Turf.Migrations
                 name: "IX_OpenIddictTokens_ReferenceId",
                 table: "OpenIddictTokens",
                 column: "ReferenceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_turfpredicted_Classifier",
+                table: "turfpredicted",
+                column: "Classifier");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_turfpredicted_Course",
+                table: "turfpredicted",
+                column: "Course");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_turfpredicted_Date",
+                table: "turfpredicted",
+                column: "Date");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_turfpredicted_Hippodrome",
+                table: "turfpredicted",
+                column: "Hippodrome");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_turfpredicted_Reunion",
+                table: "turfpredicted",
+                column: "Reunion");
         }
 
         /// <inheritdoc />
@@ -1026,6 +1074,9 @@ namespace We.Turf.Migrations
 
             migrationBuilder.DropTable(
                 name: "OpenIddictTokens");
+
+            migrationBuilder.DropTable(
+                name: "turfpredicted");
 
             migrationBuilder.DropTable(
                 name: "AbpEntityChanges");
