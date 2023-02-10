@@ -42,6 +42,10 @@ public class TurfDbContext :
     public DbSet<Predicted> Predicteds{ get; set; }
     public DbSet<Resultat> Resultats{ get; set; }
     public DbSet<ResultatOfPredicted> ResultatOfPredicted { get; set; }
+    public DbSet<PredictionPerClassifier> PredictionPerClassifier { get; set; }
+    public DbSet<ResultatPerClassifier> ResultatPerClassifier { get; set; }
+    public DbSet<ScrapTrigger> Triggers { get; set; }
+
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
@@ -112,6 +116,26 @@ public class TurfDbContext :
             b.ToView("turfresultatofpredicted");
             b.Property(x=>x.Resultat_Id).HasColumnName("resultat_id");
             b.Property(x => x.Dividende).HasColumnName("dividende");
+            b.Property(x=>x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        });
+        builder.Entity<PredictionPerClassifier>(b =>
+        {
+            b.HasNoKey();
+            b.ToView("turfpredictionperclassifier");
+            b.Property(x => x.Counting).HasColumnName("counting");
+        });
+        builder.Entity<ResultatPerClassifier>(b =>
+        {
+            b.HasNoKey();
+            b.ToView("turfresultatperclassifier");
+            b.Property(x => x.Counting).HasColumnName("counting");
+        });
+
+        builder.Entity<ScrapTrigger>(b =>
+        {
+            b.ToTable(TurfConsts.DbTablePrefix + nameof(ScrapTrigger).ToLower(), TurfConsts.DbSchema);
+            b.Property(x=>x.Start).HasConversion<TimeOnlyConverter, TimeOnlyComparer>();
+            b.HasIndex(x => x.Start);
         });
     }
 }

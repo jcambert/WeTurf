@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using We.Turf.EntityFrameworkCore;
 namespace We.Turf.Migrations
 {
     [DbContext(typeof(TurfDbContext))]
-    partial class TurfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230208121536_view_turfpredictionperclassifier")]
+    partial class viewturfpredictionperclassifier
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1679,20 +1682,6 @@ namespace We.Turf.Migrations
                     b.ToTable("turfpredicted", (string)null);
                 });
 
-            modelBuilder.Entity("We.Turf.Entities.PredictionPerClassifier", b =>
-                {
-                    b.Property<string>("Classifier")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Counting")
-                        .HasColumnType("integer")
-                        .HasColumnName("counting");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("turfpredictionperclassifier", (string)null);
-                });
-
             modelBuilder.Entity("We.Turf.Entities.Resultat", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1773,35 +1762,6 @@ namespace We.Turf.Migrations
                     b.ToTable((string)null);
 
                     b.ToView("turfresultatofpredicted", (string)null);
-                });
-
-            modelBuilder.Entity("We.Turf.Entities.ResultatPerClassifier", b =>
-                {
-                    b.Property<string>("Classifier")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Counting")
-                        .HasColumnType("integer")
-                        .HasColumnName("counting");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("turfresultatperclassifier", (string)null);
-                });
-
-            modelBuilder.Entity("We.Turf.Entities.ScrapTrigger", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<TimeSpan>("Start")
-                        .HasColumnType("interval");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Start");
-
-                    b.ToTable("turfscraptrigger", (string)null);
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

@@ -8,6 +8,8 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement.HttpApi;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
+using System.Text.Json;
+using We.Turf.Converters;
 
 namespace We.Turf;
 
@@ -25,6 +27,7 @@ public class TurfHttpApiModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         ConfigureLocalization();
+        ConfigureJsonConverters();
     }
 
     private void ConfigureLocalization()
@@ -36,6 +39,14 @@ public class TurfHttpApiModule : AbpModule
                 .AddBaseTypes(
                     typeof(AbpUiResource)
                 );
+        });
+    }
+
+    private void ConfigureJsonConverters()
+    {
+        Configure<JsonSerializerOptions>(options =>
+        {
+            options.Converters.Add(new We.Turf.Converters.TimeOnlyConverter());
         });
     }
 }

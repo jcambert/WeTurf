@@ -1,8 +1,5 @@
-﻿using System;
-using Volo.Abp.Application.Dtos;
-
-namespace We.Turf.Entities;
-
+﻿namespace We.Turf.Entities;
+[Serializable]
 public class ResultatOfPredictedDto:EntityDto<Guid>
 {
     public string Classifier { get; set; }

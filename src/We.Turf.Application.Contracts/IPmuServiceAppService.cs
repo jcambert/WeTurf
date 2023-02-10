@@ -9,4 +9,10 @@ public interface IPmuServiceAppService:IApplicationService
     Task<LoadResultatIntoDbResponse> LoadResultatIntoDb(LoadResultatIntoDbQuery query);
 
     Task<BrowseResultatOfPredictedResponse> BrowseResultatOfPredicted(BrowseResultatOfPredictedQuery query);
+
+    Task<BrowsePredictionPerClassifierResponse> BrowsePredictionPerClassifier(BrowsePredictionPerClassifierQuery query);  
+    
+    Task<BrowseResultatPerClassifierResponse> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query);    
+
+    Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifierResponse(BrowseAccuracyOfClassifierQuery query);
 }

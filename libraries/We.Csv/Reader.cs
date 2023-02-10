@@ -1,44 +1,10 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using System.Net.Http.Headers;
+﻿using System.Globalization;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 
 namespace We.Csv;
 
-[DebuggerDisplay("{Name}")]
-public class TestCsv
-{
-    public TestCsv()
-    {
-
-    }
-
-    [CsvField(1)]
-    public string Name { get; set; }
-
-    public override string ToString() => Name;
-
-}
-
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-public class CsvFieldAttribute : Attribute
-{
-    public CsvFieldAttribute(int index) : this(index, string.Empty)
-    {
-
-    }
-    public CsvFieldAttribute(int index, string name)
-    {
-        this.Index = index;
-        this.Name = name;
-    }
-
-    public int Index { get; }
-    public string Name { get; }
-}
-internal record MapColumn(int Index, string Name, PropertyInfo Property);
 public record ReaderResponse<T>(int Index, T Value, Reader<T> Reader)
     where T : class, new();
 public class Reader<T>

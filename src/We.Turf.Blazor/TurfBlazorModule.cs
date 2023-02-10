@@ -41,6 +41,9 @@ using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
 using MediatR;
+using System;
+using Volo.Abp.Json;
+using System.Text.Json;
 
 namespace We.Turf.Blazor;
 
@@ -94,6 +97,7 @@ public class TurfBlazorModule : AbpModule
         ConfigureUrls(configuration);
         ConfigureBundles();
         ConfigureAutoMapper();
+        ConfigureJsonConverters();
         ConfigureVirtualFileSystem(hostingEnvironment);
         ConfigureSwaggerServices(context.Services);
         ConfigureAutoApiControllers();
@@ -102,6 +106,14 @@ public class TurfBlazorModule : AbpModule
         ConfigureMenu(context);
 
         context.Services.AddMediatR(typeof(TurfApplicationModule).Assembly);
+    }
+
+    private void ConfigureJsonConverters()
+    {
+        Configure<JsonSerializerOptions>(options =>
+        {
+            options.Converters.Add(new We.Turf.Converters.TimeOnlyConverter());
+        });
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
@@ -198,7 +210,8 @@ public class TurfBlazorModule : AbpModule
     {
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
-            options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+            //options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+
         });
     }
 
