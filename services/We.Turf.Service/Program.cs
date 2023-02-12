@@ -1,3 +1,4 @@
+using Mediator;
 using System.Reflection;
 using We.Turf.Service;
 
@@ -9,8 +10,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         .AddTransient<IExecutor<IPmuScrapAndPredictToday>, PythonScriptExecutor<IPmuScrapAndPredictToday>>(sp =>
         {
             var drive = sp.GetRequiredService<DriveService>();
-            //var location=Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //var drive = new DriveInfo(location);
 
             return new PythonScriptExecutor<IPmuScrapAndPredictToday>(sp) { WorkingDirectory = $@"{drive}projets\pmu_scrapper" };
 
@@ -22,10 +21,25 @@ IHost host = Host.CreateDefaultBuilder(args)
         })
         .AddTransient<IAnaconda, Anaconda>()
         .AddTransient<IAnacondaActivation, AnacondaActivation>()
-        .AddTransient<IPmuScrapAndPredictToday, PmuScrapToDay>()
-        .AddTransient<IPmuScrapAndPredictToday, PmuPredictToDay>()
+        .AddTransient<IPmuScrapAndPredictToday, PmuScrapTodayScript>()
+        .AddTransient<PmuScrapTodayScript>()
+        .AddTransient<IPmuScrapAndPredictToday, PmuPredictTodayScript>()
+        .AddTransient<PmuPredictTodayScript>()
         .AddTransient<IPmuScrapAndPredictToday, PmuScrapAndPredictTodayEnded>()
-        .AddTransient<IPmuResultatYesterday, PmuResultatYesterday>()
+        .AddTransient<IPmuResultatYesterday, PmuResultatYesterdayScript>()
+        .AddMediator(options =>
+        {
+            options.Namespace = "We.Turf.Service";
+            options.ServiceLifetime = ServiceLifetime.Transient;
+        })
+        .AddTransient<IPipelineBehavior<PmuScrapTodayQuery, PmuScrapTodayResponse>, ActivateAnaconda>()
+        .AddTransient<IPipelineBehavior<PmuScrapTodayQuery, PmuScrapTodayResponse>, PmuScrapToday>()
+        .AddTransient<IPipelineBehavior<PmuPredictTodayQuery, PmuPredictTodayResponse>, PmuPredictToday>()
+        .AddScoped<IWinCommand, WinCommand>(sp =>
+        {
+            var drive = sp.GetRequiredService<DriveService>();
+            return new WinCommand(sp) { WorkingDirectory = $@"{drive}projets\pmu_scrapper" };
+        });
         ;
     })
     .Build();

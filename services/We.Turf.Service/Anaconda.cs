@@ -4,7 +4,7 @@ namespace We.Turf.Service;
 public interface IAnacondaCommand:ICommand { }
 public interface IAnacondaActivation : IAnacondaCommand
 {
-
+    
 }
 public abstract class AnacondaCommand : BaseCommand, IAnacondaCommand
 {
@@ -19,31 +19,25 @@ public class AnacondaActivation : AnacondaCommand, IAnacondaActivation
 
     public AnacondaActivation(IServiceProvider serviceProvider) : base(serviceProvider) { }
 
-
-    public override void Send(TextWriter writer)
-    { // Vital to activate Anaconda
-        writer.WriteLine($@"{Conda.BasePath}\Scripts\activate.bat");
-
-        // Activate your environment
-        writer.WriteLine($"activate {Conda.EnvironmentName}");
-
+    protected override IEnumerable<string> Commands()
+    {
+        yield return $@"{Conda.BasePath}\Scripts\activate.bat";
+        yield return $"activate {Conda.EnvironmentName}";
     }
+    
 }
-public abstract class AnacondaExecuteStript : AnacondaCommand
-{
+public abstract class AnacondaExecuteStript : AnacondaCommand { 
     public string ScriptName { get; set; } = string.Empty;
     public string Path { get; set; } = string.Empty;
     public string Arguments { get; set; } = string.Empty;
 
     public AnacondaExecuteStript(IServiceProvider serviceProvider) : base(serviceProvider) { }
-    
-    public override void Send(TextWriter writer)
+
+    protected override IEnumerable<string> Commands()
     {
-        
-        var s = $@"{Conda.BasePath}\python.exe {ScriptArguments()}";
-        Logger.LogDebug($"Executing Ananconda Script \n{s}");
-        writer.WriteLine(s);
+        yield return $@"{Conda.BasePath}\python.exe {ScriptArguments()}";
     }
+    
 
     protected virtual string ScriptArguments() => $@"{Path}\{ScriptName}.py {Arguments}";
 }

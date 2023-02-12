@@ -8,6 +8,6 @@ public class PmuScrapAndPredictTodayEnded : BaseCommand, IPmuScrapAndPredictToda
 
     public override void Send(TextWriter writer)
     {
-        
+        Logger.LogInformation("Ended action");
     }
 }
