@@ -4,10 +4,18 @@ public abstract class BaseRequestHandler<TQuery, TResponse> : IRequestHandler<TQ
     where TQuery : IRequest<TResponse>
 {
     protected IServiceProvider ServiceProvider { get; init; }
-    protected IWinCommand Python { get; init; }
     protected ILogger Logger { get; init; }
-    public BaseRequestHandler(IServiceProvider serviceProvider) => (ServiceProvider,Python,Logger)=(serviceProvider, serviceProvider.GetRequiredService<IWinCommand>(),serviceProvider.GetService<ILogger>());
+    public BaseRequestHandler(IServiceProvider serviceProvider) => (ServiceProvider,Logger)=(serviceProvider,serviceProvider.GetService<ILogger>());
 
 
     public abstract ValueTask<TResponse> Handle(TQuery request, CancellationToken cancellationToken);
+}
+
+public abstract class BaseCommandRequestHandler<TQuery, TResponse> : BaseRequestHandler<TQuery, TResponse>
+    where TQuery : IRequest<TResponse>
+{
+    protected IWinCommand Python { get; init; }
+    public BaseCommandRequestHandler(IServiceProvider serviceProvider):base(serviceProvider) => ( Python) = ( serviceProvider.GetRequiredService<IWinCommand>());
+
+
 }

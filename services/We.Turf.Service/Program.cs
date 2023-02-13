@@ -1,23 +1,38 @@
-using Mediator;
-using System.Reflection;
 using We.Turf.Service;
 
 IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
+    .ConfigureAppConfiguration((ctx, cfg) =>
     {
-        services.AddHostedService<PmuWorker>()
+        
+    })
+    .ConfigureServices( (ctx,services) =>
+    {
+        
+        services.AddHttpClient();
+        services.AddHttpClient(HttpClientApi.NAME, b => {
+            b.BaseAddress = new Uri("https://localhost:44381/");
+            
+        })
+        .AddPolicyHandler(PollyPolicies.RetryPolicy)
+        .AddPolicyHandler(PollyPolicies.CircuitBreakerPolicy)
+        ;
+
+        services
+        .AddHostedService<PmuWorker>()
+        .Configure<ScrapOptions>( ctx.Configuration.GetSection(ScrapOptions.SCRAP_OPTIONS))
+        
         .AddTransient<DriveService>()
         .AddTransient<IExecutor<IPmuScrapAndPredictToday>, PythonScriptExecutor<IPmuScrapAndPredictToday>>(sp =>
         {
             var drive = sp.GetRequiredService<DriveService>();
 
-            return new PythonScriptExecutor<IPmuScrapAndPredictToday>(sp) { WorkingDirectory = $@"{drive}projets\pmu_scrapper" };
+            return new PythonScriptExecutor<IPmuScrapAndPredictToday>(sp) { WorkingDirectory = $@"{drive}{ScrapConstants.SCRAPPER_WORKING_DIRECTORY} " };
 
         })
         .AddTransient<IExecutor<IPmuResultatYesterday>, PythonScriptExecutor<IPmuResultatYesterday>>(sp =>
         {
             var drive = sp.GetRequiredService<DriveService>();
-            return new PythonScriptExecutor<IPmuResultatYesterday>(sp) { WorkingDirectory = $@"{drive}projets\pmu_scrapper" };
+            return new PythonScriptExecutor<IPmuResultatYesterday>(sp) { WorkingDirectory = $@"{drive}{ScrapConstants.SCRAPPER_WORKING_DIRECTORY}" };
         })
         .AddTransient<IAnaconda, Anaconda>()
         .AddTransient<IAnacondaActivation, AnacondaActivation>()
@@ -45,3 +60,4 @@ IHost host = Host.CreateDefaultBuilder(args)
     .Build();
 
 await host.RunAsync();
+

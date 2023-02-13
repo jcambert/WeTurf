@@ -45,6 +45,7 @@ public class TurfDbContext :
     public DbSet<PredictionPerClassifier> PredictionPerClassifier { get; set; }
     public DbSet<ResultatPerClassifier> ResultatPerClassifier { get; set; }
     public DbSet<ScrapTrigger> Triggers { get; set; }
+    public DbSet<LastScrapped> LastScrappeds { get; set; }
 
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
@@ -53,6 +54,7 @@ public class TurfDbContext :
     public DbSet<OrganizationUnit> OrganizationUnits { get; set; }
     public DbSet<IdentitySecurityLog> SecurityLogs { get; set; }
     public DbSet<IdentityLinkUser> LinkUsers { get; set; }
+
 
     // Tenant Management
     public DbSet<Tenant> Tenants { get; set; }
@@ -136,6 +138,13 @@ public class TurfDbContext :
             b.ToTable(TurfConsts.DbTablePrefix + nameof(ScrapTrigger).ToLower(), TurfConsts.DbSchema);
             b.Property(x=>x.Start).HasConversion<TimeOnlyConverter, TimeOnlyComparer>();
             b.HasIndex(x => x.Start);
+        });
+
+        builder.Entity<LastScrapped>(b =>
+        {
+            b.HasNoKey();
+            b.ToView("turfllastscrapped");
+            b.Property(x => x.LastDate).HasColumnName("lastscrappeddate");
         });
     }
 }
