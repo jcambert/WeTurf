@@ -111,12 +111,7 @@ public class WinCommand : IWinCommand
 
             Input = Process.StandardInput;
 
-            using (StreamReader reader = Process.StandardOutput)
-            {
-                //string stderr = Process.StandardError.ReadToEnd(); // Here are the exceptions from our Python script
-                string result = reader.ReadToEnd(); // Here is the result of StdOut(for example: print "test")
-
-            }
+           
 
         }
        
