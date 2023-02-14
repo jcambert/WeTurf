@@ -38,19 +38,20 @@ public class PmuWorker : BackgroundService
         Logger.LogInformation("Worker Execution starting");
 
         await Task.Delay(100);
-        IServiceScope Scope = ServiceProvider.CreateScope();
-        _options = Scope.ServiceProvider.GetService<IOptions<ScrapOptions>>()?.Value ?? new ScrapOptions();
+        /*IServiceScope Scope = ServiceProvider.CreateScope();
         var python = Scope.ServiceProvider.GetRequiredService<IWinCommand>();
         python.OnOutput.Subscribe(x => Console.WriteLine(x));
-        python.Initialize();
+        python.Initialize();*/
 
-        var mediator = Scope.ServiceProvider.GetRequiredService<IMediator>();
+        _options = ServiceProvider.GetService<IOptions<ScrapOptions>>()?.Value ?? new ScrapOptions();
+        var mediator = ServiceProvider.GetRequiredService<IMediator>();
         Tick = Observable.Interval(TimeSpan.FromSeconds(_options.Tick));
+        Func< CancellationToken,Task> _actionWorker = DoScrapToday; // DoProcessing;
         _innerWorker = Tick
             .Where(x => !_processing)
             .Where(x => ItsTime(mediator))
             .TakeWhile(x => !stoppingToken.IsCancellationRequested)
-            .Subscribe(async (x) => await DoProcessing(x, mediator, stoppingToken), OnCompleted);
+            .Subscribe(async (x) => await _actionWorker( stoppingToken), OnCompleted);
 
         //Tick.TakeWhile(x => !stoppingToken.IsCancellationRequested).Subscribe(x => { Logger.LogInformation(new string('.', ((int)x))); });
         Logger.LogInformation("Worker started");
@@ -76,6 +77,7 @@ public class PmuWorker : BackgroundService
     private bool ItsTime(IMediator mediator)
     {
         Logger.LogInformation("It's Time ?");
+        return true;
         if (!_options.Enabled)
             return false;
 
@@ -95,14 +97,23 @@ public class PmuWorker : BackgroundService
 
         return false;
     }
-
-    private async Task DoProcessing(long x, IMediator mediator, CancellationToken stoppingToken)
+    private async Task DoScrapToday(CancellationToken cancellationToken)
     {
         _processing = true;
+        var scope=ServiceProvider.CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var res0 = await mediator.Send(new PmuScrapTodayQuery());
-        var res1 = await mediator.Send(new PmuPredictTodayQuery());
-        var res3 = await mediator.Send(new PmuResultatYesterdayQuery());
-        var res4 = await mediator.Send(new PmuScrapAndPredictTodayEndedQuery());
+        //_processing = false;
+    }
+    private void DoProcessing(long x, IMediator mediator, CancellationToken stoppingToken)
+    {
+        _processing = true;
+        
+        
+        var res0 = mediator.Send(new PmuScrapTodayQuery()).Result;
+        var res1 = mediator.Send(new PmuPredictTodayQuery()).Result;
+        var res3 = mediator.Send(new PmuResultatYesterdayQuery()).Result;
+        var res4 = mediator.Send(new PmuScrapAndPredictTodayEndedQuery()).Result;
         _processing = false;
     }
 
@@ -145,5 +156,12 @@ public class PmuWorker : BackgroundService
         _innerWorker?.Dispose();
         Scope?.Dispose();
         Logger.LogInformation("Disposed");
+    }
+
+    private void TestProcessing(long x, IMediator mediator, CancellationToken stoppingToken)
+    {
+        _processing = true;
+        var res0 = mediator.Send(new TestQuery()).Result;
+        _processing = false;
     }
 }

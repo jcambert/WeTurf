@@ -5,7 +5,7 @@ public abstract class BaseCommand : ICommand
     public BaseCommand(IServiceProvider serviceProvider)
         =>(ServiceProvider, Logger,ExecutingDriveLetter) = 
         (serviceProvider, 
-        serviceProvider.GetRequiredService<ILogger>(),
+        serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(GetType().FullName),
         serviceProvider.GetRequiredService<DriveService>().ExecutingDriveLetter
         );
     protected ILogger Logger { get; init; }

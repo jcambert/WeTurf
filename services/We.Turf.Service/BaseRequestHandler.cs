@@ -5,7 +5,7 @@ public abstract class BaseRequestHandler<TQuery, TResponse> : IRequestHandler<TQ
 {
     protected IServiceProvider ServiceProvider { get; init; }
     protected ILogger Logger { get; init; }
-    public BaseRequestHandler(IServiceProvider serviceProvider) => (ServiceProvider,Logger)=(serviceProvider,serviceProvider.GetService<ILogger>());
+    public BaseRequestHandler(IServiceProvider serviceProvider) => (ServiceProvider,Logger)=(serviceProvider,serviceProvider.GetService<ILoggerFactory>().CreateLogger(GetType().FullName));
 
 
     public abstract ValueTask<TResponse> Handle(TQuery request, CancellationToken cancellationToken);

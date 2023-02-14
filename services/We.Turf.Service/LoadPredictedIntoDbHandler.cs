@@ -17,8 +17,17 @@ public class LoadPredictedIntoDbHandler : BaseRequestHandler<LoadPredictedIntoDb
     {
         var httpClient = _clientFactory.CreateClient(HttpClientApi.NAME);
         
-        JsonContent jsonContent = JsonContent.Create(request,typeof(LoadPredictedIntoDbQuery));
-        var response=await httpClient.PostAsJsonAsync("api/app/pmu/load-predicted-into-db", jsonContent, cancellationToken);
+        //JsonContent jsonContent = JsonContent.Create(request,typeof(LoadPredictedIntoDbQuery));
+        var options = new JsonSerializerOptions()
+        {
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            IgnoreReadOnlyProperties = true,
+            NumberHandling = JsonNumberHandling.WriteAsString,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
+        var response=await httpClient.PostAsJsonAsync("api/app/pmu/load-predicted-into-db", request,options, cancellationToken);
         if(response.IsSuccessStatusCode) {
             return new LoadPredictedIntoDbResponse();
         }

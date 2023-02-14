@@ -1,4 +1,6 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace We.Turf.Service;
 
@@ -13,8 +15,17 @@ public class LoadResultatIntoDbHandler : BaseRequestHandler<LoadResultatIntoDbQu
     public override async ValueTask<LoadResultatIntoDbResponse> Handle(LoadResultatIntoDbQuery request, CancellationToken cancellationToken)
     {
         var httpClient = _clientFactory.CreateClient(HttpClientApi.NAME);
-        JsonContent jsonContent = JsonContent.Create(request, typeof(LoadPredictedIntoDbQuery));
-        var response = await httpClient.PostAsJsonAsync("api/app/pmu/load-resultat-into-db", jsonContent, cancellationToken);
+        //JsonContent jsonContent = JsonContent.Create(request, typeof(LoadPredictedIntoDbQuery));
+        var options = new JsonSerializerOptions()
+        {
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            IgnoreReadOnlyProperties = true,
+            NumberHandling = JsonNumberHandling.WriteAsString,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        };
+        var response = await httpClient.PostAsJsonAsync("api/app/pmu/load-resultat-into-db", request,options, cancellationToken);
         if (response.IsSuccessStatusCode)
         {
             return new LoadResultatIntoDbResponse();

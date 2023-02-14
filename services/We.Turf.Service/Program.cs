@@ -34,6 +34,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             var drive = sp.GetRequiredService<DriveService>();
             return new PythonScriptExecutor<IPmuResultatYesterday>(sp) { WorkingDirectory = $@"{drive}{ScrapConstants.SCRAPPER_WORKING_DIRECTORY}" };
         })
+        .AddTransient<TestScript>()
         .AddTransient<IAnaconda, Anaconda>()
         .AddTransient<IAnacondaActivation, AnacondaActivation>()
         .AddTransient<IPmuScrapAndPredictToday, PmuScrapTodayScript>()

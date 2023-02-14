@@ -1,6 +1,6 @@
 ﻿namespace We.Turf.Service;
 
-public class PmuResultatYesterday : BasePipeline<PmuResultatYesterdayQuery, PmuResultatYesterdayResponse>
+public class PmuResultatYesterday : BasePythonConsolePipeline<PmuResultatYesterdayQuery, PmuResultatYesterdayResponse>
 {
     public PmuResultatYesterday(IServiceProvider services) : base(services)
     {
@@ -10,6 +10,7 @@ public class PmuResultatYesterday : BasePipeline<PmuResultatYesterdayQuery, PmuR
     {
         Logger?.LogTrace("Start Pmu Resultat of yesterday");
         var scrapper=ServiceProvider.GetRequiredService<PmuResultatYesterdayScript>();
+
         scrapper.Send(Python);
         Logger?.LogTrace("End Pmu Resultat of yesterday");
         return next(message, cancellationToken);
