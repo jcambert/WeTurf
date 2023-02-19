@@ -10,7 +10,7 @@ namespace We.Turf.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //SELECT distinct max(p."Date") as LastScrappedDate FROM public.turfpredicted p
+            
             var sql = @"CREATE OR REPLACE VIEW public.turfllastscrapped
  AS
  SELECT DISTINCT max(p.""Date"") AS lastscrappeddate
@@ -18,6 +18,7 @@ namespace We.Turf.Migrations
 
 ALTER TABLE public.turfllastscrapped
     OWNER TO weturf_root;";
+            migrationBuilder.Sql(sql);
         }
 
         /// <inheritdoc />

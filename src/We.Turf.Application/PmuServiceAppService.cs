@@ -5,7 +5,10 @@ namespace We.Turf;
 
 public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
 {
-    public Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifierResponse(BrowseAccuracyOfClassifierQuery query)
+    public Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifier(BrowseAccuracyOfClassifierQuery query)
+    => Mediator.Send(query);
+
+    public Task<BrowsePredictionResponse> BrowsePrediction(BrowsePredictionQuery query)
     => Mediator.Send(query);
 
     public Task<BrowsePredictionPerClassifierResponse> BrowsePredictionPerClassifier(BrowsePredictionPerClassifierQuery query)

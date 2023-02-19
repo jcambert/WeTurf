@@ -4,5 +4,5 @@
 [ExposeServices(typeof(ILoadPredictedIntoDbQuery))]
 public class LoadPredictedIntoDbQuery : ILoadPredictedIntoDbQuery
 {
-    public string Filename { get; set; } = @"E:\projets\pmu_scrapper\output\predicted.csv";
+    public string Filename { get; set; } 
 }

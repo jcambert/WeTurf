@@ -26,9 +26,8 @@ namespace We.Turf.Migrations
     r.""Id"" AS resultat_id,
     r.""Pari"",
     r.""Rapport"" AS dividende
-   FROM turfpredicted p,
-    turfresultat r
-  WHERE p.""Date"" = r.""Date"" AND p.""Reunion"" = r.""Reunion"" AND p.""Course"" = r.""Course"" AND p.""NumeroPmu"" = r.""NumeroPmu"";
+   FROM turfpredicted p
+     LEFT JOIN turfresultat r ON p.""Date"" = r.""Date"" AND p.""Reunion"" = r.""Reunion"" AND p.""Course"" = r.""Course"" AND p.""NumeroPmu"" = r.""NumeroPmu"";
 
 ALTER TABLE public.turfresultatofpredicted
     OWNER TO weturf_root;";

@@ -43,10 +43,13 @@ public class TurfHttpApiModule : AbpModule
     }
 
     private void ConfigureJsonConverters()
-    {
+    {/*
         Configure<JsonSerializerOptions>(options =>
         {
-            options.Converters.Add(new We.Turf.Converters.TimeOnlyConverter());
-        });
+            
+            options.Converters.Add(new TimeOnlyConverter());
+            options.Converters.Add(new DateOnlyConverter());
+        });*/
+        
     }
 }

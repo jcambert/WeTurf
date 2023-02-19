@@ -1,12 +1,14 @@
-﻿using Volo.Abp.Domain.Entities;
+﻿using System;
+using Volo.Abp.Domain.Entities;
 
 namespace We.Turf.Entities;
 
 public class ResultatPerClassifier:IEntity
 {
+    public DateOnly Date { get; set; }
     public string Classifier { get; set; }
     public int Counting { get; set; }
 
     public object[] GetKeys()
-    =>new object[] { Classifier };
+    =>new object[] {Date, Classifier };
 }

@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace We.Csv;
 
@@ -60,22 +61,33 @@ public class Reader<T>
     {
         return to?.Name switch
         {
-            nameof(DateOnly) =>ToDateOnly(from ),
+            nameof(DateOnly) => ToDateOnly(from),
             nameof(String) => from ?? "",
             nameof(Int32) => Int32.Parse(from?.Split(".")[0] ?? ""),
-            nameof(Double) => Double.Parse(from ?? "",NumberStyles.Any, CultureInfo.InvariantCulture),
+            nameof(Double) => Double.Parse(from ?? "", NumberStyles.Any, CultureInfo.InvariantCulture),
             _ => throw new NotSupportedException($"{to?.Name} is not supported for conversion")
         };
     }
 
     private DateOnly ToDateOnly(string? from)
     {
-        string[] v = from?.Split("-") ?? new string[8];
-        if (!Int32.TryParse(string.Join("", v[0]), out var year))
+        if (from == null)
+            throw new ArgumentNullException($"ToDateOnly: {nameof(from)} is null");
+
+        if (DateOnly.TryParse(from, out var result))
+            return result;
+
+        string value = from ?? "";
+        bool european = value.IndexOf('/') > 0;
+
+        string[] v = Regex.Split(value, "/|-");
+        //string[] v = from?.Split("-") ?? new string[8];
+
+        if (!Int32.TryParse(string.Join("", european ? v[2] : v[0]), out var year))
             throw new FormatException($"Malformed Date for year {from} :{string.Join("", v[0])}");
         if (!Int32.TryParse(string.Join("", v[1]), out var month))
             throw new FormatException($"Malformed Date for month {from} :{string.Join("", v[1])}");
-        if (!Int32.TryParse(string.Join("", v[2]), out var day))
+        if (!Int32.TryParse(string.Join("", european ? v[0] : v[2]), out var day))
             throw new FormatException($"Malformed Date for day {from} :{string.Join("", v[2])}");
         return new DateOnly(year, month, day);
     }
@@ -84,10 +96,10 @@ public class Reader<T>
 
         using (StreamReader reader = new StreamReader(Filename))
         {
-            bool skipped=false;
+            bool skipped = false;
             while (!reader.EndOfStream)
             {
-                var line=await reader.ReadLineAsync(cancellationToken);
+                var line = await reader.ReadLineAsync(cancellationToken);
                 if (HasHeader && !skipped)
                 {
                     skipped = true;
@@ -98,34 +110,9 @@ public class Reader<T>
 
                 _onReadLine.OnNext(new ReaderResponse<T>(LineRead, v, this));
             }
-            
-        /*bool _isrunning = false;
-            var i = Observable.Using(
-                () => reader,
-                reader => Observable.FromAsync(reader.ReadLineAsync)
-                    .Repeat()
-                    .TakeWhile(x => !string.IsNullOrEmpty(x) || !cancellationToken.IsCancellationRequested)
-                );
-            i.Skip(HasHeader ? 1 : 0).Subscribe(
-                x =>
-                {
-                    _isrunning = true;
-                    var v = _onReadLineMapping(x, Separator);
-                    LineRead++;
-                    
-                    _onReadLine.OnNext(new ReaderResponse<T>(LineRead, v, this));
-                },
-                () =>
-                {
-                    _isrunning = false;
-                    _onReadLine.OnCompleted();
-                });
-            while (_isrunning)
-            {
-                await Task.Delay(500,cancellationToken);
-            }
-                await Task.CompletedTask;*/
+
         }
+        _onReadLine.OnCompleted();
 
 
     }

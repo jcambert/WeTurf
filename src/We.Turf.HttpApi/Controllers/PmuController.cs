@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using We.Turf.Queries;
 
 namespace We.Turf.Controllers;
-
+[Produces("application/json")]
 public class PmuController : TurfController, IPmuServiceAppService
 {
     protected readonly IPmuServiceAppService pmuService;
@@ -11,8 +11,12 @@ public class PmuController : TurfController, IPmuServiceAppService
     => (pmuService) = (service);
 
     [HttpGet]
-    public Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifierResponse(BrowseAccuracyOfClassifierQuery query)
-    =>pmuService.BrowseAccuracyOfClassifierResponse(query);
+    public Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifier(BrowseAccuracyOfClassifierQuery query)
+    =>pmuService.BrowseAccuracyOfClassifier(query);
+
+    [HttpGet]
+    public Task<BrowsePredictionResponse> BrowsePrediction(BrowsePredictionQuery query)
+    =>pmuService.BrowsePrediction(query);   
 
     [HttpGet]
     public Task<BrowsePredictionPerClassifierResponse> BrowsePredictionPerClassifier(BrowsePredictionPerClassifierQuery query)

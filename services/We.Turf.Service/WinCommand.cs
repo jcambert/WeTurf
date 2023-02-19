@@ -65,7 +65,7 @@ public class WinCommand : IWinCommand
 
     protected virtual void Initialize()
     {
-        if (Process != null  )
+       /* if (Process != null  )
         {
             throw new ApplicationException("Process allready started");
         }
@@ -113,7 +113,7 @@ public class WinCommand : IWinCommand
 
            
 
-        }
+        }*/
        
     }
 }

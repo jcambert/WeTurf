@@ -12,10 +12,10 @@ namespace We.Turf.Migrations
         {
             var sql = @"CREATE OR REPLACE VIEW public.turfpredictionperclassifier
  AS
-  SELECT p.""Classifier"",
+  SELECT p.""Date"", p.""Classifier"",
     count(p.""Classifier"") AS counting
    FROM public.turfpredicted p
-  GROUP BY p.""Classifier"";
+  GROUP BY p.""Date"",p.""Classifier"";
 
 ALTER TABLE public.turfpredictionperclassifier
     OWNER TO weturf_root;";

@@ -113,6 +113,7 @@ public class TurfBlazorModule : AbpModule
         Configure<JsonSerializerOptions>(options =>
         {
             options.Converters.Add(new We.Turf.Converters.TimeOnlyConverter());
+            options.Converters.Add(new We.Turf.Converters.DateOnlyConverter());
         });
     }
 
@@ -134,14 +135,7 @@ public class TurfBlazorModule : AbpModule
     {
         Configure<AbpBundlingOptions>(options =>
         {
-            // MVC UI
-            options.StyleBundles.Configure(
-                BasicThemeBundles.Styles.Global,
-                bundle =>
-                {
-                    bundle.AddFiles("/global-styles.css");
-                }
-            );
+           
 
             //BLAZOR UI
             options.StyleBundles.Configure(
@@ -151,6 +145,15 @@ public class TurfBlazorModule : AbpModule
                     bundle.AddFiles("/blazor-global-styles.css");
                     //You can remove the following line if you don't use Blazor CSS isolation for components
                     bundle.AddFiles("/We.Turf.Blazor.styles.css");
+                }
+            );
+
+            // MVC UI
+            options.StyleBundles.Configure(
+                BasicThemeBundles.Styles.Global,
+                bundle =>
+                {
+                    bundle.AddFiles("/global-styles.css");
                 }
             );
         });
@@ -179,6 +182,14 @@ public class TurfBlazorModule : AbpModule
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Turf API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
+                
+                options.MapType<DateOnly>(()=> new OpenApiSchema
+                {
+                    Type = "string",
+                    Format = "date",
+                    
+
+                });
             }
         );
     }
@@ -211,7 +222,7 @@ public class TurfBlazorModule : AbpModule
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
             //options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
-
+           
         });
     }
 
@@ -254,10 +265,14 @@ public class TurfBlazorModule : AbpModule
 
         app.UseUnitOfWork();
         app.UseAuthorization();
-        app.UseSwagger();
+        app.UseSwagger(options =>
+        {
+            
+        });
         app.UseAbpSwaggerUI(options =>
         {
             options.SwaggerEndpoint("/swagger/v1/swagger.json", "Turf API");
+            
         });
         app.UseConfiguredEndpoints();
     }

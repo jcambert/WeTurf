@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\We.Utilities\We.Utilities.csproj" />
     <ProjectReference Include="..\We.Turf.Application\We.Turf.Application.csproj" />
     <ProjectReference Include="..\We.Turf.HttpApi\We.Turf.HttpApi.csproj" />
     <ProjectReference Include="..\We.Turf.EntityFrameworkCore\We.Turf.EntityFrameworkCore.csproj" />

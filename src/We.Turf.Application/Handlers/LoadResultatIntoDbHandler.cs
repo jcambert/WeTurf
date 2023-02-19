@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.IO;
 using We.Csv;
 using We.Turf.Entities;
+using System.Reactive.Linq;
+using We.Utilities;
 
 namespace We.Turf.Handlers;
 
@@ -13,20 +16,32 @@ public class LoadResultatIntoDbHandler : BaseHandler<LoadResultatIntoDbQuery, Lo
 
     public override async Task<LoadResultatIntoDbResponse> Handle(LoadResultatIntoDbQuery request, CancellationToken cancellationToken)
     {
-        request.Filename = @"E:\projets\pmu_scrapper\output\resultats_trot_attele.csv";
-        var reader = new Reader<Resultat>($"{request.Filename}", true, ';');
-        List<Resultat> resultats = new List<Resultat>();
-        reader.OnReadLine.Subscribe(o =>
+        if (File.Exists(request.Filename))
         {
-            Logger.LogInformation($"{o.Index} / {o.ToString()}");
-            resultats.Add(o.Value);
-        });
+            var query0 = await _repository.GetQueryableAsync();
+            var query1 = query0.Select(x =>new { x.Date,x.Reunion,x.Course }).Distinct();
+            var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
 
-        await reader.Start(cancellationToken);
+            var reader = new Reader<Resultat>($"{request.Filename}", true, ';');
+            List<Resultat> resultats = new List<Resultat>();
+            reader
+                .OnReadLine
+                .Where(x=>!existings.Any(y=>y.Date==x.Value.Date && y.Reunion==x.Value.Reunion && y.Course==x.Value.Course))
+                .Subscribe(o =>
+                    {
+                        Logger.LogInformation($"{o.Index} / {o.ToString()}");
+                        resultats.Add(o.Value);
+                    }, () =>
+                    {
+                        File.Move(request.Filename,request.Filename.GenerateCopyName(null),true);
+                    });
 
-        await _repository.InsertManyAsync(resultats, true, cancellationToken);
+            await reader.Start(cancellationToken);
 
-        return new LoadResultatIntoDbResponse(ObjectMapper.Map<List<Resultat>, List<ResultatDto>>(resultats));
+            await _repository.InsertManyAsync(resultats, true, cancellationToken);
 
+            return new LoadResultatIntoDbResponse(ObjectMapper.Map<List<Resultat>, List<ResultatDto>>(resultats));
+        }
+        return new LoadResultatIntoDbResponse(null) { ErrorMessage = $"{request.Filename} n'existe pas" };
     }
 }

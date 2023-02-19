@@ -47,6 +47,8 @@ public class TurfDbContext :
     public DbSet<ScrapTrigger> Triggers { get; set; }
     public DbSet<LastScrapped> LastScrappeds { get; set; }
 
+    public DbSet<AccuracyPerClassifier> AccuracyPerClassifiers { get; set; }
+
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
@@ -125,12 +127,25 @@ public class TurfDbContext :
             b.HasNoKey();
             b.ToView("turfpredictionperclassifier");
             b.Property(x => x.Counting).HasColumnName("counting");
+            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
         });
         builder.Entity<ResultatPerClassifier>(b =>
         {
             b.HasNoKey();
             b.ToView("turfresultatperclassifier");
             b.Property(x => x.Counting).HasColumnName("counting");
+            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        });
+
+        builder.Entity<AccuracyPerClassifier>(b =>
+        {
+            b.HasNoKey();
+            b.ToView("turfaccuracyperclassifier");
+            b.Property(x => x.Classifier).HasColumnName("classifier");
+            b.Property(x => x.PredictionCount).HasColumnName("predictioncounting");
+            b.Property(x => x.ResultatCount).HasColumnName("resultatcounting");
+            b.Property(x => x.Percentage).HasColumnName("accuracy");
+
         });
 
         builder.Entity<ScrapTrigger>(b =>

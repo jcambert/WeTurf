@@ -7,4 +7,4 @@ public interface ILoadResultatIntoDbQuery:IRequest<LoadResultatIntoDbResponse>
 {
     string Filename { get; set; }
 }
-public sealed record LoadResultatIntoDbResponse(List<ResultatDto> Resultats);
+public sealed record LoadResultatIntoDbResponse(List<ResultatDto> Resultats):BaseResponse;

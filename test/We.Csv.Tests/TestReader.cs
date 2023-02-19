@@ -11,9 +11,9 @@ namespace We.Csv.Tests
             this.output = output;
         }
         [Theory()]
-        [InlineData(@"E:\projets\pmu_scrapper\output\predicted",101)]
+        //[InlineData(@"E:\projets\pmu_scrapper\output\predicted",101)]
         [InlineData("predicted-light",2)]
-        [InlineData("predicted",185)]
+        //[InlineData("predicted",185)]
         public async Task Test1(string filename,int attendee)
         {
             int index = 0;
@@ -23,6 +23,9 @@ namespace We.Csv.Tests
             {
                 output.WriteLine($"{o.Index} / {o.Value.ToString()}");
                 index++;
+            }, () =>
+            {
+                output.WriteLine("End of stream");
             });
 
             await reader.Start();

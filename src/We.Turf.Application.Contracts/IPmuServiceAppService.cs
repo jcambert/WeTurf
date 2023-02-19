@@ -14,5 +14,7 @@ public interface IPmuServiceAppService:IApplicationService
     
     Task<BrowseResultatPerClassifierResponse> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query);    
 
-    Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifierResponse(BrowseAccuracyOfClassifierQuery query);
+    Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifier(BrowseAccuracyOfClassifierQuery query);
+
+    Task<BrowsePredictionResponse> BrowsePrediction(BrowsePredictionQuery query);
 }

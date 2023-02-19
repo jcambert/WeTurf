@@ -7,4 +7,4 @@ public interface IBrowseAccuracyOfClassifierQuery:IRequest<BrowseAccuracyOfClass
 {
 }
 
-public sealed record BrowseAccuracyOfClassifierResponse(List<AccuracyOfClassifierDto> ClassifiersAccuracy);
+public sealed record BrowseAccuracyOfClassifierResponse(List<AccuracyPerClassifierDto> ClassifiersAccuracy);
