@@ -1,60 +1,129 @@
 ﻿@page "/"
-@page "/turf/{Date}"
-@using System;
+@page "/{Date}"
+@using System.Runtime.CompilerServices;
+@using System.ComponentModel;
 @using We.Turf.Entities;
 @using We.Utilities;
 @inherits TurfComponentBase
+@implements IDisposable
 @inject IPmuServiceAppService pmuService;
 
 <Div Style="background-image: linear-gradient(70deg, rgb(1, 120, 93), rgb(1, 85, 77));height:100%">
     <p>Date:@_date.ToShortDateString()</p>
-    @if (_predicteds?.Count() > 0)
+    <p><InputText @bind-Value="Date"></InputText></p>
+    @if ( _predicteds?.Count() > 0)
     {
-        <CardDeck >
-            
-            @foreach (var courses in _predicteds.OrderBy(x => x.Reunion).ThenBy(x => x.Course).GroupBy(x => new { Reunion = x.Reunion, Course = x.Course,Hippodrome=x.Hippodrome }))
-            {
-                <Card Class="mb-4">
-                    <CardBody>
-                        <CardTitle>
-                            <span>Réunion: @courses.Key.Reunion</span>
-                            <span>Course: @courses.Key.Course</span>
-                            <span>Hippodrome: @courses.Key.Hippodrome</span>
-                            
-                        </CardTitle>
-                        @foreach (var course in courses)
-                        {
-                            <CardText>
-                                Nom :@course.Nom
-                                No  :@course.NumeroPmu
-                                Cote:@course.Rapport
-                            </CardText>
-                        }
-                    </CardBody>
-                </Card>
-            }
-        </CardDeck>
+
+        @foreach (var reunion in Reunions)
+        {
+            <Accordion>
+                <Collapse Visible="@_reunionsCollapsed[reunion.Numero-1]">
+                    <CollapseHeader>
+                        <Heading Size="HeadingSize.Is5">
+                            <AccordionToggle>
+                                Reunion: @reunion.Numero
+                                Hippodrome: @reunion.Hippodrome
+                            </AccordionToggle>
+                        </Heading>
+                    </CollapseHeader>
+                    <CollapseBody>
+                        <CardDeck>
+                            @foreach (var course in Courses(reunion.Numero))
+                            {
+                                <Card Class="mb-4">
+                                    <CardBody>
+                                        <CardTitle>
+                                            <span>Course: @course.Numero</span>
+                                            <span>Specialité: @course.Specialite</span>
+                                        </CardTitle>
+                                        @foreach (var course in Predicted(reunion.Numero, course.Numero))
+                                        {
+                                            <CardText>
+                                                <Badge Color="Color.Success">@course.Counter</Badge>
+                                                Nom :@course.Nom
+                                                No  :@course.NumeroPmu
+                                                Cote:@course.Rapport
+                                            </CardText>
+                                        }
+                                    </CardBody>
+                                </Card>
+                            }
+                        </CardDeck>
+                    </CollapseBody>
+                </Collapse>
+            </Accordion>
+
+
+        }
     }
 </Div>
 
 
 @code {
+    #pragma warning disable BL0007
     [Parameter]
-    public string Date { get; set; }
-
-
-    private DateOnly _date;
-    private List<PredictedDto> _predicteds;
-    protected override async Task OnInitializedAsync()
+    public string Date
     {
-
-        if (!Date.TryParseToDateOnly(out _date))
+        get => _date.ToShortDateString();
+        set
         {
-            _date = DateOnlyExtensions.Now;
-            Date = Date ?? _date.ToString();
-        }
+            var res = value.TryParseToDateOnly(out _date);
+            if (!res)
+            {
+                _date = DateOnlyExtensions.Now;
+            }
+            NotifyPropertyChanged();
 
-        var response = await pmuService.BrowsePrediction(new() { Date = _date });
+        }
+    }
+#pragma warning restore BL0007
+
+    record Reunion(int Numero, string Hippodrome);
+    record Course(int Numero,string Specialite);
+    record PredictedHorse(int NumeroPmu, string Nom, double Rapport, int Counter);
+    private DateOnly _date;
+    private bool[] _reunionsCollapsed;
+    private IDisposable _whenDateChanged;
+    private List<PredictedDto> _predicteds;
+    private DateOnly Today;
+    private List<Reunion> Reunions => _predicteds?.Select(x => new Reunion(x.Reunion, x.Hippodrome)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
+    private List<Course> Courses(int reunion) => _predicteds?.Where(x => x.Reunion == reunion).Select(x =>new Course (x.Course, x.Specialite)).Distinct().OrderBy(x=>x.Numero).ToList() ?? new();
+    private List<PredictedHorse> Predicted(int reunion, int course) => _predicteds?.Where(x => x.Reunion == reunion && x.Course == course).OrderBy(x => x.NumeroPmu).GroupBy(x => x.NumeroPmu, (key, value) => new PredictedHorse(key, value.First().Nom, value.First().Rapport, value.Count())).ToList();
+    public Index()
+    {
+        _whenDateChanged = this.WhenPropertyChanged()
+        .Where(e => e.EventArgs.PropertyName == nameof(Date))
+        .Select(e=>_date)
+        .Subscribe(async date=>await LoadPredictedAsync(date));
+
+    }   
+    protected override void OnInitialized()
+    {
+        Today = DateOnly.FromDateTime(DateTime.Now);
+
+    }
+
+
+    /*
+    private void OnDateChanged(PropertyChangedEventArgs args)
+    {
+        Console.WriteLine(args.PropertyName);
+        LoadPredicted(_date);
+    }*/
+    private async Task LoadPredictedAsync(DateOnly date)
+    {
+        var t = pmuService.BrowsePrediction(new() { Date = date });
+        var response = await t;
+        //var response = t.Result;
         _predicteds = response.Predicteds;
+        _reunionsCollapsed = new bool[_predicteds.Count];
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        _whenDateChanged?.Dispose();
+
     }
 }

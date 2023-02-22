@@ -1,10 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\common.props" />
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>We.Turf</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,12 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Account.HttpApi.Client" Version="7.0.1" />
-    <PackageReference Include="Volo.Abp.Identity.HttpApi.Client" Version="7.0.1" />
-    <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi.Client" Version="7.0.1" />
-    <PackageReference Include="Volo.Abp.TenantManagement.HttpApi.Client" Version="7.0.1" />
-    <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi.Client" Version="7.0.1" />
-    <PackageReference Include="Volo.Abp.SettingManagement.HttpApi.Client" Version="7.0.1" />
+    <PackageReference Include="Volo.Abp.Account.HttpApi.Client" Version="7.0.2" />
+    <PackageReference Include="Volo.Abp.Identity.HttpApi.Client" Version="7.0.2" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi.Client" Version="7.0.2" />
+    <PackageReference Include="Volo.Abp.TenantManagement.HttpApi.Client" Version="7.0.2" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi.Client" Version="7.0.2" />
+    <PackageReference Include="Volo.Abp.SettingManagement.HttpApi.Client" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,11 +9,11 @@ namespace We.Turf.Converters;
 public class DateOnlyConverter : JsonConverter<DateOnly>
 {
     private readonly string serializationFormat;
-    public DateOnlyConverter() : this(null)
+    public DateOnlyConverter() : this(serializationFormat: null)
     {
 
     }
-    public DateOnlyConverter(string serializationFormat)
+    public DateOnlyConverter(string? serializationFormat)
     {
         this.serializationFormat = serializationFormat ?? "dd/mm/YYYY";
     }

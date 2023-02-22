@@ -33,7 +33,7 @@ public class TurfMenuContributor : IMenuContributor
                 order: 0
             )
         );
-
+#pragma warning disable CS1634,CS0162,IDE0035
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);
@@ -42,6 +42,7 @@ public class TurfMenuContributor : IMenuContributor
         {
             administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
         }
+#pragma warning restore CS1634,CS0162,IDE0035
 
         administration.SetSubItemOrder(IdentityMenuNames.GroupName, 2);
         administration.SetSubItemOrder(SettingManagementMenus.GroupName, 3);
