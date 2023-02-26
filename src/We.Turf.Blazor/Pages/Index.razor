@@ -11,7 +11,7 @@
 <Div Style="background-image: linear-gradient(70deg, rgb(1, 120, 93), rgb(1, 85, 77));height:100%">
     <p>Date:@_date.ToShortDateString()</p>
     <p><InputText @bind-Value="Date"></InputText></p>
-    @if ( _predicteds?.Count() > 0)
+    @if (_predicteds?.Count() > 0)
     {
 
         @foreach (var reunion in Reunions)
@@ -27,24 +27,34 @@
                         </Heading>
                     </CollapseHeader>
                     <CollapseBody>
-                        <CardDeck>
+                        <CardDeck Margin="Margin.Is2">
                             @foreach (var course in Courses(reunion.Numero))
                             {
-                                <Card Class="mb-4">
+                                <Card>
                                     <CardBody>
                                         <CardTitle>
-                                            <span>Course: @course.Numero</span>
-                                            <span>Specialité: @course.Specialite</span>
+                                            <PictoSvg Pictogram="@GetPictogram(course.Specialite)" Width="50" Ratio="2">
+                                                <h3>
+                                                    <Badge Color="Color.Success">
+                                                        <span>Course: @course.Numero</span>
+                                                    </Badge>
+                                                </h3>
+
+                                            </PictoSvg>
                                         </CardTitle>
-                                        @foreach (var course in Predicted(reunion.Numero, course.Numero))
-                                        {
-                                            <CardText>
-                                                <Badge Color="Color.Success">@course.Counter</Badge>
-                                                Nom :@course.Nom
-                                                No  :@course.NumeroPmu
-                                                Cote:@course.Rapport
-                                            </CardText>
-                                        }
+                                        <CardText>
+                                            <Div Class="container text-start">
+                                                @foreach (var course in Predicted(reunion.Numero, course.Numero))
+                                                {
+                                                    <Div Class="row">
+                                                        <Div Class="col col-sm-2">@course.NumeroPmu</Div>
+                                                        <Div Class="col col-sm-6">@course.Nom</Div>
+                                                        <Div Class="col col-sm-2">@course.Rapport</Div>
+                                                        <Div Class="col col-sm-2"><Badge Color="Color.Danger ">@course.Counter</Badge></Div>
+                                                    </Div>
+                                                }
+                                            </Div>
+                                        </CardText>
                                     </CardBody>
                                 </Card>
                             }
@@ -60,7 +70,7 @@
 
 
 @code {
-    #pragma warning disable BL0007
+#pragma warning disable BL0007
     [Parameter]
     public string Date
     {
@@ -79,7 +89,7 @@
 #pragma warning restore BL0007
 
     record Reunion(int Numero, string Hippodrome);
-    record Course(int Numero,string Specialite);
+    record Course(int Numero, string Specialite);
     record PredictedHorse(int NumeroPmu, string Nom, double Rapport, int Counter);
     private DateOnly _date;
     private bool[] _reunionsCollapsed;
@@ -87,23 +97,30 @@
     private List<PredictedDto> _predicteds;
     private DateOnly Today;
     private List<Reunion> Reunions => _predicteds?.Select(x => new Reunion(x.Reunion, x.Hippodrome)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
-    private List<Course> Courses(int reunion) => _predicteds?.Where(x => x.Reunion == reunion).Select(x =>new Course (x.Course, x.Specialite)).Distinct().OrderBy(x=>x.Numero).ToList() ?? new();
+    private List<Course> Courses(int reunion) => _predicteds?.Where(x => x.Reunion == reunion).Select(x => new Course(x.Course, x.Specialite)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
     private List<PredictedHorse> Predicted(int reunion, int course) => _predicteds?.Where(x => x.Reunion == reunion && x.Course == course).OrderBy(x => x.NumeroPmu).GroupBy(x => x.NumeroPmu, (key, value) => new PredictedHorse(key, value.First().Nom, value.First().Rapport, value.Count())).ToList();
     public Index()
     {
         _whenDateChanged = this.WhenPropertyChanged()
         .Where(e => e.EventArgs.PropertyName == nameof(Date))
-        .Select(e=>_date)
-        .Subscribe(async date=>await LoadPredictedAsync(date));
+        .Select(e => _date)
+        .Subscribe(async date => await LoadPredictedAsync(date));
 
-    }   
+    }
     protected override void OnInitialized()
     {
         Today = DateOnly.FromDateTime(DateTime.Now);
 
     }
 
-
+    private Picto GetPictogram(string specialite) => specialite.ToLower() switch
+    {
+        "plat" => Picto.Plat,
+        "trot monte" => Picto.Monte,
+        "obstacle" => Picto.Obstacle,
+        "trot attele" => Picto.Attele,
+        _ => Picto.None
+    };
     /*
     private void OnDateChanged(PropertyChangedEventArgs args)
     {

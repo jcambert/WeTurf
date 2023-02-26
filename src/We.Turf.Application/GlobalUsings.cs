@@ -8,3 +8,4 @@ global using Volo.Abp.DependencyInjection;
 global using Volo.Abp.Domain.Repositories;
 global using MediatR;
 global using We.Turf.Queries;
+global using We.EntitySpecification;

@@ -9,5 +9,5 @@ namespace We.Turf.Queries;
 public class BrowsePredictionQuery : IBrowsePredictionQuery
 {
     //[JsonConverter(typeof(DateOnlyJsonConverter))]
-    public DateOnly Date { get; set; }
+    public DateOnly? Date { get; set; }
 }
