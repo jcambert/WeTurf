@@ -16,11 +16,3 @@
     right: 0.75rem;
     top: 0.5rem;
 }
-body {
-    background: radial-gradient(at 150% 20%, rgb(21, 41, 40) 40%, rgb(8, 21, 22) 75%) no-repeat fixed, linear-gradient(0deg, rgb(8, 21, 22), rgb(21, 41, 40) 20%, rgb(21, 41, 40) 60%, rgb(8, 21, 22)), linear-gradient(0deg, rgb(8, 21, 22), rgb(21, 41, 40) 0%, rgb(21, 41, 40) 70%, rgb(8, 21, 22)), linear-gradient(0deg, rgb(8, 21, 22), rgb(21, 41, 40) 0%, rgb(21, 41, 40) 70%, rgb(8, 21, 22));
-    background-repeat: no-repeat;
-}
-
-.card-deck>.col{
-    margin-bottom:25px;
-}

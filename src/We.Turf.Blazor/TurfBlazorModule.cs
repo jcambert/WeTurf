@@ -44,6 +44,7 @@ using MediatR;
 using System;
 using Volo.Abp.Json;
 using System.Text.Json;
+using We.Turf.Blazor.Bundling;
 
 namespace We.Turf.Blazor;
 
@@ -145,17 +146,13 @@ public class TurfBlazorModule : AbpModule
                     bundle.AddFiles("/blazor-global-styles.css");
                     //You can remove the following line if you don't use Blazor CSS isolation for components
                     bundle.AddFiles("/We.Turf.Blazor.styles.css");
+                    bundle.AddFiles("/global-styles.css");
+                    bundle.AddContributors(typeof(BootswatchStyleContributor));
                 }
             );
 
-            // MVC UI
-            options.StyleBundles.Configure(
-                BasicThemeBundles.Styles.Global,
-                bundle =>
-                {
-                    bundle.AddFiles("/global-styles.css");
-                }
-            );
+           
+
         });
     }
 

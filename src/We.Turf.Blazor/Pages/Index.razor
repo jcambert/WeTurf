@@ -9,8 +9,8 @@
 @inject IPmuServiceAppService pmuService;
 
 <Div Style="background-image: linear-gradient(70deg, rgb(1, 120, 93), rgb(1, 85, 77));height:100%">
-    <p>Date:@_date.ToShortDateString()</p>
-    <p><InputText @bind-Value="Date"></InputText></p>
+    
+    <p><DateEdit TValue="DateOnly" @bind-Date="CurrentDate"></DateEdit></p>
     @if (_predicteds?.Count() > 0)
     {
 
@@ -70,20 +70,31 @@
 
 
 @code {
-#pragma warning disable BL0007
+    #pragma warning disable BL0007
     [Parameter]
     public string Date
     {
         get => _date.ToShortDateString();
         set
         {
-            var res = value.TryParseToDateOnly(out _date);
+            var res = value.TryParseToDateOnly(out var __date);
             if (!res)
             {
-                _date = DateOnlyExtensions.Now;
+                __date = DateOnlyExtensions.Now;
             }
-            NotifyPropertyChanged();
+            CurrentDate = __date;
+            //NotifyPropertyChanged();
 
+        }
+    }
+
+    internal DateOnly CurrentDate
+    {
+        get => _date;
+        set
+        {
+            _date = value;
+            NotifyPropertyChanged();
         }
     }
 #pragma warning restore BL0007
@@ -92,17 +103,17 @@
     record Course(int Numero, string Specialite);
     record PredictedHorse(int NumeroPmu, string Nom, double Rapport, int Counter);
     private DateOnly _date;
+    private DateOnly Today;
     private bool[] _reunionsCollapsed;
     private IDisposable _whenDateChanged;
     private List<PredictedDto> _predicteds;
-    private DateOnly Today;
     private List<Reunion> Reunions => _predicteds?.Select(x => new Reunion(x.Reunion, x.Hippodrome)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
     private List<Course> Courses(int reunion) => _predicteds?.Where(x => x.Reunion == reunion).Select(x => new Course(x.Course, x.Specialite)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
     private List<PredictedHorse> Predicted(int reunion, int course) => _predicteds?.Where(x => x.Reunion == reunion && x.Course == course).OrderBy(x => x.NumeroPmu).GroupBy(x => x.NumeroPmu, (key, value) => new PredictedHorse(key, value.First().Nom, value.First().Rapport, value.Count())).ToList();
     public Index()
     {
         _whenDateChanged = this.WhenPropertyChanged()
-        .Where(e => e.EventArgs.PropertyName == nameof(Date))
+        .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
         .Select(e => _date)
         .Subscribe(async date => await LoadPredictedAsync(date));
 

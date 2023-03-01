@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@abp/aspnetcore.components.server.basictheme": "~7.0.2",
-    "@abp/aspnetcore.mvc.ui.theme.basic": "~7.0.2"
+    "@abp/aspnetcore.mvc.ui.theme.basic": "~7.0.2",
+    "bootswatch": "^5.2.3"
   }
 }
