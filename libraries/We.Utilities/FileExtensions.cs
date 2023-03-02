@@ -18,7 +18,7 @@ public static class FileExtensions
         string extension = Path.GetExtension(filepath);
         string directory = Path.GetDirectoryName(filepath) ?? string.Empty  ;
 
-        string newFilename = $"{directory}{filename}{AdditionalFn()}{extension}";
+        string newFilename = $"{directory}/{filename}{AdditionalFn()}{extension}";
         return newFilename;
     }
 }
