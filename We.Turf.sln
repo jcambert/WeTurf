@@ -5,6 +5,10 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Turf.Domain", "src\We.Turf.Domain\We.Turf.Domain.csproj", "{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.Web.BasicTheme", "packages\Volo.Abp.AspNetCore.Components.Web.BasicTheme\Volo.Abp.AspNetCore.Components.Web.BasicTheme.csproj", "{0FFB354E-4EB8-4945-9142-E3E2E62AA540}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.Server.BasicTheme", "packages\Volo.Abp.AspNetCore.Components.Server.BasicTheme\Volo.Abp.AspNetCore.Components.Server.BasicTheme.csproj", "{8CB12B25-D715-4885-A9B0-6C7AD1E481BD}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Turf.Application", "src\We.Turf.Application\We.Turf.Application.csproj", "{1A94A50E-06DC-43C1-80B5-B662820EC3EB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Turf.EntityFrameworkCore", "src\We.Turf.EntityFrameworkCore\We.Turf.EntityFrameworkCore.csproj", "{C956DD76-69C8-4A9C-83EA-D17DF83340FD}"
@@ -47,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Utilities", "libraries\W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Utilities.Tests", "test\We.Utilities.Tests\We.Utilities.Tests.csproj", "{916A5304-6E92-46C8-96BC-A854AF0ED208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "We.EntitySpecification", "libraries\We.EntitySpecification\We.EntitySpecification.csproj", "{F6E461AF-E367-4FF3-BE8B-0D6E1CAF2BE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.EntitySpecification", "libraries\We.EntitySpecification\We.EntitySpecification.csproj", "{F6E461AF-E367-4FF3-BE8B-0D6E1CAF2BE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +63,14 @@ Global
 		{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FFB354E-4EB8-4945-9142-E3E2E62AA540}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FFB354E-4EB8-4945-9142-E3E2E62AA540}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FFB354E-4EB8-4945-9142-E3E2E62AA540}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FFB354E-4EB8-4945-9142-E3E2E62AA540}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CB12B25-D715-4885-A9B0-6C7AD1E481BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CB12B25-D715-4885-A9B0-6C7AD1E481BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CB12B25-D715-4885-A9B0-6C7AD1E481BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CB12B25-D715-4885-A9B0-6C7AD1E481BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A94A50E-06DC-43C1-80B5-B662820EC3EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1A94A50E-06DC-43C1-80B5-B662820EC3EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A94A50E-06DC-43C1-80B5-B662820EC3EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -137,6 +149,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{554AD327-6DBA-4F8F-96F8-81CE7A0C863F} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{0FFB354E-4EB8-4945-9142-E3E2E62AA540} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{8CB12B25-D715-4885-A9B0-6C7AD1E481BD} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{1A94A50E-06DC-43C1-80B5-B662820EC3EB} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{C956DD76-69C8-4A9C-83EA-D17DF83340FD} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{50B2631D-129C-47B3-A587-029CCD6099BC} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}

@@ -2,15 +2,18 @@
 @page "/{Date}"
 @using System.Runtime.CompilerServices;
 @using System.ComponentModel;
+@using Volo.Abp.AspNetCore.Components.Web.BasicTheme.Themes.Basic;
 @using We.Turf.Entities;
 @using We.Utilities;
 @inherits TurfComponentBase
 @implements IDisposable
 @inject IPmuServiceAppService pmuService;
 
-<Div Style="background-image: linear-gradient(70deg, rgb(1, 120, 93), rgb(1, 85, 77));height:100%">
+<Div >
     
     <p><DateEdit TValue="DateOnly" @bind-Date="CurrentDate"></DateEdit></p>
+    <Button Class="btn-dark" @onclick="()=>Layout.ChangeFluid(!IsFluid)">Fluidify</Button>
+    <p>@(IsFluid)</p>
     @if (_predicteds?.Count() > 0)
     {
 
@@ -83,10 +86,15 @@
                 __date = DateOnlyExtensions.Now;
             }
             CurrentDate = __date;
-            //NotifyPropertyChanged();
 
         }
     }
+    [CascadingParameter]
+    public MainLayout Layout{ get; set; }
+
+    public bool IsFluid => Layout is not null ? Layout.IsFluid : false;
+
+    
 
     internal DateOnly CurrentDate
     {
