@@ -5,9 +5,9 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Turf.Domain", "src\We.Turf.Domain\We.Turf.Domain.csproj", "{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.Web.BasicTheme", "packages\Volo.Abp.AspNetCore.Components.Web.BasicTheme\Volo.Abp.AspNetCore.Components.Web.BasicTheme.csproj", "{0FFB354E-4EB8-4945-9142-E3E2E62AA540}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Bootswatch.Components.Web.BasicTheme", "themes\We.Bootswatch.Components.Web.BasicTheme\We.Bootswatch.Components.Web.BasicTheme.csproj", "{0FFB354E-4EB8-4945-9142-E3E2E62AA540}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.Server.BasicTheme", "packages\Volo.Abp.AspNetCore.Components.Server.BasicTheme\Volo.Abp.AspNetCore.Components.Server.BasicTheme.csproj", "{8CB12B25-D715-4885-A9B0-6C7AD1E481BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Bootswatch.Server.BasicTheme", "themes\We.Bootswatch.Server.BasicTheme\We.Bootswatch.Server.BasicTheme.csproj", "{8CB12B25-D715-4885-A9B0-6C7AD1E481BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Turf.Application", "src\We.Turf.Application\We.Turf.Application.csproj", "{1A94A50E-06DC-43C1-80B5-B662820EC3EB}"
 EndProject

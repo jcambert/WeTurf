@@ -1,0 +1,16 @@
+﻿@using We.Bootswatch.Components.Web.BasicTheme;
+@using We.Bootswatch.Components.Web.BasicTheme.Services;
+<Selector TProvider="ILangProvider" TItem="ILang" OnChange="OnChange"></Selector>
+
+@code {
+
+    private void OnChange(ILangProvider provider, ILang item)
+    {
+        if (item is Lang)
+        {
+            var l = (Lang)item;
+            provider.Apply(item, $"Abp/Languages/Switch?culture={l.CultureName}&uiCulture={l.UiCultureName}");
+
+        }
+    }
+}

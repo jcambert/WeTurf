@@ -1,0 +1,55 @@
+﻿@using Volo.Abp.Ui.LayoutHooks
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Components.LayoutHooks
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Components
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@inherits LayoutComponentBase
+<CascadingValue Value="this">
+    @if (Style.Style == WeMenuStyle.TopSide)
+    {
+        <TopNavbar IsCollapseShown="IsCollapseShown"></TopNavbar>
+    }
+
+
+    <Div Style="display:flex;align-items:stretch;width:100%" Class="layout-container">
+        @if (Style.Style == WeMenuStyle.LeftSide)
+        {
+            <aside class="layout-menu menu-vertical menu bg-menu-theme demo" id="main-navbar">
+
+                <Div Class="brand">
+                    <Branding />
+                </Div>
+                <Div Class="menu-inner py-1 ps">
+                    <ul class="navbar-nav mx-auto">
+                        <NavMenu />
+                    </ul>
+                    <NavToolbar />
+                </Div>
+            </aside>
+        }
+        <Div Class="d-flex flex-column mb-3 flex-nowrap" Style="flex:auto">
+
+
+            @if (Style.Style != WeMenuStyle.TopSide)
+            {
+
+                <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm flex-column flex-md-row mb-4 mr-4 justify-content-end" id="main-navbar" style="min-height: 4rem">
+                    <Div Class="d-flex flex-row-reverse">
+                        <NavToolbar />
+
+                    </Div>
+                </nav>
+            }
+            <div class="@(IsFluid?"container-fluid":"container")">
+                <PageAlert />
+                <LayoutHook Name="@LayoutHooks.Body.First" Layout="@StandardLayouts.Application" />
+                @Body
+                <LayoutHook Name="@LayoutHooks.Body.Last" Layout="@StandardLayouts.Application" />
+                <DynamicLayoutComponent />
+                <UiMessageAlert />
+                <UiNotificationAlert />
+                <UiPageProgress />
+            </div>
+        </Div>
+    </Div>
+
+</CascadingValue>

@@ -1,0 +1,11 @@
+﻿@using We.Bootswatch.Components.Web.BasicTheme;
+<Selector TProvider="IMenuStyleProvider" TItem="IWeMenuStyle" OnChange="OnChange"></Selector>
+
+@code {
+
+    private void OnChange(IMenuStyleProvider provider, IWeMenuStyle item)
+    {
+        provider.Apply(item, $"Abp/Style/Change?style={item.Name}");
+    }
+}
+

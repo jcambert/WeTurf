@@ -1,0 +1,21 @@
+﻿@using Volo.Abp.DependencyInjection;
+@using We.Bootswatch.Components.Web.BasicTheme;
+@using We.Bootswatch.Server.BasicTheme.Services;
+@typeparam TProvider
+@typeparam TItem
+@inject IAbpLazyServiceProvider ServiceProvider;
+@inject NavigationManager NavigationManager
+@if (Others != null && Others.Any())
+{
+    <BarDropdown RightAligned="true">
+        <BarDropdownToggle>
+            @Current.Name
+        </BarDropdownToggle>
+        <BarDropdownMenu>
+            @foreach (var item in Others)
+            {
+                <BarDropdownItem Clicked="() => OnChange?.Invoke(SelectorProvider, item)">@item.Name</BarDropdownItem>
+            }
+        </BarDropdownMenu>
+    </BarDropdown>
+}

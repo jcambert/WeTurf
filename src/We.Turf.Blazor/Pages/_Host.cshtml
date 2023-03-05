@@ -2,9 +2,10 @@
 @namespace We.Turf.Blazor.Pages
 @using System.Globalization
 
-@using Volo.Abp.AspNetCore.Components.Server.BasicTheme.Bundling
-@using Volo.Abp.AspNetCore.Components.Web.BasicTheme.Themes.Basic;
+
 @using Volo.Abp.Localization
+@using We.Bootswatch.Components.Web.BasicTheme.Themes.Basic;
+@using We.Bootswatch.Server.BasicTheme;
 @{
     Layout = null;
     var rtl = CultureHelper.IsRtl ? "rtl" : string.Empty;

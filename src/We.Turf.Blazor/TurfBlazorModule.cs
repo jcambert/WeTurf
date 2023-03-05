@@ -1,6 +1,6 @@
-using System.IO;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -8,43 +8,35 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using We.Turf.Blazor.Menus;
-using We.Turf.EntityFrameworkCore;
-using We.Turf.Localization;
-using We.Turf.MultiTenancy;
 using OpenIddict.Validation.AspNetCore;
+using System;
+using System.IO;
+using System.Text.Json;
 using Volo.Abp;
 using Volo.Abp.Account.Web;
-using Volo.Abp.AspNetCore.Components.Server.BasicTheme;
-using Volo.Abp.AspNetCore.Components.Server.BasicTheme.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic.Bundling;
 using Volo.Abp.AspNetCore.Components.Web.Theming.Routing;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.Localization;
-using Volo.Abp.AspNetCore.Mvc.UI;
-using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Identity.Blazor.Server;
-using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.SettingManagement.Blazor.Server;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.TenantManagement.Blazor.Server;
-using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
-using MediatR;
-using System;
-using Volo.Abp.Json;
-using System.Text.Json;
+using We.Bootswatch.Components.Web.BasicTheme;
+using We.Bootswatch.Server.BasicTheme;
 using We.Turf.Blazor.Bundling;
+using We.Turf.Blazor.Menus;
+using We.Turf.EntityFrameworkCore;
+using We.Turf.Localization;
+using We.Turf.MultiTenancy;
 
 namespace We.Turf.Blazor;
 
@@ -56,7 +48,8 @@ namespace We.Turf.Blazor;
     typeof(AbpSwashbuckleModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpAccountWebOpenIddictModule),
-    typeof(AbpAspNetCoreComponentsServerBasicThemeModule),
+    typeof(WeAspNetCoreComponentsServerBasicThemeModule), 
+    typeof(WeAspNetCoreComponentsWebBasicThemeModule),
     typeof(AbpAspNetCoreMvcUiBasicThemeModule),
     typeof(AbpIdentityBlazorServerModule),
     typeof(AbpTenantManagementBlazorServerModule),
@@ -204,6 +197,10 @@ public class TurfBlazorModule : AbpModule
         {
             options.MenuContributors.Add(new TurfMenuContributor());
         });
+       /* Configure<WeMenuStyleOptions>(options =>
+        {
+            options.DefaultStyle = WeMenuStyle.LeftSide;
+        });*/
     }
 
     private void ConfigureRouter(ServiceConfigurationContext context)

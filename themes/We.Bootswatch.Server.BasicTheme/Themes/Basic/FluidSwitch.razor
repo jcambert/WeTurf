@@ -1,0 +1,15 @@
+﻿@using We.Bootswatch.Components.Web.BasicTheme.Themes.Basic;
+<Switch TValue="bool" Checked="@IsFluid" CheckedChanged="()=>MainLayout.ChangeFluid(!IsFluid)">@GetText()</Switch>
+
+@code{
+    
+    public bool IsFluid => MainLayout.IsFluid;
+
+    [Parameter]
+    public bool ShowText { get; set; }
+
+    [CascadingParameter]
+    public MainLayout MainLayout{ get; set; }
+
+    protected string GetText() =>ShowText?( IsFluid ? "Fluid" : "Non Fluid"):(string.Empty);
+}

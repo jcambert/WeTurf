@@ -1,0 +1,21 @@
+﻿body {
+}
+
+.left-side-menu  .menu-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.left-side-menu  .branding {
+    height: 64px;
+    margin-top: 12px;
+    background-color:red;
+}
+.py-1 {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}

@@ -1,0 +1,9 @@
+{
+  "culture": "fr",
+  "texts": {
+    "Menu:Themes": "Themes",
+    "Menu:Themes:Darkly": "Darkly",
+    "Menu:Themes:Flatly": "Flatly",
+    "Menu:Themes:Vapor": "Vapor"
+  }
+}

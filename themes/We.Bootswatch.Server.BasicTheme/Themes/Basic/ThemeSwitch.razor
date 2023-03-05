@@ -1,0 +1,10 @@
+﻿@using We.Bootswatch.Components.Web.BasicTheme;
+<Selector TProvider="IThemeProvider" TItem="ITheme" OnChange="OnChange"></Selector>
+
+@code{
+
+    private void OnChange(IThemeProvider provider,ITheme item)
+    {
+        provider.Apply(item, $"Abp/Theme/Change?theme={item.Name}");
+    }
+}
