@@ -80,7 +80,7 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
 
 
     public  IReadOnlyList<T> GetOthers(T item)
-     => Values.Where(t => t.Name != item.Name).OrderBy(t => t.Name).DistinctBy(t => t.Name).ToImmutableList();
+     => Values?.Where(t => t.Name != item.Name).OrderBy(t => t.Name).DistinctBy(t => t.Name).ToImmutableList() ??new List<T>().ToImmutableList();
 
     public virtual void SetCurrent(T item)
     {

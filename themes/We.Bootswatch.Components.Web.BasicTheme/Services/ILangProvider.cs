@@ -65,7 +65,7 @@ public class LangProvider : SelectorProvider<ILang>, ILangProvider
     }
 
     protected override ILang Default { get; }
-    protected override List<ILang> Values => _values.ToList<ILang>();
+    protected override List<ILang> Values => _values?.ToList<ILang>();
     protected override string CookieName { get; } = string.Empty;
     
 
