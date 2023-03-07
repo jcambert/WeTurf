@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Auditing;
 using We.Bootswatch.Components.Web.BasicTheme;
+using We.Bootswatch.Components.Web.BasicTheme.Commands;
+using We.Result;
 
 namespace We.Bootswatch.Server.BasicTheme;
 
@@ -13,16 +17,18 @@ namespace We.Bootswatch.Server.BasicTheme;
 [ApiExplorerSettings(IgnoreApi = true)]
 public class ThemeController : AbpController
 {
-    private readonly IThemeProvider _themeProvider;
+    private readonly IMediator _mediator;
 
-    public ThemeController(IThemeProvider themeProvider)
+    public ThemeController(IMediator mediator)
     {
-        this._themeProvider=themeProvider;
+        this._mediator=mediator;
     }
     [HttpGet]
-    public virtual IActionResult Change(string theme, string returnUrl = "")
+    public virtual async Task<IActionResult> Change(string theme, string returnUrl = "")
     {
-        _themeProvider.SetCurrent(theme);
+        var result=await _mediator.Send(new SetThemeCommand(theme));
+        if(result is IFailure)
+            return this.BadRequest(result);
         return !string.IsNullOrWhiteSpace(returnUrl) ? Redirect(GetRedirectUrl(returnUrl)) : Redirect("~/");
     }
 }

@@ -17,9 +17,9 @@ public interface ISelectorProvider<T>
     T GetByName(string name);
     T GetCurrent();
 
-    void SetCurrent(T item);
+    //void SetCurrent(T item);
 
-    void SetCurrent(string name);
+    //void SetCurrent(string name);
 
     void Apply(T item, string uriPath);
 }
@@ -82,7 +82,7 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
     public  IReadOnlyList<T> GetOthers(T item)
      => Values?.Where(t => t.Name != item.Name).OrderBy(t => t.Name).DistinctBy(t => t.Name).ToImmutableList() ??new List<T>().ToImmutableList();
 
-    public virtual void SetCurrent(T item)
+    /*public virtual void SetCurrent(T item)
     {
         var options = new CookieOptions()
         {
@@ -92,5 +92,5 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
         httpContext.Response.Cookies.Append(CookieName, item.Name, options);
     }
     public virtual void SetCurrent(string name)
-        => SetCurrent(GetByName(name));
+        => SetCurrent(GetByName(name));*/
 }

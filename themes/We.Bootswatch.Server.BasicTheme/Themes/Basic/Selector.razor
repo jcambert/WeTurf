@@ -1,10 +1,12 @@
-﻿@using Volo.Abp.DependencyInjection;
+﻿@using MediatR;
+@using Volo.Abp.DependencyInjection;
 @using We.Bootswatch.Components.Web.BasicTheme;
 @using We.Bootswatch.Server.BasicTheme.Services;
 @typeparam TProvider
 @typeparam TItem
 @inject IAbpLazyServiceProvider ServiceProvider;
 @inject NavigationManager NavigationManager
+@inject IMediator Mediator
 @if (Others != null && Others.Any())
 {
     <BarDropdown RightAligned="true">
@@ -14,7 +16,7 @@
         <BarDropdownMenu>
             @foreach (var item in Others)
             {
-                <BarDropdownItem Clicked="() => OnChange?.Invoke(SelectorProvider, item)">@item.Name</BarDropdownItem>
+                <BarDropdownItem Clicked="() => OnChange(Mediator, SelectorProvider, item)">@item.Name</BarDropdownItem>
             }
         </BarDropdownMenu>
     </BarDropdown>

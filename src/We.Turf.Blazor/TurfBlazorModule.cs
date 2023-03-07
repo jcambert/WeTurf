@@ -98,8 +98,16 @@ public class TurfBlazorModule : AbpModule
         ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureMenu(context);
+        ConfigureMediator(context);
+    }
 
-        context.Services.AddMediatR(typeof(TurfApplicationModule).Assembly);
+    private void ConfigureMediator(ServiceConfigurationContext context)
+    {
+        context.Services.AddMediatR(
+            typeof(TurfApplicationModule).Assembly,
+            typeof(WeAspNetCoreComponentsWebBasicThemeModule).Assembly
+            );
+        
     }
 
     private void ConfigureJsonConverters()
@@ -166,9 +174,11 @@ public class TurfBlazorModule : AbpModule
 
     private void ConfigureSwaggerServices(IServiceCollection services)
     {
+        
         services.AddAbpSwaggerGen(
             options =>
             {
+                
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Turf API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
@@ -177,8 +187,6 @@ public class TurfBlazorModule : AbpModule
                 {
                     Type = "string",
                     Format = "date",
-                    
-
                 });
             }
         );

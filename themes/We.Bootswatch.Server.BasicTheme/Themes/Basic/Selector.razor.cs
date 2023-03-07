@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using MediatR;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using We.Bootswatch.Components.Web.BasicTheme;
 
 namespace We.Bootswatch.Server.BasicTheme.Themes.Basic;
@@ -14,7 +16,7 @@ public  partial class Selector<TProvider, TItem>:ComponentBase
 
     protected TProvider SelectorProvider => ServiceProvider.LazyGetRequiredService<TProvider>();
     [Parameter]
-    public Action<TProvider, TItem> OnChange { get; set; }
+    public Func<IMediator, TProvider, TItem,Task> OnChange { get; set; }
     
 
 
