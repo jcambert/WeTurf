@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Blazorise;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Auditing;
 using We.Bootswatch.Components.Web.BasicTheme;
+using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Bootswatch.Server.BasicTheme.Services;
+using We.Result;
 
 namespace We.Bootswatch.Server.BasicTheme;
 
@@ -14,17 +19,20 @@ namespace We.Bootswatch.Server.BasicTheme;
 [ApiExplorerSettings(IgnoreApi = true)]
 public class MenuStyleController : AbpController
 {
-    private readonly IMenuStyleProvider _styleProvider;
+    private readonly IMediator _mediator;
 
-    public MenuStyleController(IMenuStyleProvider styleProvider)
+    public MenuStyleController(IMediator mediator)
     {
-        this._styleProvider = styleProvider;
+        this._mediator = mediator;
     }
     [HttpGet]
-    public virtual IActionResult Change(string style, string returnUrl = "")
+    public virtual async Task<IActionResult> Change(string style, string returnUrl = "")
     {
-        
-        _styleProvider.SetCurrent(style);
+        var result = await _mediator.Send(new SetMenuStyleCommand(style));
+        if (result is IFailure)
+            return this.BadRequest(result);
         return !string.IsNullOrWhiteSpace(returnUrl) ? Redirect(GetRedirectUrl(returnUrl)) : Redirect("~/");
+
+      
     }
 }

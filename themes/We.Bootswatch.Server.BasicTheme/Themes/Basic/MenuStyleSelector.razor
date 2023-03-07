@@ -1,11 +1,14 @@
-﻿@using We.Bootswatch.Components.Web.BasicTheme;
+﻿@using MediatR;
+@using We.Bootswatch.Components.Web.BasicTheme;
+@using We.Bootswatch.Components.Web.BasicTheme.Commands;
 <Selector TProvider="IMenuStyleProvider" TItem="IWeMenuStyle" OnChange="OnChange"></Selector>
 
 @code {
 
-    private void OnChange(IMenuStyleProvider provider, IWeMenuStyle item)
+    private async Task OnChange(IMediator mediator, IMenuStyleProvider provider, IWeMenuStyle item)
     {
-        provider.Apply(item, $"Abp/Style/Change?style={item.Name}");
+        var res1 = await mediator.Send(new ApplyThemeCommand(item.Name));
+        //provider.Apply(item, $"Abp/Style/Change?style={item.Name}");
     }
 }
 

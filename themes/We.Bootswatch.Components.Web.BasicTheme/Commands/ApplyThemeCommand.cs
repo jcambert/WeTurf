@@ -3,21 +3,19 @@ using Volo.Abp.DependencyInjection;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
-public interface ISetThemeCommand : ICommand<SetThemeCommandResult>
+public interface IApplyThemeCommand : ICommand<ApplyThemeResult>
 {
     string Name { get; init; }
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(ISetThemeCommand))]
-public class SetThemeCommand: ISetThemeCommand
+[ExposeServices(typeof(IApplyThemeCommand))]
+public class ApplyThemeCommand : IApplyThemeCommand
 {
-    public SetThemeCommand(string name)
+    public ApplyThemeCommand(string name)
     {
-        Name = name;
+        this.Name = name;
     }
-
     public string Name { get; init; }
 }
-
-public sealed record SetThemeCommandResult();
+public sealed record ApplyThemeResult();

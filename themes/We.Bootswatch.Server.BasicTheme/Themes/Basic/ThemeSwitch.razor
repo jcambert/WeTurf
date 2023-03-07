@@ -1,14 +1,17 @@
 ﻿@using MediatR;
 @using We.Bootswatch.Components.Web.BasicTheme;
 @using We.Bootswatch.Components.Web.BasicTheme.Commands;
+@using We.Result;
 <Selector TProvider="IThemeProvider" TItem="ITheme" OnChange="OnChange"></Selector>
 
 @code {
 
     private async Task OnChange(IMediator mediator, IThemeProvider provider, ITheme item)
     {
-        await mediator.Send(new SetThemeCommand(item.Name));
-        provider.Apply(item, $"Abp/Theme/Change?theme={item.Name}");
+
+        var res1 = await mediator.Send(new ApplyThemeCommand(item.Name));
+
+        //provider.Apply(item, $"Abp/Theme/Change?theme={item.Name}");
 
     }
 }

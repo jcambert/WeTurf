@@ -3,21 +3,22 @@ using Volo.Abp.DependencyInjection;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
-public interface ISetThemeCommand : ICommand<SetThemeCommandResult>
+
+
+
+public interface IApplyMenuStyleCommand : ICommand<ApplyMenuStyleResult>
 {
     string Name { get; init; }
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(ISetThemeCommand))]
-public class SetThemeCommand: ISetThemeCommand
+[ExposeServices(typeof(IApplyMenuStyleCommand))]
+public class ApplyMenuStyleCommand : IApplyMenuStyleCommand
 {
-    public SetThemeCommand(string name)
+    public ApplyMenuStyleCommand(string name)
     {
-        Name = name;
+        this.Name = name;
     }
-
     public string Name { get; init; }
 }
-
-public sealed record SetThemeCommandResult();
+public sealed record ApplyMenuStyleResult();
