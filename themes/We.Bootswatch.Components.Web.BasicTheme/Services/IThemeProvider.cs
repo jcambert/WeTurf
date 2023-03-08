@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Xml.Linq;
 using Volo.Abp.DependencyInjection;
 
 namespace We.Bootswatch.Components.Web.BasicTheme;
@@ -93,13 +95,12 @@ public interface IThemeProvider:ISelectorProvider<ITheme>
 public class ThemeProvider : SelectorProvider<ITheme>, IThemeProvider
 {
 
-
+    
     public ThemeProvider(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context, NavigationManager navigationManager) : base(serviceProvider, context,navigationManager)
     {
-
     }
 
-    protected override ITheme Default => Theme.Default;
+    protected override ITheme Default => Values.FirstOrDefault(t => t.Name ==  _options.Value.Theme) ?? Theme.Default;
     protected override List<ITheme> Values => Theme.Themes;
     protected override string CookieName => BootswatchConsts.ThemeCookie;
 }

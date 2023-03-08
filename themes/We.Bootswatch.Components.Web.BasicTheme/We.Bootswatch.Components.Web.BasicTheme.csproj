@@ -15,4 +15,8 @@
     <ProjectReference Include="..\..\libraries\We.Result\We.Result.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\libs\" />
+  </ItemGroup>
+
 </Project>

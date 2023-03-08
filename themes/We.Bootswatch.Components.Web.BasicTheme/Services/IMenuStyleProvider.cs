@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Volo.Abp.DependencyInjection;
 
 namespace We.Bootswatch.Components.Web.BasicTheme;
@@ -67,7 +68,7 @@ public class MenuStyleProvider : SelectorProvider<IWeMenuStyle>, IMenuStyleProvi
     {
     }
 
-    protected override IWeMenuStyle Default => MenuStyle.Default;
+    protected override IWeMenuStyle Default => Values.FirstOrDefault(t => t.Name == _options.Value.MenuStyle) ?? MenuStyle.Default;
     protected override List<IWeMenuStyle> Values => MenuStyle.Styles;
     protected override string CookieName =>BootswatchConsts.MenuStyleCookie;
 }

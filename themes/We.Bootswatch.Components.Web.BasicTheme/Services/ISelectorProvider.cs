@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -42,6 +43,7 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
         await OnInitializedAsync();
     }
 
+    protected IOptions<LayoutOptions> _options => ServiceProvider.LazyGetRequiredService<IOptions<LayoutOptions>>();
     protected IHttpContextAccessor Context { get; }
     protected NavigationManager NavigationManager { get; }
     protected abstract T Default { get; }
