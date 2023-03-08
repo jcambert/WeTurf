@@ -103,10 +103,13 @@ public class TurfBlazorModule : AbpModule
 
     private void ConfigureMediator(ServiceConfigurationContext context)
     {
-        context.Services.AddMediatR(
-            typeof(TurfApplicationModule).Assembly,
-            typeof(WeAspNetCoreComponentsWebBasicThemeModule).Assembly
+        context.Services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblies(
+                typeof(TurfApplicationModule).Assembly,
+                typeof(WeAspNetCoreComponentsWebBasicThemeModule).Assembly
             );
+        });
         
     }
 
