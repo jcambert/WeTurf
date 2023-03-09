@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class SetMenuStyleHandler : BaseHandler<ISetMenuStyleCommand, SetMenuStyleResult>
+public class SetMenuStyleHandler : BaseHandler<SetMenuStyleCommand, SetMenuStyleResult>
 {
     private IHttpContextAccessor Context { get; }
     private string CookieName => BootswatchConsts.MenuStyleCookie;
@@ -16,7 +16,7 @@ public class SetMenuStyleHandler : BaseHandler<ISetMenuStyleCommand, SetMenuStyl
     {
         this.Context = context;
     }
-    public override Task<Result<SetMenuStyleResult>> Handle(ISetMenuStyleCommand request, CancellationToken cancellationToken)
+    public override Task<Result<SetMenuStyleResult>> Handle(SetMenuStyleCommand request, CancellationToken cancellationToken)
     {
         try
         {

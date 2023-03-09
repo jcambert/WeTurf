@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Volo.Abp.DependencyInjection;
 using We.Bootswatch.Components.Web.BasicTheme;
 
 namespace We.Bootswatch.Server.BasicTheme.Themes.Basic;
@@ -16,7 +17,7 @@ public  partial class Selector<TProvider, TItem>:ComponentBase
 
     protected TProvider SelectorProvider => ServiceProvider.LazyGetRequiredService<TProvider>();
     [Parameter]
-    public Func<IMediator, TProvider, TItem,Task> OnChange { get; set; }
+    public Func<IAbpLazyServiceProvider,IMediator, TProvider, TItem,Task> OnChange { get; set; }
     
 
 

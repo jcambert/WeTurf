@@ -1,4 +1,5 @@
 ﻿@using MediatR;
+@using Volo.Abp.DependencyInjection;
 @using We.Bootswatch.Components.Web.BasicTheme;
 @using We.Bootswatch.Components.Web.BasicTheme.Commands;
 @using We.Result;
@@ -6,10 +7,11 @@
 
 @code {
 
-    private async Task OnChange(IMediator mediator, IThemeProvider provider, ITheme item)
+    private async Task OnChange(IAbpLazyServiceProvider service,IMediator mediator, IThemeProvider provider, ITheme item)
     {
-
-        var res1 = await mediator.Send(new ApplyThemeCommand(item.Name));
+        IApplyThemeCommand cmd = service.LazyGetService<IApplyThemeCommand>(x => new ApplyThemeCommand(item.Name));
+        
+        var res1 = await mediator.Send(cmd);
 
         //provider.Apply(item, $"Abp/Theme/Change?theme={item.Name}");
 

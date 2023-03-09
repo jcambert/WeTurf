@@ -1,5 +1,4 @@
 ﻿using Localization.Resources.AbpUi;
-using We.Turf.Localization;
 using Volo.Abp.Account;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -8,8 +7,7 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement.HttpApi;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
-using System.Text.Json;
-using We.Turf.Converters;
+using We.Turf.Localization;
 
 namespace We.Turf;
 
@@ -27,7 +25,7 @@ public class TurfHttpApiModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         ConfigureLocalization();
-        ConfigureJsonConverters();
+        //ConfigureJsonConverters();
     }
 
     private void ConfigureLocalization()

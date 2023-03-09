@@ -7,6 +7,7 @@
 @inject IAbpLazyServiceProvider ServiceProvider;
 @inject NavigationManager NavigationManager
 @inject IMediator Mediator
+@inject IAbpLazyServiceProvider Service
 @if (Others != null && Others.Any())
 {
     <BarDropdown RightAligned="true">
@@ -16,7 +17,7 @@
         <BarDropdownMenu>
             @foreach (var item in Others)
             {
-                <BarDropdownItem Clicked="() => OnChange(Mediator, SelectorProvider, item)">@item.Name</BarDropdownItem>
+                <BarDropdownItem Clicked="() => OnChange(Service,Mediator, SelectorProvider, item)">@item.Name</BarDropdownItem>
             }
         </BarDropdownMenu>
     </BarDropdown>

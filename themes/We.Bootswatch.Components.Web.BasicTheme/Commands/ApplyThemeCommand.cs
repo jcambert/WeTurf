@@ -9,7 +9,7 @@ public interface IApplyThemeCommand : ICommand<ApplyThemeResult>
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(IApplyThemeCommand))]
+[ExposeServices(typeof(IApplyThemeCommand),IncludeSelf =true)]
 public class ApplyThemeCommand : IApplyThemeCommand
 {
     public ApplyThemeCommand(string name)

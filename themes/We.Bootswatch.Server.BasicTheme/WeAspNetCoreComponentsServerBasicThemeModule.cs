@@ -52,7 +52,7 @@ public class WeAspNetCoreComponentsServerBasicThemeModule : AbpModule
                 .AddVirtualJson("/Localization/Resources/Theme");
         });
 
-        context.Services.AddScoped<IThemeProvider,ThemeProvider>();
+        //context.Services.AddScoped<IThemeProvider,ThemeProvider>();
         
     }
 }

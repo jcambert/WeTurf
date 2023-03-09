@@ -23,8 +23,8 @@ public class ThemeController : AbpController
     {
         this._mediator=mediator;
     }
-    [HttpGet]
-    public virtual async Task<IActionResult> Change(string theme, string returnUrl = "")
+    [HttpGet("Change")]
+    public virtual async Task<IActionResult> Change([FromQuery] string theme,[FromQuery] string returnUrl = "")
     {
         var result=await _mediator.Send(new SetThemeCommand(theme));
         if(result is IFailure)

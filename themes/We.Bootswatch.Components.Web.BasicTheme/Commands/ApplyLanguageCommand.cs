@@ -11,7 +11,7 @@ public interface IApplyLanguageCommand : ICommand<ApplyLanguageResult>
      string UiCultureName { get; init; }
 }
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(IApplyLanguageCommand))]
+[ExposeServices(typeof(IApplyLanguageCommand),IncludeSelf =true)]
 public class ApplyLanguageCommand : IApplyLanguageCommand
 {
     public ApplyLanguageCommand(string cultureName, string uiCultureName)

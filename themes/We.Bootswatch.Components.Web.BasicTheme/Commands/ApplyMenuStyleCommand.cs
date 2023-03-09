@@ -12,7 +12,7 @@ public interface IApplyMenuStyleCommand : ICommand<ApplyMenuStyleResult>
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(IApplyMenuStyleCommand))]
+[ExposeServices(typeof(IApplyMenuStyleCommand),IncludeSelf =true)]
 public class ApplyMenuStyleCommand : IApplyMenuStyleCommand
 {
     public ApplyMenuStyleCommand(string name)

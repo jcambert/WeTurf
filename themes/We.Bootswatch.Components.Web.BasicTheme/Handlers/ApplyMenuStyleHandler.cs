@@ -8,7 +8,7 @@ using We.Result;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class ApplyMenuStyleHandler : BaseHandler<IApplyMenuStyleCommand, ApplyMenuStyleResult>
+public class ApplyMenuStyleHandler : BaseHandler<ApplyMenuStyleCommand, ApplyMenuStyleResult>
 {
     public ApplyMenuStyleHandler(NavigationManager navigationManager)
     {
@@ -16,13 +16,13 @@ public class ApplyMenuStyleHandler : BaseHandler<IApplyMenuStyleCommand, ApplyMe
     }
 
     private NavigationManager NavigationManager { get; }
-    public override Task<Result<ApplyMenuStyleResult>> Handle(IApplyMenuStyleCommand request, CancellationToken cancellationToken)
+    public override Task<Result<ApplyMenuStyleResult>> Handle(ApplyMenuStyleCommand request, CancellationToken cancellationToken)
     {
         try
         {
             string relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/').EnsureStartsWith('~');
             string name = request.Name;//DOT NOT CHANGE THIS
-            var uri = string.Format(BootswatchConsts.APPLY_MENUSTYLE_URL + BootswatchConsts.APPLY_REDIRECT_URL, relativeUrl, name);
+            var uri = string.Format(BootswatchConsts.APPLY_MENUSTYLE_URL , relativeUrl, name);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
             return Task.FromResult(Result<ApplyMenuStyleResult>.Sucess());

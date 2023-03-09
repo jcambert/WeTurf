@@ -10,7 +10,7 @@ public interface ISetMenuStyleCommand : ICommand<SetMenuStyleResult>
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(ISetMenuStyleCommand))]
+[ExposeServices(typeof(ISetMenuStyleCommand),IncludeSelf =true)]
 public class SetMenuStyleCommand : ISetMenuStyleCommand
 {
     public SetMenuStyleCommand(string style)

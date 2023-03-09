@@ -10,7 +10,7 @@ using We.Result;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-internal class ApplyThemeHandler : BaseHandler<IApplyThemeCommand, ApplyThemeResult>
+internal class ApplyThemeHandler : BaseHandler<ApplyThemeCommand, ApplyThemeResult>
 {
     public ApplyThemeHandler(NavigationManager navigationManager)
     {
@@ -19,13 +19,13 @@ internal class ApplyThemeHandler : BaseHandler<IApplyThemeCommand, ApplyThemeRes
 
     private NavigationManager NavigationManager { get; }
 
-    public override Task<Result<ApplyThemeResult>> Handle(IApplyThemeCommand request, CancellationToken cancellationToken)
+    public override Task<Result<ApplyThemeResult>> Handle(ApplyThemeCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            string relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/').EnsureStartsWith('~');
+            string relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/');//.EnsureStartsWith('~');
             string name = request.Name;//DOT NOT CHANGE THIS
-            var uri = string.Format(BootswatchConsts.APPLY_THEME_URL + BootswatchConsts.APPLY_REDIRECT_URL, relativeUrl, name);
+            var uri = string.Format(BootswatchConsts.APPLY_THEME_URL, relativeUrl, name);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
             return Task.FromResult(Result<ApplyThemeResult>.Sucess());

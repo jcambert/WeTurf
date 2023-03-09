@@ -17,17 +17,20 @@ public class WeAspNetCoreComponentsWebBasicThemeModule : AbpModule
     {
         base.ConfigureServices(context);
         var configuration = context.Services.GetConfiguration();
-
-        ConfigureOptions(context);
+        
+        
         context.Services.AddScoped<IMenuStyleProvider, MenuStyleProvider>();
         context.Services.AddScoped<IThemeProvider, ThemeProvider>();
         context.Services.AddScoped<ILangProvider,LangProvider>();
         //context.Services.AddTransient<IWeMenuStyleManager, WeMenuStyleManager>();
         //context.Services.AddTransient<WeMenuStyleOptions>();
     }
-
-    private void ConfigureOptions( ServiceConfigurationContext context)
+    public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.ConfigureOptions<LayoutOptions>();
+        Configure<LayoutOptions>(options =>
+        {
+           
+        });
     }
+        
 }

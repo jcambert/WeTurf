@@ -10,7 +10,7 @@ using We.Result;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class ApplyLanguageHandler : BaseHandler<IApplyLanguageCommand, ApplyLanguageResult>
+public class ApplyLanguageHandler : BaseHandler<ApplyLanguageCommand, ApplyLanguageResult>
 {
     public ApplyLanguageHandler(NavigationManager navigationManager)
     {
@@ -18,14 +18,14 @@ public class ApplyLanguageHandler : BaseHandler<IApplyLanguageCommand, ApplyLang
     }
 
     private NavigationManager NavigationManager { get; }
-    public override Task<Result<ApplyLanguageResult>> Handle(IApplyLanguageCommand request, CancellationToken cancellationToken)
+    public override Task<Result<ApplyLanguageResult>> Handle(ApplyLanguageCommand request, CancellationToken cancellationToken)
     {
         try
         {
             string relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/').EnsureStartsWith('~');
             string cultureName = request.CultureName;//DOT NOT CHANGE THIS
             string uiCultureName = request.UiCultureName;//DOT NOT CHANGE THIS
-            var uri = string.Format(BootswatchConsts.APPLY_LANGUAGE_URL + BootswatchConsts.APPLY_REDIRECT_URL, relativeUrl, cultureName,uiCultureName);
+            var uri = string.Format(BootswatchConsts.APPLY_LANGUAGE_URL , relativeUrl, cultureName,uiCultureName);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
             return Task.FromResult(Result<ApplyLanguageResult>.Sucess());

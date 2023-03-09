@@ -10,8 +10,8 @@ internal class BootswatchConsts
 
     //public static IReadOnlyList<string> SupportedThemes = new List<string>() { "Darkly", "Cerulean", "Litera", "Materia","Pulse","Simplex","Solar","United","Zephyr","Cosmo" }.Order().ToImmutableList();
 
-    internal const string APPLY_REDIRECT_URL = $$"""&returnUrl={relativeUrl}""";
-    internal const string APPLY_THEME_URL = $$"""Abp/Theme/Change?theme={name}""";
-    internal const string APPLY_MENUSTYLE_URL= $$"""Abp/Style/Change?style={name}""";
-    internal const string APPLY_LANGUAGE_URL = $$"""Abp/Languages/Switch?culture={cultureName}&uiCulture={uiCultureName}""";
+    internal const string APPLY_REDIRECT_URL = $$"""&returnUrl={0}""";
+    internal const string APPLY_THEME_URL = $$"""Abp/Theme/Change?returnUrl={0}&theme={1}""";
+    internal const string APPLY_MENUSTYLE_URL= $$"""Abp/Style/Change?returnUrl={0}&style={1}""";
+    internal const string APPLY_LANGUAGE_URL = $$"""Abp/Languages/Switch?returnUrl={0}&culture={1}&uiCulture={2}""";
 }

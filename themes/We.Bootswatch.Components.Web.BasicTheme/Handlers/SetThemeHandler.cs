@@ -8,7 +8,7 @@ using We.Result;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class SetThemeHandler : BaseHandler<ISetThemeCommand, SetThemeCommandResult>
+public class SetThemeHandler : BaseHandler<SetThemeCommand, SetThemeCommandResult>
 {
     private IHttpContextAccessor Context { get; }
     private string CookieName => BootswatchConsts.ThemeCookie;
@@ -18,7 +18,7 @@ public class SetThemeHandler : BaseHandler<ISetThemeCommand, SetThemeCommandResu
     }
 
 
-    public override Task<Result<SetThemeCommandResult>> Handle(ISetThemeCommand request, CancellationToken cancellationToken)
+    public override Task<Result<SetThemeCommandResult>> Handle(SetThemeCommand request, CancellationToken cancellationToken)
     {
         try
         {

@@ -1,4 +1,5 @@
 ﻿@using MediatR;
+@using Volo.Abp.DependencyInjection;
 @using We.Bootswatch.Components.Web.BasicTheme;
 @using We.Bootswatch.Components.Web.BasicTheme.Commands;
 @using We.Bootswatch.Components.Web.BasicTheme.Services;
@@ -6,7 +7,7 @@
 
 @code {
 
-    private async Task OnChange(IMediator mediator, ILangProvider provider, ILang item)
+    private async Task OnChange(IAbpLazyServiceProvider service, IMediator mediator, ILangProvider provider, ILang item)
     {
         if (item is Lang)
         {
