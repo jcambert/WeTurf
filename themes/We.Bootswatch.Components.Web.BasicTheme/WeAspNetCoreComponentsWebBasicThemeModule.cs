@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AspNetCore.Components.Web.Theming;
 using Volo.Abp.Modularity;
 using We.Bootswatch.Components.Web.BasicTheme.Services;
@@ -22,6 +19,7 @@ public class WeAspNetCoreComponentsWebBasicThemeModule : AbpModule
         context.Services.AddScoped<IMenuStyleProvider, MenuStyleProvider>();
         context.Services.AddScoped<IThemeProvider, ThemeProvider>();
         context.Services.AddScoped<ILangProvider,LangProvider>();
+        context.Services.AddScoped<IFluidProvider, FluidProvider>();
         //context.Services.AddTransient<IWeMenuStyleManager, WeMenuStyleManager>();
         //context.Services.AddTransient<WeMenuStyleOptions>();
     }

@@ -11,12 +11,12 @@ public class BasicThemeToolbarContributor : IToolbarContributor
         if (context.Toolbar.Name == StandardToolbars.Main)
         {
             //context.Toolbar.Items.Add(new ToolbarItem(typeof(LanguageSwitch)));
-            //context.Toolbar.Items.Add(new ToolbarItem(typeof(LoginDisplay)));
+            context.Toolbar.Items.Add(new ToolbarItem(typeof(LoginDisplay)));
 
             context.Toolbar.Items.Add(new ToolbarItem(typeof(LangSwitch)));
             context.Toolbar.Items.Add(new ToolbarItem(typeof(ThemeSwitch)));
-            //context.Toolbar.Items.Add(new ToolbarItem(typeof(FluidSwitch)));
             context.Toolbar.Items.Add(new ToolbarItem(typeof(MenuStyleSelector)));
+            context.Toolbar.Items.Add(new ToolbarItem(typeof(FluidSwitch)));
         }
 
         return Task.CompletedTask;

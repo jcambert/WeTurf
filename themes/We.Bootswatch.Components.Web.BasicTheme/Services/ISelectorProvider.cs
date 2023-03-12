@@ -18,6 +18,7 @@ public interface ISelectorProvider<T>
     T GetByName(string name);
     T GetCurrent();
 
+    T GetDefault();
     //void SetCurrent(T item);
 
     //void SetCurrent(string name);
@@ -84,6 +85,7 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
     public  IReadOnlyList<T> GetOthers(T item)
      => Values?.Where(t => t.Name != item.Name).OrderBy(t => t.Name).DistinctBy(t => t.Name).ToImmutableList() ??new List<T>().ToImmutableList();
 
+    public T GetDefault() => Default;
     /*public virtual void SetCurrent(T item)
     {
         var options = new CookieOptions()

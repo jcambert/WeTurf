@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
-using We.Result;
+using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
@@ -25,13 +25,13 @@ public class ApplyMenuStyleHandler : BaseHandler<ApplyMenuStyleCommand, ApplyMen
             var uri = string.Format(BootswatchConsts.APPLY_MENUSTYLE_URL , relativeUrl, name);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Task.FromResult(Result<ApplyMenuStyleResult>.Sucess());
+            return Task.FromResult(Result.Sucess<ApplyMenuStyleResult>());
         }
         catch (Exception ex)
         {
             List<Error> errors = new List<Error>();
             errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result<ApplyMenuStyleResult>.Failure(new(), errors));
+            return Task.FromResult(Result.Failure<ApplyMenuStyleResult>( errors.ToArray()));
         }
     }
 }

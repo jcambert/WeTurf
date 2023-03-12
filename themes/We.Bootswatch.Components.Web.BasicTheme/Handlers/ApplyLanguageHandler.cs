@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
-using We.Result;
+using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
@@ -25,16 +23,16 @@ public class ApplyLanguageHandler : BaseHandler<ApplyLanguageCommand, ApplyLangu
             string relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/').EnsureStartsWith('~');
             string cultureName = request.CultureName;//DOT NOT CHANGE THIS
             string uiCultureName = request.UiCultureName;//DOT NOT CHANGE THIS
-            var uri = string.Format(BootswatchConsts.APPLY_LANGUAGE_URL , relativeUrl, cultureName,uiCultureName);
+            var uri = string.Format(BootswatchConsts.APPLY_LANGUAGE_URL, relativeUrl, cultureName, uiCultureName);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Task.FromResult(Result<ApplyLanguageResult>.Sucess());
+            return Task.FromResult(Result.Sucess<ApplyLanguageResult>());
         }
         catch (Exception ex)
         {
             List<Error> errors = new List<Error>();
             errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result<ApplyLanguageResult>.Failure(new(), errors));
+            return Task.FromResult(Result.Failure<ApplyLanguageResult>( errors.ToArray()));
         }
     }
 }

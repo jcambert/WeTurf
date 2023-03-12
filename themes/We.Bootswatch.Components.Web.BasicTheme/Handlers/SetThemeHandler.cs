@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
-using We.Result;
+using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
@@ -28,14 +28,14 @@ public class SetThemeHandler : BaseHandler<SetThemeCommand, SetThemeCommandResul
             };
             var httpContext = Context.HttpContext;
             httpContext.Response.Cookies.Append(CookieName, request.Name, options);
-            return Task.FromResult(Result<SetThemeCommandResult>.Sucess());
+            return Task.FromResult(Result.Sucess<SetThemeCommandResult>());
 
         }
         catch (Exception ex)
         {
             List<Error> errors = new List<Error>();
             errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result<SetThemeCommandResult>.Failure(new(), errors));
+            return Task.FromResult(Result.Failure<SetThemeCommandResult>( errors.ToArray()));
         }
     }
 }

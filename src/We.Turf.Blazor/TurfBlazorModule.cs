@@ -48,12 +48,12 @@ namespace We.Turf.Blazor;
     typeof(AbpSwashbuckleModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpAccountWebOpenIddictModule),
-    typeof(WeAspNetCoreComponentsServerBasicThemeModule), 
-    typeof(WeAspNetCoreComponentsWebBasicThemeModule),
     typeof(AbpAspNetCoreMvcUiBasicThemeModule),
     typeof(AbpIdentityBlazorServerModule),
     typeof(AbpTenantManagementBlazorServerModule),
-    typeof(AbpSettingManagementBlazorServerModule)
+    typeof(AbpSettingManagementBlazorServerModule),
+    typeof(WeAspNetCoreComponentsServerBasicThemeModule), 
+    typeof(WeAspNetCoreComponentsWebBasicThemeModule)
    )]
 public class TurfBlazorModule : AbpModule
 {
@@ -226,7 +226,7 @@ public class TurfBlazorModule : AbpModule
     {
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
-            //options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+           //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
            
         });
     }

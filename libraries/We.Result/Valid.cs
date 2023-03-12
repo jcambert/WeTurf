@@ -1,13 +1,20 @@
-﻿namespace We.Result;
+﻿namespace We.Results;
 
-public class Valid<T> : Result<T>,IValid where T : notnull, new()
+public sealed class Valid : Result
+{
+    internal Valid() : base(true,new string[] { })
+    {
+    }
+}
+public sealed class Valid<T> : Result<T>,IValid 
 {
     internal Valid(T result) : base(result)
     {
 
     }
+    public Valid():base(default)
+    {
+        
+    }
 
-    public override bool IsValid => false;
-
-    public override IReadOnlyList<Error> Errors { get; init; }=new List<Error>();
 }

@@ -1,7 +1,12 @@
-﻿namespace We.Result;
+﻿namespace We.Results;
 
 public interface IResult
 {
-     bool IsValid { get; }
-     IReadOnlyList<Error> Errors { get; init; }
+    bool IsSucess { get; }
+    bool IsFailure { get; }
+    IReadOnlyList<Error> Errors { get; }
+}
+public interface IResult<T> : IResult
+{
+    T Value { get; }
 }

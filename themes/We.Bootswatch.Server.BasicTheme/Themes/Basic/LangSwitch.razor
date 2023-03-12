@@ -3,19 +3,33 @@
 @using We.Bootswatch.Components.Web.BasicTheme;
 @using We.Bootswatch.Components.Web.BasicTheme.Commands;
 @using We.Bootswatch.Components.Web.BasicTheme.Services;
+@using We.Results;
 <Selector TProvider="ILangProvider" TItem="ILang" OnChange="OnChange"></Selector>
 
 @code {
 
     private async Task OnChange(IAbpLazyServiceProvider service, IMediator mediator, ILangProvider provider, ILang item)
     {
-        if (item is Lang)
+
+        // var l = (Lang)item;
+        //var res1 = await mediator.Send(new ApplyLanguageCommand(l.CultureName,l.UiCultureName));
+
+        var notif = service.NotificationService();
+        var res = await Result
+        .Create(new ApplyLanguageCommand(item.CultureName, item.UiCultureName))
+        .Bind(cmd => mediator.Send(cmd))
+        .Match(r =>
         {
-            var l = (Lang)item;
-            var res1 = await mediator.Send(new ApplyLanguageCommand(l.CultureName,l.UiCultureName));
+            notif.Success("Language changed");
+            return new NoContentResult();
+        },
+        r =>
+        {
+            notif.Error(r.Errors.JoinAsString("\n"));
+            return new BadRequestResult();
+        })
+        ;
 
-            //provider.Apply(item, $"Abp/Languages/Switch?culture={l.CultureName}&uiCulture={l.UiCultureName}");
 
-        }
     }
 }

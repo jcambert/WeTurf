@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
-using We.Result;
-using Microsoft.AspNetCore.Http;
+using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
@@ -26,14 +26,14 @@ public class SetMenuStyleHandler : BaseHandler<SetMenuStyleCommand, SetMenuStyle
             };
             var httpContext = Context.HttpContext;
             httpContext.Response.Cookies.Append(CookieName, request.Style, options);
-            return Task.FromResult(Result<SetMenuStyleResult>.Sucess());
+            return Task.FromResult(Result.Sucess<SetMenuStyleResult>());
 
         }
         catch (Exception ex)
         {
             List<Error> errors = new List<Error>();
             errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result<SetMenuStyleResult>.Failure(new(), errors));
+            return Task.FromResult(Result.Failure<SetMenuStyleResult>( errors.ToArray()));
         }
     }
 }

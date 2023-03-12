@@ -2,18 +2,29 @@
 @using Volo.Abp.DependencyInjection;
 @using We.Bootswatch.Components.Web.BasicTheme;
 @using We.Bootswatch.Components.Web.BasicTheme.Commands;
-@using We.Result;
+@using We.Results;
 <Selector TProvider="IThemeProvider" TItem="ITheme" OnChange="OnChange"></Selector>
 
 @code {
 
     private async Task OnChange(IAbpLazyServiceProvider service,IMediator mediator, IThemeProvider provider, ITheme item)
     {
-        IApplyThemeCommand cmd = service.LazyGetService<IApplyThemeCommand>(x => new ApplyThemeCommand(item.Name));
         
-        var res1 = await mediator.Send(cmd);
-
-        //provider.Apply(item, $"Abp/Theme/Change?theme={item.Name}");
+        var notif = service.NotificationService();
+        var res = await Result
+        .Create(new ApplyThemeCommand(item.Name))
+        .Bind(cmd => mediator.Send(cmd))
+        .Match(r =>
+        {
+            notif.Success("Theme changed");
+            return new NoContentResult();
+        },
+        r =>
+        {
+            notif.Error(r.Errors.JoinAsString("\n") );
+            return new BadRequestResult();
+        })
+        ;
 
     }
 }

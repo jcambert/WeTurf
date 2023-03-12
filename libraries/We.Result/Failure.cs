@@ -1,16 +1,25 @@
-﻿namespace We.Result;
+﻿using System.Diagnostics;
 
-public sealed class Failure<T> : Result<T>,IFailure where T : notnull,new()
+namespace We.Results;
+
+public sealed class Failure : Result
 {
-    internal Failure(T result, params Error[] errors) : this(result, errors.ToList())
-    { }
 
-    internal Failure(T result, IEnumerable<Error> errors) : base(result)
+    internal Failure(params Error[] errors) : base(false, errors)
     {
-        Errors = errors?.Where(e => e != null && !string.IsNullOrEmpty(e.Failure)).ToList() ?? new();
+    }
+}
+
+public sealed class Failure<T> : Result<T>, IFailure
+{
+    public Failure() : base(default)
+    {
+    }
+    internal Failure(params Error[] errors) : base(default, false, errors)
+    {
+
     }
 
-    public override bool IsValid => !Errors.Any();
-
-    public override IReadOnlyList<Error> Errors { get; init; }
+   // public static implicit operator Task<Result>(Failure failure) =>(Task<Result>)Task.FromResult(failure);
 }
+
