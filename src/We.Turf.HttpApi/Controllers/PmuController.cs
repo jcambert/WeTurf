@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using We.Results;
 using We.Turf.Queries;
 
 namespace We.Turf.Controllers;
 [Produces("application/json")]
+[Area("pmu")]
+[Route("pmu/[action]")]
 public class PmuController : TurfController, IPmuServiceAppService
 {
     protected readonly IPmuServiceAppService pmuService;
@@ -11,31 +13,31 @@ public class PmuController : TurfController, IPmuServiceAppService
     => (pmuService) = (service);
 
     [HttpGet]
-    public Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifier(BrowseAccuracyOfClassifierQuery query)
+    public Task<Result< BrowseAccuracyOfClassifierResponse>> BrowseAccuracyOfClassifier(BrowseAccuracyOfClassifierQuery query)
     =>pmuService.BrowseAccuracyOfClassifier(query);
 
     [HttpGet]
-    public Task<BrowsePredictionResponse> BrowsePrediction(BrowsePredictionQuery query)
+    public Task<Result<BrowsePredictionResponse>> BrowsePrediction(BrowsePredictionQuery query)
     =>pmuService.BrowsePrediction(query);   
 
     [HttpGet]
-    public Task<BrowsePredictionPerClassifierResponse> BrowsePredictionPerClassifier(BrowsePredictionPerClassifierQuery query)
+    public Task<Result<BrowsePredictionPerClassifierResponse>> BrowsePredictionPerClassifier(BrowsePredictionPerClassifierQuery query)
     =>pmuService.BrowsePredictionPerClassifier(query);
 
     [HttpGet]
-    public Task<BrowseResultatOfPredictedResponse> BrowseResultatOfPredicted(BrowseResultatOfPredictedQuery query)
+    public Task<Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted(BrowseResultatOfPredictedQuery query)
     =>pmuService.BrowseResultatOfPredicted(query);
 
     [HttpGet]
-    public Task<BrowseResultatPerClassifierResponse> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query)
+    public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query)
     => pmuService.BrowseResultatPerClassifier(query);
 
-    public Task<LoadPredictedIntoDbResponse> LoadPredictedIntoDb(LoadPredictedIntoDbQuery query)
+    public Task<Result<LoadPredictedIntoDbResponse>> LoadPredictedIntoDb(LoadPredictedIntoDbQuery query)
     =>pmuService.LoadPredictedIntoDb(query);
 
-    public Task<LoadResultatIntoDbResponse> LoadResultatIntoDb(LoadResultatIntoDbQuery query)
+    public Task<Result<LoadResultatIntoDbResponse>> LoadResultatIntoDb(LoadResultatIntoDbQuery query)
     => pmuService.LoadResultatIntoDb(query);
 
-    public Task<LoadToPredictIntoDatabaseResponse> LoadToPredictIntoDatabase(LoadToPredictIntoDatabaseQuery query)
+    public Task<Result<LoadToPredictIntoDatabaseResponse>> LoadToPredictIntoDatabase(LoadToPredictIntoDatabaseQuery query)
     =>pmuService.LoadToPredictIntoDatabase(query);
 }

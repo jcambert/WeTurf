@@ -24,15 +24,12 @@ public class ApplyLanguageHandler : BaseHandler<ApplyLanguageCommand, ApplyLangu
             string cultureName = request.CultureName;//DOT NOT CHANGE THIS
             string uiCultureName = request.UiCultureName;//DOT NOT CHANGE THIS
             var uri = string.Format(BootswatchConsts.APPLY_LANGUAGE_URL, relativeUrl, cultureName, uiCultureName);
-            //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Task.FromResult(Result.Sucess<ApplyLanguageResult>());
+            return Result.Sucess<ApplyLanguageResult>();
         }
         catch (Exception ex)
         {
-            List<Error> errors = new List<Error>();
-            errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result.Failure<ApplyLanguageResult>( errors.ToArray()));
+            return Result.Failure<ApplyLanguageResult>( ex);
         }
     }
 }

@@ -1,14 +1,13 @@
-﻿using System;
-using We.Turf.Entities;
+﻿using We.Results;
 
 namespace We.Turf;
 
 public interface IPmuTriggerAppService:IApplicationService
 {
-    Task<GetTriggerResponse> GetAsync(GetTriggerQuery query);
+    Task<Result<GetTriggerResponse>> GetAsync(GetTriggerQuery query);
 
-    Task<CreateTriggerResponse> CreateAsync(CreateTriggerQuery query);
+    Task<Result<CreateTriggerResponse>> CreateAsync(CreateTriggerQuery query);
 
-    Task<UpdateTriggerResponse> UpdateAsync(UpdateTriggerQuery query);
-    Task<DeleteTriggerResponse> DeleteAsync(DeleteTriggerQuery query);
+    Task<Result<UpdateTriggerResponse>> UpdateAsync(UpdateTriggerQuery query);
+    Task<Result<DeleteTriggerResponse>> DeleteAsync(DeleteTriggerQuery query);
 }

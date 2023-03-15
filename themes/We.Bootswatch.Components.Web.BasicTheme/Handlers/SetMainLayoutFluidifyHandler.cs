@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,14 +34,12 @@ internal class SetMainLayoutFluidifyHandler : BaseHandler<SetMainLayoutFluidifyC
             var httpContext = Context.HttpContext;
             httpContext.Response.Cookies.Append(CookieName, f.Name, options);
 
-            return Result.Sucess(new SetMainLayoutFluidifyResult(f)).AsTask();
+            return Result.Sucess(new SetMainLayoutFluidifyResult(f));
 
         }
         catch (Exception ex)
         {
-            List<Error> errors = new List<Error>();
-            errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Result.Failure<SetMainLayoutFluidifyResult>(errors.ToArray()).AsTask();
+            return Result.Failure<SetMainLayoutFluidifyResult>(ex);
         }
     }
 }

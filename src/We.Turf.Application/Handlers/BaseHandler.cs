@@ -1,12 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+﻿/*
+ * using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Volo.Abp.Linq;
 using Volo.Abp.ObjectMapping;
-
+using We.Results;
 namespace We.Turf.Handlers;
 
-public abstract class BaseHandler<TQuery, TResponse> : IRequestHandler<TQuery, TResponse>
-    where TQuery : IRequest<TResponse>
+public abstract class BaseHandler<TQuery, TResponse> : IRequestHandler<TQuery, IResult< TResponse>>
+    where TQuery : IRequest<IResult<TResponse>>
 {
     protected BaseHandler(IAbpLazyServiceProvider serviceProvider)
     {
@@ -31,5 +32,6 @@ public abstract class BaseHandler<TQuery, TResponse> : IRequestHandler<TQuery, T
     protected ILoggerFactory LoggerFactory => LazyServiceProvider.LazyGetRequiredService<ILoggerFactory>();
 
     protected ILogger Logger => LazyServiceProvider.LazyGetService<ILogger>(provider => LoggerFactory?.CreateLogger(GetType().FullName) ?? NullLogger.Instance);
-    public abstract Task<TResponse> Handle(TQuery request, CancellationToken cancellationToken);
+    public abstract Task<IResult<TResponse>> Handle(TQuery request, CancellationToken cancellationToken);
 }
+*/

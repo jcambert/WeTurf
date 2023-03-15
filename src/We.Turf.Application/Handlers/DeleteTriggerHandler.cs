@@ -1,4 +1,6 @@
-﻿namespace We.Turf.Handlers;
+﻿using We.Results;
+
+namespace We.Turf.Handlers;
 
 public class DeleteTriggerHandler : TriggerBaseHandler<DeleteTriggerQuery, DeleteTriggerResponse>
 {
@@ -6,7 +8,7 @@ public class DeleteTriggerHandler : TriggerBaseHandler<DeleteTriggerQuery, Delet
     {
     }
 
-    public override async Task<DeleteTriggerResponse> Handle(DeleteTriggerQuery request, CancellationToken cancellationToken)
+    public override async Task<Result< DeleteTriggerResponse>> Handle(DeleteTriggerQuery request, CancellationToken cancellationToken)
     {
 
         await Repository.DeleteAsync(request.Id,true,cancellationToken);

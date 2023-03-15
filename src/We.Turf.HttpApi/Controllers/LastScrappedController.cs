@@ -1,8 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
+using We.Results;
 using We.Turf.Queries;
 
 namespace We.Turf.Controllers;
 
+//[ApiController]
+[Area("pmu")]
+[Route("/last_scrapped/[action]")]
 public class LastScrappedController:TurfController,IPmuLastScrappedAppService
 {
 	private readonly IPmuLastScrappedAppService _appService;
@@ -11,6 +15,7 @@ public class LastScrappedController:TurfController,IPmuLastScrappedAppService
 		_appService=appService; ;
 	}
 
-    public Task<GetLastScrappedResponse> Get(GetLastScrappedQuery query)
+	[HttpGet]
+    public Task<Result<GetLastScrappedResponse>> Get(GetLastScrappedQuery query)
     =>_appService.Get(query);
 }

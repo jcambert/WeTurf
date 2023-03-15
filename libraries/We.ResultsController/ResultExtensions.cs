@@ -11,7 +11,7 @@ public static class ResultExtensions
         Func<Result,IActionResult> onFailure)
     {
         Result result=await resultTask;
-        return result.IsSucess?onSuccess():onFailure(result);
+        return result.IsSuccess?onSuccess():onFailure(result);
     }
 
     public static async Task<IActionResult> Match<T>(
@@ -20,14 +20,14 @@ public static class ResultExtensions
         Func<Result, IActionResult> onFailure)
     {
         Result<T> result = await resultTask;
-        return result.IsSucess ? onSuccess(result.Value) : onFailure(result);
+        return result ? onSuccess(result.Value) : onFailure(result);
     }
 
     
     public static IActionResult HandleFailure(this ControllerBase controller, Result result)
     => result switch
     {
-        { IsSucess: true } => throw new InvalidOperationException(),
+        { IsSuccess: true } => throw new InvalidOperationException(),
         { IsFailure: true } => controller.BadRequest(CreateProblemDetails("Error",StatusCodes.Status400BadRequest,new Error("Bad Request","An Error happened"),result.Errors.ToArray())),
         _ => controller.BadRequest()
     };
@@ -35,7 +35,7 @@ public static class ResultExtensions
     public static IActionResult Handle<T>(this ControllerBase controller, Result<T> result,Func<Result,IActionResult> onSuccess)
     => result switch
     {
-        { IsSucess: true } => onSuccess(result),
+        { IsSuccess: true } => onSuccess(result),
         { IsFailure: true } => controller.HandleFailure(result),
         _ => controller.BadRequest()
     };

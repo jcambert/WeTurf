@@ -28,14 +28,12 @@ public class SetThemeHandler : BaseHandler<SetThemeCommand, SetThemeCommandResul
             };
             var httpContext = Context.HttpContext;
             httpContext.Response.Cookies.Append(CookieName, request.Name, options);
-            return Task.FromResult(Result.Sucess<SetThemeCommandResult>());
+            return Result.Sucess<SetThemeCommandResult>();
 
         }
         catch (Exception ex)
         {
-            List<Error> errors = new List<Error>();
-            errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result.Failure<SetThemeCommandResult>( errors.ToArray()));
+            return Result.Failure<SetThemeCommandResult>( ex);
         }
     }
 }

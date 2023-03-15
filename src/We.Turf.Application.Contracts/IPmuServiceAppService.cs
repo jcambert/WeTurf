@@ -1,20 +1,22 @@
-﻿namespace We.Turf;
+﻿using We.Results;
+
+namespace We.Turf;
 
 public interface IPmuServiceAppService:IApplicationService
 {
-    Task<LoadToPredictIntoDatabaseResponse> LoadToPredictIntoDatabase(LoadToPredictIntoDatabaseQuery query);
+    Task<Result< LoadToPredictIntoDatabaseResponse>> LoadToPredictIntoDatabase(LoadToPredictIntoDatabaseQuery query);
 
-    Task<LoadPredictedIntoDbResponse> LoadPredictedIntoDb(LoadPredictedIntoDbQuery query);
+    Task<Result<LoadPredictedIntoDbResponse>> LoadPredictedIntoDb(LoadPredictedIntoDbQuery query);
 
-    Task<LoadResultatIntoDbResponse> LoadResultatIntoDb(LoadResultatIntoDbQuery query);
+    Task< Result<LoadResultatIntoDbResponse>> LoadResultatIntoDb(LoadResultatIntoDbQuery query);
 
-    Task<BrowseResultatOfPredictedResponse> BrowseResultatOfPredicted(BrowseResultatOfPredictedQuery query);
+    Task< Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted(BrowseResultatOfPredictedQuery query);
 
-    Task<BrowsePredictionPerClassifierResponse> BrowsePredictionPerClassifier(BrowsePredictionPerClassifierQuery query);  
+    Task<Result<BrowsePredictionPerClassifierResponse>> BrowsePredictionPerClassifier(BrowsePredictionPerClassifierQuery query);  
     
-    Task<BrowseResultatPerClassifierResponse> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query);    
+    Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query);    
 
-    Task<BrowseAccuracyOfClassifierResponse> BrowseAccuracyOfClassifier(BrowseAccuracyOfClassifierQuery query);
+    Task<Result<BrowseAccuracyOfClassifierResponse>> BrowseAccuracyOfClassifier(BrowseAccuracyOfClassifierQuery query);
 
-    Task<BrowsePredictionResponse> BrowsePrediction(BrowsePredictionQuery query);
+    Task<Result< BrowsePredictionResponse>> BrowsePrediction(BrowsePredictionQuery query);
 }

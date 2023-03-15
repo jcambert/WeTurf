@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,13 +24,11 @@ public class ApplyMenuStyleHandler : BaseHandler<ApplyMenuStyleCommand, ApplyMen
             var uri = string.Format(BootswatchConsts.APPLY_MENUSTYLE_URL , relativeUrl, name);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Task.FromResult(Result.Sucess<ApplyMenuStyleResult>());
+            return Result.Sucess<ApplyMenuStyleResult>();
         }
         catch (Exception ex)
         {
-            List<Error> errors = new List<Error>();
-            errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result.Failure<ApplyMenuStyleResult>( errors.ToArray()));
+            return Result.Failure<ApplyMenuStyleResult>( ex);
         }
     }
 }

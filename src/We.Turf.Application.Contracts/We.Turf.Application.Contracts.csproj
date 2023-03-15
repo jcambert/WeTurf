@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\We.AbpExtensions\We.AbpExtensions.csproj" />
+    <ProjectReference Include="..\..\libraries\We.Result\We.Results.csproj" />
     <ProjectReference Include="..\We.Turf.Domain.Shared\We.Turf.Domain.Shared.csproj" />
   </ItemGroup>
 

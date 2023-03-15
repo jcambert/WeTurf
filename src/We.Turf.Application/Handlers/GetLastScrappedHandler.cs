@@ -1,5 +1,6 @@
-﻿using We.Turf.Entities;
-
+﻿using We.AbpExtensions;
+using We.Results    ;
+using We.Turf.Entities;
 namespace We.Turf.Handlers;
 
 public class GetLastScrappedHandler : BaseHandler<GetLastScrappedQuery, GetLastScrappedResponse>
@@ -9,7 +10,7 @@ public class GetLastScrappedHandler : BaseHandler<GetLastScrappedQuery, GetLastS
     {
     }
 
-    public override async Task<GetLastScrappedResponse> Handle(GetLastScrappedQuery request, CancellationToken cancellationToken)
+    public override async Task<Result< GetLastScrappedResponse>> Handle(GetLastScrappedQuery request, CancellationToken cancellationToken)
     {
         var result=await repository.FirstOrDefaultAsync();
 

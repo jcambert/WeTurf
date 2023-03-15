@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\We.AbpExtensions\We.AbpExtensions.csproj" />
     <ProjectReference Include="..\..\libraries\We.Csv\We.Csv.csproj" />
     <ProjectReference Include="..\..\libraries\We.EntitySpecification\We.EntitySpecification.csproj" />
+    <ProjectReference Include="..\..\libraries\We.Result\We.Results.csproj" />
     <ProjectReference Include="..\..\libraries\We.Utilities\We.Utilities.csproj" />
     <ProjectReference Include="..\We.Turf.Domain\We.Turf.Domain.csproj" />
     <ProjectReference Include="..\We.Turf.Application.Contracts\We.Turf.Application.Contracts.csproj" />

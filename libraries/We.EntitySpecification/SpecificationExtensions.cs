@@ -3,6 +3,13 @@ using Volo.Abp.Domain.Entities;
 namespace We.EntitySpecification;
 public static class SpecificationExtensions
 {
+    /// <summary>
+    /// Get Query with specification applied
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <param name="inputQuery"></param>
+    /// <param name="specification"></param>
+    /// <returns></returns>
     public static IQueryable<TEntity> GetQuery<TEntity>(this IQueryable<TEntity> inputQuery, ISpecification<TEntity> specification)
         where TEntity :class,IEntity
     {

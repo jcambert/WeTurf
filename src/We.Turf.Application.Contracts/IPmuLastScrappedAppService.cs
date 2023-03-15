@@ -1,6 +1,8 @@
-﻿namespace We.Turf;
+﻿using We.Results;
+
+namespace We.Turf;
 
 public interface IPmuLastScrappedAppService:IApplicationService
 {
-    Task<GetLastScrappedResponse> Get(GetLastScrappedQuery query);
+    Task<Result<GetLastScrappedResponse>> Get(GetLastScrappedQuery query);
 }

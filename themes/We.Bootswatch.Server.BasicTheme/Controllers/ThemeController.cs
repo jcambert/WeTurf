@@ -10,8 +10,8 @@ using We.Results;
 
 namespace We.Bootswatch.Server.BasicTheme;
 
-[Area("Abp")]
-[Route("Abp/Theme/[action]")]
+//[Area("Abp")]
+//[Route("Abp/Theme/[action]")]
 
 
 public class ThemeController : BaseController

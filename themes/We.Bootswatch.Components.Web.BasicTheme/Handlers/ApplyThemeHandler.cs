@@ -26,13 +26,11 @@ internal class ApplyThemeHandler : BaseHandler<ApplyThemeCommand, ApplyThemeResu
             var uri = string.Format(BootswatchConsts.APPLY_THEME_URL, relativeUrl, name);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Task.FromResult(Result.Sucess<ApplyThemeResult>());
+            return Result.Sucess<ApplyThemeResult>();
         }
         catch (Exception ex)
         {
-            List<Error> errors = new List<Error>();
-            errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result.Failure<ApplyThemeResult>( errors.ToArray()));
+            return Result.Failure<ApplyThemeResult>( ex);
         }
     }
 }

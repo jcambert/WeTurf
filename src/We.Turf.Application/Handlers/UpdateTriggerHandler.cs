@@ -1,4 +1,5 @@
-﻿using We.Turf.Entities;
+﻿using We.Results;
+using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
@@ -8,7 +9,7 @@ public class UpdateTriggerHandler : TriggerBaseHandler<UpdateTriggerQuery, Updat
     {
     }
 
-    public override async Task<UpdateTriggerResponse> Handle(UpdateTriggerQuery request, CancellationToken cancellationToken)
+    public override async Task<Result<UpdateTriggerResponse>> Handle(UpdateTriggerQuery request, CancellationToken cancellationToken)
     {
         var e= await Repository.GetAsync(request.Id);
         Map(new ScrapTriggerDto() { Start=request.Start}, e);

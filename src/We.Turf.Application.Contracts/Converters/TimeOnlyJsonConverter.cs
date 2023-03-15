@@ -12,7 +12,7 @@ public class TimeOnlyJsonConverter : JsonConverter<TimeOnly>
     {
     }
 
-    public TimeOnlyJsonConverter(string? serializationFormat)
+    public TimeOnlyJsonConverter(string serializationFormat)
     {
         this.serializationFormat = serializationFormat ?? "HH:mm:ss.fff";
     }

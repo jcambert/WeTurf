@@ -10,8 +10,8 @@
 @implements IDisposable
 @inject IPmuServiceAppService pmuService;
 
-<Div >
-    
+<Div>
+
     <p><DateEdit TValue="DateOnly" @bind-Date="CurrentDate"></DateEdit></p>
     <Button Class="btn-dark" @onclick="()=>Layout.ToggleFluid()">Fluidify</Button>
     <p>@(IsFluid)</p>
@@ -74,7 +74,7 @@
 
 
 @code {
-    #pragma warning disable BL0007
+#pragma warning disable BL0007
     [Parameter]
     public string Date
     {
@@ -91,11 +91,11 @@
         }
     }
     [CascadingParameter]
-    public MainLayout Layout{ get; set; }
+    public MainLayout Layout { get; set; }
 
     public bool IsFluid => Layout is not null ? Layout.IsFluid : false;
 
-    
+
 
     internal DateOnly CurrentDate
     {
@@ -143,17 +143,20 @@
     };
     /*
     private void OnDateChanged(PropertyChangedEventArgs args)
-    {
+        {
         Console.WriteLine(args.PropertyName);
         LoadPredicted(_date);
     }*/
     private async Task LoadPredictedAsync(DateOnly date)
     {
         var t = pmuService.BrowsePrediction(new() { Date = date });
-        var response = await t;
-        //var response = t.Result;
-        _predicteds = response.Predicteds;
-        _reunionsCollapsed = new bool[_predicteds.Count];
+        var(res, response )= await t;
+        if (res)
+        {
+            _predicteds = response.Predicteds;
+            _reunionsCollapsed = new bool[_predicteds.Count];
+
+        }
         await InvokeAsync(StateHasChanged);
     }
 

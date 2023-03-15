@@ -18,6 +18,6 @@ public class GetCurrentMainLayoutFluidHandler : BaseHandler<GetCurrentMainLayout
     public override Task<Result<GetCurrentMainLayoutFluidResult>> Handle(GetCurrentMainLayoutFluidCommand request, CancellationToken cancellationToken)
     {
         
-        return Result.Sucess(new GetCurrentMainLayoutFluidResult(fluidProvider.GetCurrent())).AsTask();
+        return Result.Sucess(new GetCurrentMainLayoutFluidResult(fluidProvider.GetCurrent()));
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Volo.Abp.ObjectMapping;
+﻿using We.AbpExtensions;
+using We.Results;
 using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
@@ -15,10 +11,10 @@ public class BrowseResultatPerClassifierHandler : BaseHandler<BrowseResultatPerC
     {
     }
 
-    public override async Task<BrowseResultatPerClassifierResponse> Handle(BrowseResultatPerClassifierQuery request, CancellationToken cancellationToken)
+    public override async Task<Result< BrowseResultatPerClassifierResponse>> Handle(BrowseResultatPerClassifierQuery request, CancellationToken cancellationToken)
     {
         var query = await repository.GetQueryableAsync();
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
-        return new BrowseResultatPerClassifierResponse(ObjectMapper.Map<List<ResultatPerClassifier>, List<ResultatPerClassifierDto>>(result));
+        return  new BrowseResultatPerClassifierResponse(ObjectMapper.Map<List<ResultatPerClassifier>, List<ResultatPerClassifierDto>>(result));
     }
 }

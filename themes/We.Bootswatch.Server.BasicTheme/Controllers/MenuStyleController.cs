@@ -7,8 +7,8 @@ using We.Results;
 
 namespace We.Bootswatch.Server.BasicTheme;
 
-[Area("Abp")]
-[Route("Abp/Style/[action]")]
+//[Area("Abp")]
+//[Route("Abp/Style/[action]")]
 public class MenuStyleController : BaseController
 {
     

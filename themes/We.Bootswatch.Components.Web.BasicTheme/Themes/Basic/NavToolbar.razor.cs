@@ -32,6 +32,7 @@ public partial class NavToolbar : IDisposable
         ToolbarItemRenders.Clear();
 
         var sequence = 0;
+#pragma warning disable ASP0006
         foreach (var item in toolbar.Items)
         {
             ToolbarItemRenders.Add(builder =>
@@ -42,7 +43,7 @@ public partial class NavToolbar : IDisposable
             });
         }
     }
-
+#pragma warning restore ASP0006
     private async void ApplicationConfigurationChanged()
     {
         await GetToolbarItemRendersAsync();

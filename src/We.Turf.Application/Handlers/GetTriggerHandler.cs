@@ -1,4 +1,6 @@
-﻿namespace We.Turf.Handlers;
+﻿using We.Results;
+
+namespace We.Turf.Handlers;
 
 public class GetTriggerHandler : TriggerBaseHandler<GetTriggerQuery, GetTriggerResponse>
 {
@@ -6,7 +8,7 @@ public class GetTriggerHandler : TriggerBaseHandler<GetTriggerQuery, GetTriggerR
     {
     }
 
-    public override async Task<GetTriggerResponse> Handle(GetTriggerQuery request, CancellationToken cancellationToken)
+    public override async Task<Result< GetTriggerResponse>> Handle(GetTriggerQuery request, CancellationToken cancellationToken)
     {
         var e=await Repository.GetAsync(request.Id);
         return new GetTriggerResponse(ReverseMap(e));

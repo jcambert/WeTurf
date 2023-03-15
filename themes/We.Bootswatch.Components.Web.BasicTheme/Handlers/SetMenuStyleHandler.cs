@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
@@ -26,14 +25,12 @@ public class SetMenuStyleHandler : BaseHandler<SetMenuStyleCommand, SetMenuStyle
             };
             var httpContext = Context.HttpContext;
             httpContext.Response.Cookies.Append(CookieName, request.Style, options);
-            return Task.FromResult(Result.Sucess<SetMenuStyleResult>());
+            return Result.Sucess<SetMenuStyleResult>();
 
         }
         catch (Exception ex)
         {
-            List<Error> errors = new List<Error>();
-            errors.Add(new Error(nameof(SetThemeHandler), ex.Message));
-            return Task.FromResult(Result.Failure<SetMenuStyleResult>( errors.ToArray()));
+            return Result.Failure<SetMenuStyleResult>( ex);
         }
     }
 }

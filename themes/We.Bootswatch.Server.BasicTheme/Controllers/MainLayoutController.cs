@@ -6,8 +6,9 @@ using We.Results;
 
 namespace We.Bootswatch.Server.BasicTheme.Controllers;
 
-[Area("Abp")]
-[Route("Abp/MainLayout/[action]")]
+//[Area("Abp")]
+//[ApiController]
+//[Route("Abp/MainLayout/[action]")]
 public class MainLayoutController : BaseController
 {
     public MainLayoutController(IMediator mediator) : base(mediator)

@@ -226,7 +226,9 @@ public class TurfBlazorModule : AbpModule
     {
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
-           //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
+            //options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+            //options.ConventionalControllers.Create(typeof(TurfHttpApiModule).Assembly);
+            //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
            
         });
     }

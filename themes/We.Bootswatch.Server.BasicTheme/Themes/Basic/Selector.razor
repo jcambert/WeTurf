@@ -7,7 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject IMediator Mediator
 @inject IAbpLazyServiceProvider Service
-@if (Others != null && Others.Any())
+@if (Current!=null && Others != null && Others.Any())
 {
     <BarDropdown RightAligned="true">
         <BarDropdownToggle>
