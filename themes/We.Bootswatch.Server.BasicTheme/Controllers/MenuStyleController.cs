@@ -8,7 +8,12 @@ using We.Results;
 namespace We.Bootswatch.Server.BasicTheme;
 
 //[Area("Abp")]
-//[Route("Abp/Style/[action]")]
+[Produces("application/json")]
+[Area("Abp")]
+[Route("Abp/Style/[action]")]
+[ApiVersion("1.0")]
+[ApiController]
+[ControllerName("MenuStyle")]
 public class MenuStyleController : BaseController
 {
     

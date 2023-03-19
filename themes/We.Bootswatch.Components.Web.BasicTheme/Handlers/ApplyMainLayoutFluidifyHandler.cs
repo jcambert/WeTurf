@@ -2,19 +2,21 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.DependencyInjection;
+using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class ApplyMainLayoutFluidifyHandler : BaseHandler<ApplyMainLayoutFluidifyCommand, ApplyMainLayoutFluidifyResult>
+public class ApplyMainLayoutFluidifyHandler : AbpHandler.With<ApplyMainLayoutFluidifyCommand, ApplyMainLayoutFluidifyResult>
 {
-
-    private NavigationManager NavigationManager { get; }
-    public ApplyMainLayoutFluidifyHandler(NavigationManager navigationManager)
+    public ApplyMainLayoutFluidifyHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
-        this.NavigationManager = navigationManager;
     }
+
+    private NavigationManager NavigationManager=>GetRequiredService<NavigationManager>();
+  
 
     public override Task<Result<ApplyMainLayoutFluidifyResult>> Handle(ApplyMainLayoutFluidifyCommand request, CancellationToken cancellationToken)
     {

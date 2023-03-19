@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.DependencyInjection;
+using We.Mediatr;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
-public interface IApplyThemeCommand : ICommand<ApplyThemeResult>
+public interface IApplyThemeCommand : IQuery<ApplyThemeResult>
 {
     string Name { get; init; }
 }
@@ -18,4 +19,4 @@ public class ApplyThemeCommand : IApplyThemeCommand
     }
     public string Name { get; init; }
 }
-public sealed record ApplyThemeResult();
+public sealed record ApplyThemeResult(): Response;

@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.DependencyInjection;
+using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-internal class ApplyThemeHandler : BaseHandler<ApplyThemeCommand, ApplyThemeResult>
+internal class ApplyThemeHandler : AbpHandler.With<ApplyThemeCommand, ApplyThemeResult>
 {
-    public ApplyThemeHandler(NavigationManager navigationManager)
+    public ApplyThemeHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
-        this.NavigationManager = navigationManager;
     }
 
-    private NavigationManager NavigationManager { get; }
+    private NavigationManager NavigationManager => GetRequiredService<NavigationManager>();
 
     public override Task<Result<ApplyThemeResult>> Handle(ApplyThemeCommand request, CancellationToken cancellationToken)
     {

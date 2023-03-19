@@ -1,10 +1,9 @@
-﻿using We.AbpExtensions;
-using We.Results;
+﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IUpdateTriggerQuery:IRequest<Result<UpdateTriggerResponse>>
+public interface IUpdateTriggerQuery: IQuery<UpdateTriggerResponse>
 {
     Guid Id { get; set; }
     TimeOnly Start { get; set; }

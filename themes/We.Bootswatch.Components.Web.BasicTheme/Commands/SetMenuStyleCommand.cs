@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.DependencyInjection;
+using We.Mediatr;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
 
-public interface ISetMenuStyleCommand : ICommand<SetMenuStyleResult>
+public interface ISetMenuStyleCommand : IQuery<SetMenuStyleResult>
 {
     string Style { get; init; }
 }
@@ -21,4 +22,4 @@ public class SetMenuStyleCommand : ISetMenuStyleCommand
     public string Style { get; init; }
 }
 
-public sealed record SetMenuStyleResult();
+public sealed record SetMenuStyleResult():Response;

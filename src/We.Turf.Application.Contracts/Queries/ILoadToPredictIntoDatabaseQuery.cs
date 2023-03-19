@@ -1,11 +1,8 @@
-﻿
-
-using We.AbpExtensions;
-using We.Results;
+﻿using We.Mediatr;
 
 namespace We.Turf.Queries;
 
-public interface ILoadToPredictIntoDatabaseQuery:IRequest<Result<LoadToPredictIntoDatabaseResponse>>
+public interface ILoadToPredictIntoDatabaseQuery:IQuery<LoadToPredictIntoDatabaseResponse>
 {
 }
 

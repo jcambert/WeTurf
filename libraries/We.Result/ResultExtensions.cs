@@ -8,6 +8,14 @@ namespace We.Results;
 /// </summary>
 public static class ResultExtensions
 {
+    public static async Task<TOut> Match<TOut>(
+        this Task<Result> resultTask,
+        Func<TOut> onSuccess,
+        Func<Result, TOut> onFailure)
+    {
+        Result result = await resultTask;
+        return result.IsSuccess ? onSuccess() : onFailure(result);
+    }
 
     /// <summary>
     /// Ensure that a result statisfy predicate
@@ -80,6 +88,8 @@ public static class ResultExtensions
             return Task.FromResult( Result.Failure<TOut>(result.Errors.ToArray()));
         return func(result.Value);
     }
+
+ 
 
     /// <summary>
     /// Return a result as a task

@@ -9,7 +9,7 @@ internal class PredictionByDate : Specification<Predicted>
     {
     }
 }
-public class BrowsePredictionHandler : BaseHandler<BrowsePredictionQuery,BrowsePredictionResponse>
+public class BrowsePredictionHandler : AbpHandler.With<BrowsePredictionQuery, BrowsePredictionResponse>
 {
     public BrowsePredictionHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {

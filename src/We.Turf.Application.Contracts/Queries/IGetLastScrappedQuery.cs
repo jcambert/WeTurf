@@ -1,9 +1,9 @@
-﻿using We.Results;
+﻿using We.Mediatr;
 using We.Turf.Entities;
-using We.AbpExtensions;
+
 namespace We.Turf.Queries;
 
-public interface  IGetLastScrappedQuery:IRequest<Result< GetLastScrappedResponse>>
+public interface  IGetLastScrappedQuery:IQuery< GetLastScrappedResponse>
 {
 }
 

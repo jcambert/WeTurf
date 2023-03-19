@@ -11,7 +11,7 @@ namespace We.Turf.Handlers;
 
 
 
-public class LoadPredictedIntoDbHandler : BaseHandler<LoadPredictedIntoDbQuery, LoadPredictedIntoDbResponse>
+public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQuery, LoadPredictedIntoDbResponse>
 {
     IRepository<Predicted, Guid> _repository => GetRequiredService<IRepository<Predicted, Guid>>();
 

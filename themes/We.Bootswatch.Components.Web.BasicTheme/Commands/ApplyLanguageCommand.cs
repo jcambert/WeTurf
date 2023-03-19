@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.DependencyInjection;
+using We.Mediatr;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
 
 
-public interface IApplyLanguageCommand : ICommand<ApplyLanguageResult>
+public interface IApplyLanguageCommand : IQuery<ApplyLanguageResult>
 {
     string CultureName { get; init; }
      string UiCultureName { get; init; }
@@ -22,4 +23,4 @@ public class ApplyLanguageCommand : IApplyLanguageCommand
     public string CultureName { get; init; }
     public string UiCultureName { get; init; }
 }
-public sealed record ApplyLanguageResult();
+public sealed record ApplyLanguageResult():Response;

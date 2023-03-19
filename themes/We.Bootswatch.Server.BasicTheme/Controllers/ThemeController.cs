@@ -1,19 +1,20 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Volo.Abp;
-using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.Auditing;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Bootswatch.Server.BasicTheme.Controllers;
 using We.Results;
 
 namespace We.Bootswatch.Server.BasicTheme;
 
-//[Area("Abp")]
-//[Route("Abp/Theme/[action]")]
 
 
+[Produces("application/json")]
+[Area("Abp")]
+[Route("Abp/Theme/[action]")]
+[ApiVersion("1.0")]
+[ApiController]
+[ControllerName("Theme")]
 public class ThemeController : BaseController
 {
 

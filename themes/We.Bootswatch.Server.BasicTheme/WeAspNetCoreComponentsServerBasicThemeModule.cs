@@ -2,6 +2,7 @@
 using Volo.Abp.AspNetCore.Components.Server.Theming;
 using Volo.Abp.AspNetCore.Components.Server.Theming.Bundling;
 using Volo.Abp.AspNetCore.Components.Web.Theming.Toolbars;
+using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
@@ -18,11 +19,22 @@ public class WeAspNetCoreComponentsServerBasicThemeModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        ConfigureToolbar();
+        ConfigureBundles();
+        ConfigureLocalization();
+        ConfigureAutoApiControllers();
+    }
+
+    private void ConfigureToolbar()
+    {
         Configure<AbpToolbarOptions>(options =>
         {
             options.Contributors.Add(new BasicThemeToolbarContributor());
         });
+    }
 
+    private void ConfigureBundles()
+    {
         Configure<AbpBundlingOptions>(options =>
         {
             options
@@ -43,7 +55,10 @@ public class WeAspNetCoreComponentsServerBasicThemeModule : AbpModule
                         .AddContributors(typeof(BlazorBasicThemeScriptContributor));
                 });
         });
+    }
 
+    private void ConfigureLocalization()
+    {
         Configure<AbpLocalizationOptions>(options =>
         {
             //Define a new localization resource (TestResource)
@@ -51,8 +66,14 @@ public class WeAspNetCoreComponentsServerBasicThemeModule : AbpModule
                 .Add<ThemeResource>()
                 .AddVirtualJson("/Localization/Resources/Theme");
         });
+    }
 
-        //context.Services.AddScoped<IThemeProvider,ThemeProvider>();
-        
+    private void ConfigureAutoApiControllers()
+    {
+        Configure<AbpAspNetCoreMvcOptions>(options =>
+        {
+            options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
+
+        });
     }
 }

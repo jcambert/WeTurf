@@ -22,8 +22,15 @@ public static class ResultExtensions
         Result<T> result = await resultTask;
         return result ? onSuccess(result.Value) : onFailure(result);
     }
+    public static async Task<IActionResult> MatchAsync<T>(
+        this Task<Result<T>> resultTask,
+        Func<T, Task<IActionResult>> onSuccess,
+        Func<Result, Task<IActionResult>> onFailure)
+    {
+        Result<T> result = await resultTask;
+        return result ? await onSuccess(result.Value) :await onFailure(result);
+    }
 
-    
     public static IActionResult HandleFailure(this ControllerBase controller, Result result)
     => result switch
     {
@@ -49,4 +56,13 @@ public static class ResultExtensions
             Status = status,
             Extensions = { { nameof(errors), errors } }
         };
+
+    public static IActionResult AsActionResult(this Result r) 
+        => r.IsSuccess ?new NoContentResult() : new BadRequestResult();
+    public static IActionResult AsActionResult<T>(this T r) => new NoContentResult();
+    public static Task<IActionResult> AsActionResultAsync<T>(this T r) =>Task.FromResult< IActionResult>( new NoContentResult());
+    public static Task<IActionResult> AsActionResultAsync(this Result r) 
+        =>r.IsSuccess?Task.FromResult<IActionResult>( new NoContentResult()):Task.FromResult<IActionResult>(new BadRequestResult());
+
+
 }

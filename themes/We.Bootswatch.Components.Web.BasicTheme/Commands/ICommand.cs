@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
-
+/*
 public interface ICommand<T>:IRequest<Result<T>>
     where T : notnull
 {
@@ -23,4 +23,4 @@ public abstract class BaseHandler<TCommand, TResult> : ICommandHandler<TCommand,
 {
     public abstract Task<Result<TResult>> Handle(TCommand request, CancellationToken cancellationToken);
     
-}
+}*/

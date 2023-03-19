@@ -3,7 +3,7 @@ using We.Results    ;
 using We.Turf.Entities;
 namespace We.Turf.Handlers;
 
-public class GetLastScrappedHandler : BaseHandler<GetLastScrappedQuery, GetLastScrappedResponse>
+public class GetLastScrappedHandler : AbpHandler.With<GetLastScrappedQuery, GetLastScrappedResponse>
 {
     IRepository<LastScrapped> repository=>GetRequiredService<IRepository<LastScrapped>>();
     public GetLastScrappedHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)

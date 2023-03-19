@@ -2,19 +2,23 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.DependencyInjection;
+using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class SetMenuStyleHandler : BaseHandler<SetMenuStyleCommand, SetMenuStyleResult>
+public class SetMenuStyleHandler : AbpHandler.With<SetMenuStyleCommand, SetMenuStyleResult>
 {
+    public SetMenuStyleHandler(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context) : base(serviceProvider)
+    {
+        Context = context;
+    }
+
     private IHttpContextAccessor Context { get; }
     private string CookieName => BootswatchConsts.MenuStyleCookie;
-    public SetMenuStyleHandler(IHttpContextAccessor context)
-    {
-        this.Context = context;
-    }
+
     public override Task<Result<SetMenuStyleResult>> Handle(SetMenuStyleCommand request, CancellationToken cancellationToken)
     {
         try

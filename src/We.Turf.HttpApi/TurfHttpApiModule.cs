@@ -1,5 +1,6 @@
 ﻿using Localization.Resources.AbpUi;
 using Volo.Abp.Account;
+using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Localization;
@@ -25,7 +26,7 @@ public class TurfHttpApiModule : AbpModule
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         ConfigureLocalization();
-        //ConfigureJsonConverters();
+        ConfigureAutoApiControllers();
     }
 
     private void ConfigureLocalization()
@@ -40,14 +41,16 @@ public class TurfHttpApiModule : AbpModule
         });
     }
 
-    private void ConfigureJsonConverters()
-    {/*
-        Configure<JsonSerializerOptions>(options =>
+    private void ConfigureAutoApiControllers()
+    {
+        Configure<AbpAspNetCoreMvcOptions>(options =>
         {
-            
-            options.Converters.Add(new TimeOnlyConverter());
-            options.Converters.Add(new DateOnlyConverter());
-        });*/
-        
+            // options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+            options.ConventionalControllers.Create(typeof(TurfHttpApiModule).Assembly);
+            //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
+
+        });
     }
+
+
 }

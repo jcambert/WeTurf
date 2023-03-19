@@ -1,10 +1,9 @@
-﻿using We.AbpExtensions;
-using We.Results;
+﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IBrowseResultatOfPredictedQuery:IRequest<Result< BrowseResultatOfPredictedResponse>>
+public interface IBrowseResultatOfPredictedQuery:IQuery<BrowseResultatOfPredictedResponse>
 {
 }
 public sealed record BrowseResultatOfPredictedResponse(List<ResultatOfPredictedDto> Resultats):Response;

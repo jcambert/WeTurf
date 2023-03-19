@@ -61,6 +61,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.ResultsController", "lib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.AbpExtensions", "libraries\We.AbpExtensions\We.AbpExtensions.csproj", "{5C0F2A96-5B64-4B8E-B6DD-A6B9C1D66CE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "We.Mediatr", "libraries\We.Mediatr\We.Mediatr.csproj", "{7DC6B75F-2894-4904-9D25-A91261AE5DF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,6 +165,10 @@ Global
 		{5C0F2A96-5B64-4B8E-B6DD-A6B9C1D66CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C0F2A96-5B64-4B8E-B6DD-A6B9C1D66CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C0F2A96-5B64-4B8E-B6DD-A6B9C1D66CE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DC6B75F-2894-4904-9D25-A91261AE5DF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DC6B75F-2894-4904-9D25-A91261AE5DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DC6B75F-2894-4904-9D25-A91261AE5DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DC6B75F-2894-4904-9D25-A91261AE5DF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +198,7 @@ Global
 		{47652C9E-A176-4E09-9C52-9E814C861B02} = {A23E5F10-5900-4630-B50B-F2458BCAB0BF}
 		{8567C93B-2380-4B16-91D9-9FE2AA0488BA} = {A23E5F10-5900-4630-B50B-F2458BCAB0BF}
 		{5C0F2A96-5B64-4B8E-B6DD-A6B9C1D66CE8} = {A23E5F10-5900-4630-B50B-F2458BCAB0BF}
+		{7DC6B75F-2894-4904-9D25-A91261AE5DF1} = {A23E5F10-5900-4630-B50B-F2458BCAB0BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}

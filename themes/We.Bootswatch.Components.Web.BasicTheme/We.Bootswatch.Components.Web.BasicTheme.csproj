@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\We.AbpExtensions\We.AbpExtensions.csproj" />
     <ProjectReference Include="..\..\libraries\We.ResultsController\We.ResultsController.csproj" />
     <ProjectReference Include="..\..\libraries\We.Result\We.Results.csproj" />
   </ItemGroup>

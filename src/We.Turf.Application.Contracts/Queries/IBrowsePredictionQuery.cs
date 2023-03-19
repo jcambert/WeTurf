@@ -1,10 +1,9 @@
-﻿using We.AbpExtensions;
-using We.Results;
+﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IBrowsePredictionQuery : IRequest<Result<BrowsePredictionResponse>>
+public interface IBrowsePredictionQuery : IQuery<BrowsePredictionResponse>
 {
     DateOnly? Date { get; set; }
 }

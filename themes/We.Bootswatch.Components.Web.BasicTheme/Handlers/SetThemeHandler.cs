@@ -1,21 +1,24 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.DependencyInjection;
+using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class SetThemeHandler : BaseHandler<SetThemeCommand, SetThemeCommandResult>
+public class SetThemeHandler : AbpHandler.With<SetThemeCommand, SetThemeCommandResult>
 {
-    private IHttpContextAccessor Context { get; }
-    private string CookieName => BootswatchConsts.ThemeCookie;
-    public SetThemeHandler(IHttpContextAccessor context)
+    public SetThemeHandler(IAbpLazyServiceProvider serviceProvider,IHttpContextAccessor context) : base(serviceProvider)
     {
-        this.Context = context;
+        Context = context;
     }
+
+    private IHttpContextAccessor Context { get; init; }
+    private string CookieName => BootswatchConsts.ThemeCookie;
+
 
 
     public override Task<Result<SetThemeCommandResult>> Handle(SetThemeCommand request, CancellationToken cancellationToken)

@@ -2,19 +2,20 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.DependencyInjection;
+using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class ApplyMenuStyleHandler : BaseHandler<ApplyMenuStyleCommand, ApplyMenuStyleResult>
+public class ApplyMenuStyleHandler : AbpHandler.With<ApplyMenuStyleCommand, ApplyMenuStyleResult>
 {
-    public ApplyMenuStyleHandler(NavigationManager navigationManager)
+    public ApplyMenuStyleHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
-        this.NavigationManager = navigationManager;
     }
 
-    private NavigationManager NavigationManager { get; }
+    private NavigationManager NavigationManager => GetRequiredService<NavigationManager>();
     public override Task<Result<ApplyMenuStyleResult>> Handle(ApplyMenuStyleCommand request, CancellationToken cancellationToken)
     {
         try

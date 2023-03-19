@@ -9,7 +9,7 @@ using We.Results;
 
 namespace We.Turf.Handlers;
 
-public class LoadResultatIntoDbHandler : BaseHandler<LoadResultatIntoDbQuery, LoadResultatIntoDbResponse>
+public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery, LoadResultatIntoDbResponse>
 {
     IRepository<Resultat, Guid> _repository => GetRequiredService<IRepository<Resultat, Guid>>();
     public LoadResultatIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)

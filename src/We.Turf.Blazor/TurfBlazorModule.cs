@@ -30,6 +30,7 @@ using Volo.Abp.TenantManagement.Blazor.Server;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme;
 using We.Bootswatch.Server.BasicTheme;
 using We.Turf.Blazor.Bundling;
@@ -106,6 +107,7 @@ public class TurfBlazorModule : AbpModule
         context.Services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblies(
+                typeof(AbpExtensionsModule).Assembly,
                 typeof(TurfApplicationModule).Assembly,
                 typeof(WeAspNetCoreComponentsWebBasicThemeModule).Assembly
             );
@@ -226,9 +228,9 @@ public class TurfBlazorModule : AbpModule
     {
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
-            //options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+           // options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
             //options.ConventionalControllers.Create(typeof(TurfHttpApiModule).Assembly);
-            //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
+           //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
            
         });
     }

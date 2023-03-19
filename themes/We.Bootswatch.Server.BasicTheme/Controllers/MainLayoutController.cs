@@ -8,7 +8,12 @@ namespace We.Bootswatch.Server.BasicTheme.Controllers;
 
 //[Area("Abp")]
 //[ApiController]
-//[Route("Abp/MainLayout/[action]")]
+[Produces("application/json")]
+[Area("Abp")]
+[Route("Abp/MainLayout/[action]")]
+[ApiVersion("1.0")]
+[ApiController]
+[ControllerName("MainLayout")]
 public class MainLayoutController : BaseController
 {
     public MainLayoutController(IMediator mediator) : base(mediator)

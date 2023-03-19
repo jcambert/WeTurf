@@ -1,11 +1,9 @@
-﻿using System;
-using We.AbpExtensions;
-using We.Results;
+﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IGetTriggerQuery:IRequest<Result<GetTriggerResponse>>
+public interface IGetTriggerQuery: IQuery<GetTriggerResponse>
 {
     Guid Id { get; }
 }

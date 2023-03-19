@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.DependencyInjection;
 using We.Bootswatch.Components.Web.BasicTheme.Services;
+using We.Mediatr;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
-public interface IGetCurrentMainLayoutFluidCommand:ICommand<GetCurrentMainLayoutFluidResult>
+public interface IGetCurrentMainLayoutFluidCommand:IQuery<GetCurrentMainLayoutFluidResult>
 {
 }
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
@@ -16,4 +17,4 @@ public class GetCurrentMainLayoutFluidCommand : IGetCurrentMainLayoutFluidComman
     }
 }
 
-public sealed record GetCurrentMainLayoutFluidResult(IFluidable Fluidable);
+public sealed record GetCurrentMainLayoutFluidResult(IFluidable Fluidable): Response;

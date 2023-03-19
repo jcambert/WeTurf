@@ -1,21 +1,22 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.DependencyInjection;
+using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class ApplyLanguageHandler : BaseHandler<ApplyLanguageCommand, ApplyLanguageResult>
+public class ApplyLanguageHandler :AbpHandler.With<ApplyLanguageCommand, ApplyLanguageResult>
 {
-    public ApplyLanguageHandler(NavigationManager navigationManager)
+    public ApplyLanguageHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
-        this.NavigationManager = navigationManager;
     }
 
-    private NavigationManager NavigationManager { get; }
+
+    private NavigationManager NavigationManager =>GetRequiredService<NavigationManager>();
     public override Task<Result<ApplyLanguageResult>> Handle(ApplyLanguageCommand request, CancellationToken cancellationToken)
     {
         try

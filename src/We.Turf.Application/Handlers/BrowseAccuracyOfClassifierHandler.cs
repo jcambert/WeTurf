@@ -4,7 +4,7 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-public class BrowseAccuracyOfClassifierHandler : BaseHandler<BrowseAccuracyOfClassifierQuery, BrowseAccuracyOfClassifierResponse>
+public class BrowseAccuracyOfClassifierHandler :AbpHandler.With<BrowseAccuracyOfClassifierQuery, BrowseAccuracyOfClassifierResponse>
 {
     IRepository<AccuracyPerClassifier> repository => GetRequiredService<IRepository<AccuracyPerClassifier>>();
 

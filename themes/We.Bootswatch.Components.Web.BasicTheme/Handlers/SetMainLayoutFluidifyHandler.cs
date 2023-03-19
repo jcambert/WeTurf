@@ -4,24 +4,24 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
+using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Bootswatch.Components.Web.BasicTheme.Services;
 using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-internal class SetMainLayoutFluidifyHandler : BaseHandler<SetMainLayoutFluidifyCommand, SetMainLayoutFluidifyResult>
+internal class SetMainLayoutFluidifyHandler : AbpHandler.With<SetMainLayoutFluidifyCommand, SetMainLayoutFluidifyResult>
 {
+    public SetMainLayoutFluidifyHandler(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context) : base(serviceProvider)
+    {
+        this.Context= context;
+    }
+
     private string CookieName => BootswatchConsts.FluidCookie;
     private IHttpContextAccessor Context { get; init; }
-    private IAbpLazyServiceProvider ServiceProvider { get; }
-    private IFluidProvider FluidProvider=>ServiceProvider.LazyGetRequiredService<IFluidProvider>();
-    public SetMainLayoutFluidifyHandler(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context)
-    {
-
-        this.Context = context;
-        this.ServiceProvider = serviceProvider;
-    }
+    private IFluidProvider FluidProvider=>GetRequiredService<IFluidProvider>();
+    
     public override Task<Result<SetMainLayoutFluidifyResult>> Handle(SetMainLayoutFluidifyCommand request, CancellationToken cancellationToken)
     {
         try

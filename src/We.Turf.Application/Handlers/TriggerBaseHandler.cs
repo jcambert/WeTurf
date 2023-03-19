@@ -1,12 +1,11 @@
-﻿using MediatR;
-using We.AbpExtensions;
-using We.Results;
+﻿using We.AbpExtensions;
+using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-public abstract class TriggerBaseHandler<TQuery, TResponse> : BaseHandler<TQuery, TResponse>
-    where TQuery : IRequest<Result<TResponse>>
+public abstract class TriggerBaseHandler<TQuery, TResponse> : AbpHandler.With<TQuery, TResponse>
+    where TQuery : IQuery<TResponse>
     where TResponse:Response
 {
     protected IRepository<ScrapTrigger, Guid> Repository => GetRequiredService<IRepository<ScrapTrigger, Guid>>();

@@ -4,7 +4,7 @@ using We.Results;
 
 namespace We.Turf.Handlers;
 
-public class LoadToPredictIntoDatabaseHandler : BaseHandler<LoadToPredictIntoDatabaseQuery, LoadToPredictIntoDatabaseResponse>
+public class LoadToPredictIntoDatabaseHandler : AbpHandler.With<LoadToPredictIntoDatabaseQuery, LoadToPredictIntoDatabaseResponse>
 {
     public LoadToPredictIntoDatabaseHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {

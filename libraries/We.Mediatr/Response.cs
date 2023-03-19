@@ -1,9 +1,11 @@
-﻿/*using We.Results;
+﻿using We.Results;
 
-namespace We.AbpExtensions;
+namespace We.Mediatr;
 
 public record Response
 {
     public static implicit operator Result<Response>(Response response)
         => Result.Create(response);
-}*/
+}
+
+

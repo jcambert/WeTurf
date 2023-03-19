@@ -4,7 +4,7 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-public class BrowseResultatOfPredictedHandler : BaseHandler<BrowseResultatOfPredictedQuery, BrowseResultatOfPredictedResponse>
+public class BrowseResultatOfPredictedHandler : AbpHandler.With<BrowseResultatOfPredictedQuery, BrowseResultatOfPredictedResponse>
 {
 
     IRepository<ResultatOfPredicted, Guid> _repository => GetRequiredService<IRepository<ResultatOfPredicted, Guid>>();

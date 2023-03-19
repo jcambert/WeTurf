@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*using Microsoft.AspNetCore.Mvc;
 using We.Results;
 using We.Turf.Queries;
 
 namespace We.Turf.Controllers;
 
-[ApiController]
-[Area("pmu")]
-[Route("trigger/[action]")]
+//[ApiController]
+//[Area("pmu")]
+//[Route("trigger/[action]")]
+
 public class TriggerController : TurfController, IPmuTriggerAppService
 {
     protected readonly IPmuTriggerAppService pmuService;
@@ -29,3 +30,4 @@ public class TriggerController : TurfController, IPmuTriggerAppService
     public Task<Result<UpdateTriggerResponse>> UpdateAsync([FromBody] UpdateTriggerQuery query)
     =>pmuService.UpdateAsync(query);
 }
+*/

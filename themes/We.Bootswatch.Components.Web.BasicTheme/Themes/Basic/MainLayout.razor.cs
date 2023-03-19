@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Components.Notifications;
+using We.AbpExtensions.Queries;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Bootswatch.Components.Web.BasicTheme.Services;
 using We.Results;
@@ -25,29 +26,42 @@ public partial class MainLayout : IDisposable
     /* protected override void OnInitialized()
      {
      }*/
-
+    string InitializationError = string.Empty;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
         NavigationManager.LocationChanged += OnLocationChanged;
         Style = MenuStyleManager.GetCurrent();
         await Result
             .Create(new GetCurrentMainLayoutFluidCommand())
             .Bind(c => Mediator.Send(c))
             .Match(
-                r =>
+                 r =>
                 {
                     Fluidable = r.Fluidable;
-                    return new NoContentResult();
+                    return  r.AsActionResult();
                 },
-                r =>
+                 (Result r) =>
                 {
-                    UiNotificationService.Error(r.Errors.JoinAsString("\n"));
-                    return new BadRequestResult();
+                    InitializationError = r.Errors.AsString();
+                    return r.AsActionResult();
                 }
             );
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(200);
+
+            await Mediator.Send(UiNotificationQuery.Info("Page Loaded","Message"));
+
+            if(!string.IsNullOrEmpty( InitializationError))
+                await Mediator.Send(UiNotificationQuery.Error(InitializationError,"Error"));
+        }
+    }
     public void Dispose()
     {
         if (NavigationManager is not null)
@@ -61,7 +75,7 @@ public partial class MainLayout : IDisposable
     }
 
     public IFluidable Fluidable { get; protected set; }
-    public bool IsFluid => Fluidable.IsFluid;
+    public bool IsFluid => Fluidable?.IsFluid ?? false;
     public IWeMenuStyle Style { get; set; }
 
     public async Task ChangeFluid(IFluidable fluidable)
@@ -71,23 +85,17 @@ public partial class MainLayout : IDisposable
             await Result
                 .Create(new ApplyMainLayoutFluidifyCommand(fluidable))
                 .Bind(c => Mediator.Send(c))
-                .Match(
-                    r =>
+                .MatchAsync(
+                    r =>r.AsActionResultAsync()
+                    ,
+                    async r =>
                     {
-                        //MainLayout.ChangeFluid(fluidable);
-                        //notify.Success("Now it's " + (value ? "Fluid" : "Not Fluid"));
-                        return new NoContentResult();
-                    },
-                    r =>
-                    {
-                        UiNotificationService.Error(r.Errors.JoinAsString("\n"));
-                        return new BadRequestResult();
+                        
+                        await Mediator.Send(UiNotificationQuery.Error(r.Errors.AsString()));
+                        return r.AsActionResult();
                     }
                 );
-            //Fluidable = fluid;
-           // UiNotificationService.Success("Set Main Layout to " + Fluidable.Name);
 
-            //StateHasChanged();
         }
     }
     public async Task ChangeFluid(bool fluid)

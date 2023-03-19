@@ -1,10 +1,8 @@
-﻿using System;
-using We.AbpExtensions;
-using We.Results;
+﻿using We.Mediatr;
 
 namespace We.Turf.Queries;
 
-public interface IDeleteTriggerQuery:IRequest<Result< DeleteTriggerResponse>>
+public interface IDeleteTriggerQuery: IQuery< DeleteTriggerResponse>
 {
     Guid Id { get; set; }   
 }

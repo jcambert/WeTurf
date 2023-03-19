@@ -4,7 +4,7 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-public class BrowseResultatPerClassifierHandler : BaseHandler<BrowseResultatPerClassifierQuery, BrowseResultatPerClassifierResponse>
+public class BrowseResultatPerClassifierHandler : AbpHandler.With<BrowseResultatPerClassifierQuery, BrowseResultatPerClassifierResponse>
 {
     IRepository<ResultatPerClassifier> repository => GetRequiredService<IRepository<ResultatPerClassifier>>();
     public BrowseResultatPerClassifierHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)

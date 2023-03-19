@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.DependencyInjection;
 using We.Bootswatch.Components.Web.BasicTheme.Services;
+using We.Mediatr;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
-public interface IApplyMainLayoutFluidifyCommand : ICommand<ApplyMainLayoutFluidifyResult>
+public interface IApplyMainLayoutFluidifyCommand : IQuery<ApplyMainLayoutFluidifyResult>
 {
     IFluidable Value { get;init; }
 }
@@ -20,4 +21,4 @@ public class ApplyMainLayoutFluidifyCommand : IApplyMainLayoutFluidifyCommand
     public IFluidable Value { get; init; }
 }
 
-public sealed record ApplyMainLayoutFluidifyResult();
+public sealed record ApplyMainLayoutFluidifyResult():Response;

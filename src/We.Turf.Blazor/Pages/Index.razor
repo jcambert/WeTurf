@@ -1,6 +1,29 @@
 ﻿@page "/"
-<ProgrammeHeader></ProgrammeHeader>
+<Row>
+    <Column ColumnSize="ColumnSize.Is8">
+        MAIN
+    </Column>
+    <Column ColumnSize="ColumnSize.Is4">
 
+        <Div Class="programme-tab container">
+            <Row>
+                <Column ColumnSize="ColumnSize.IsFull">
+
+                    <ProgrammeHeader></ProgrammeHeader>
+                </Column>
+
+            </Row>
+            <Row>
+                <Column ColumnSize="ColumnSize.IsFull">
+                    <ProgrammeContent></ProgrammeContent>
+
+                </Column>
+
+            </Row>
+        </Div>
+    </Column>
+
+</Row>
 @code {
 
 }

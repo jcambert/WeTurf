@@ -1,10 +1,9 @@
-﻿using We.AbpExtensions;
-using We.Results;
+﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IBrowseAccuracyOfClassifierQuery:IRequest<Result<BrowseAccuracyOfClassifierResponse>>
+public interface IBrowseAccuracyOfClassifierQuery:IQuery<BrowseAccuracyOfClassifierResponse>
 {
 }
 

@@ -4,7 +4,7 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-public class BrowsePredictionPerClassifierHandler : BaseHandler<BrowsePredictionPerClassifierQuery, BrowsePredictionPerClassifierResponse>
+public class BrowsePredictionPerClassifierHandler : AbpHandler.With<BrowsePredictionPerClassifierQuery, BrowsePredictionPerClassifierResponse>
 {
     public BrowsePredictionPerClassifierHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
