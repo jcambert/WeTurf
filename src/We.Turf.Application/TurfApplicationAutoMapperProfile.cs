@@ -18,5 +18,6 @@ public class TurfApplicationAutoMapperProfile : Profile
         CreateMap<ScrapTrigger, ScrapTriggerDto>().ReverseMap();
         CreateMap<LastScrapped,LastScrappedDto>().ReverseMap();
         CreateMap<AccuracyPerClassifier, AccuracyPerClassifierDto>().ReverseMap();  
+        CreateMap<Course,CourseDto>().ReverseMap();
     }
 }

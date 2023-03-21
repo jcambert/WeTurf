@@ -157,7 +157,7 @@ audio, canvas, embed, iframe, img, object, svg, video {
     padding: 0px;
     position: relative;
     z-index: 0;
-
+    height:116px;
 }
 
 .course-link{
@@ -166,7 +166,7 @@ audio, canvas, embed, iframe, img, object, svg, video {
 
 .course-button {
     margin-bottom: 8px;
-    box-shadow: rgba(128, 128, 128, 0.2) 0px 3px 25px;
+    box-shadow: rgba(128, 128, 128, 0.5) 3px 3px 25px;
     
     touch-action: manipulation;
     cursor: pointer;
@@ -236,69 +236,9 @@ audio, canvas, embed, iframe, img, object, svg, video {
     z-index: 0;
 }
 
-.course-card-container-numbers {
-    background-color: rgb(21, 41, 40);
-    margin-top: 2px;
-    margin-right: 16px;
-    width: 52px;
-    height: 52px;
-    -webkit-box-direction: normal;
-    -webkit-box-orient: vertical;
-    flex-direction: column;
-    -webkit-box-pack: center;
-    justify-content: center;
-    border-radius: 17px;
-    -webkit-box-align: stretch;
-    -webkit-box-direction: normal;
-    -webkit-box-orient: vertical;
-    align-items: stretch;
-    border: 0px solid black;
-    box-sizing: border-box;
-    display: flex;
-    flex-basis: auto;
-    flex-direction: column;
-    flex-shrink: 0;
-    margin: 0px;
-    min-height: 0px;
-    min-width: 0px;
-    padding: 0px;
-    position: relative;
-    z-index: 0;
-}
+   
 
-    .course-card-container-numbers > .reunion, .course-card-container-numbers > .course {
-        color: rgb(255, 255, 255);
-        line-height: 24px;
-        font-size: 20px;
-        font-family: Roboto;
-        text-align: center;
-        border: 0px solid black;
-        box-sizing: border-box;
-        display: inline;
-        margin: 0px;
-        padding: 0px;
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
-    }
 
-.course-card-header-content1, .course-card-header-content2 {
-    text-transform: capitalize;
-    line-height: 18px;
-    font-size: 18px;
-    color: rgb(128, 128, 128);
-    font-family: Roboto;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border: 0px solid black;
-    box-sizing: border-box;
-    display: inline;
-    margin: 0px;
-    padding: 0px;
-    overflow-wrap: break-word;
-    background-color: rgba(0, 0, 0, 0);
-}
 
 .course-resume, .course-resultat {
     border: 0px solid black;

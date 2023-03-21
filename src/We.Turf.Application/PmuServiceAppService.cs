@@ -22,12 +22,15 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
     public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query)
     => Mediator.Send(query);
 
+    public Task<Result<LoadCourseIntoDbResponse>> LoadCourseIntoDb(LoadCourseIntoDbQuery query)
+    =>Mediator.Send(query);
+
     public Task<Result<LoadPredictedIntoDbResponse>> LoadPredictedIntoDb(LoadPredictedIntoDbQuery query)
     => Mediator.Send(query);
 
     public Task<Result<LoadResultatIntoDbResponse>> LoadResultatIntoDb(LoadResultatIntoDbQuery query)
     => Mediator.Send(query);
 
-    public Task<Result< LoadToPredictIntoDatabaseResponse>> LoadToPredictIntoDatabase(LoadToPredictIntoDatabaseQuery query)
+    public Task<Result< LoadToPredictIntoDatabaseResponse>> LoadToPredictIntoDatabase(LoadToPredictIntoDbQuery query)
     =>Mediator.Send(query);
 }

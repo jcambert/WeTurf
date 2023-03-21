@@ -39,6 +39,7 @@ public class TurfDbContext :
      * More info: Replacing a DbContext of a module ensures that the related module
      * uses this DbContext on runtime. Otherwise, it will use its own DbContext class.
      */
+    public DbSet<Course> Courses { get; set; }
     public DbSet<Predicted> Predicteds{ get; set; }
     public DbSet<Resultat> Resultats{ get; set; }
     public DbSet<ResultatOfPredicted> ResultatOfPredicted { get; set; }
@@ -94,6 +95,16 @@ public class TurfDbContext :
         //    //...
         //});
 
+        builder.Entity<Course>(b =>
+        {
+            b.ToTable(TurfConsts.DbTablePrefix + nameof(Course).ToLower(), TurfConsts.DbSchema); 
+            b.ConfigureByConvention();
+            b.HasIndex(x => x.Date);
+            b.HasIndex(x => x.HippoCode);
+            b.HasIndex(x => x.Reunion);
+            b.HasIndex(x => x.Numero);
+            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        });
         builder.Entity<Predicted>(b =>
         {
             b.ToTable(TurfConsts.DbTablePrefix + nameof(Predicted).ToLower(), TurfConsts.DbSchema);

@@ -2,7 +2,7 @@
 
 namespace We.Turf.Queries;
 
-public interface ILoadToPredictIntoDatabaseQuery:IQuery<LoadToPredictIntoDatabaseResponse>
+public interface ILoadToPredictIntoDbQuery:IQuery<LoadToPredictIntoDatabaseResponse>
 {
 }
 

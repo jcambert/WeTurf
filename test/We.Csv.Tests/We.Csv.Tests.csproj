@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\We.Csv\We.Csv.csproj" />
+    <ProjectReference Include="..\..\src\We.Turf.Domain\We.Turf.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

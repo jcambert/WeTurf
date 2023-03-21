@@ -263,6 +263,7 @@ public class TurfBlazorModule : AbpModule
         app.UseHttpsRedirection();
         app.UseCorrelationId();
         app.UseStaticFiles();
+        
         app.UseRouting();
         app.UseAuthentication();
         app.UseAbpOpenIddictValidation();

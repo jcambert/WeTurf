@@ -42,15 +42,19 @@ public class PmuController : TurfController, IPmuServiceAppService
     public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query)
     => pmuService.BrowseResultatPerClassifier(query);
 
-    [HttpGet]
+    [HttpPost]
+    public Task<Result<LoadCourseIntoDbResponse>> LoadCourseIntoDb( LoadCourseIntoDbQuery query)
+    => pmuService.LoadCourseIntoDb(query);
+
+    [HttpPost]
     public Task<Result<LoadPredictedIntoDbResponse>> LoadPredictedIntoDb(LoadPredictedIntoDbQuery query)
     =>pmuService.LoadPredictedIntoDb(query);
 
-    [HttpGet]
+    [HttpPost]
     public Task<Result<LoadResultatIntoDbResponse>> LoadResultatIntoDb(LoadResultatIntoDbQuery query)
     => pmuService.LoadResultatIntoDb(query);
 
-    [HttpGet]
-    public Task<Result<LoadToPredictIntoDatabaseResponse>> LoadToPredictIntoDatabase(LoadToPredictIntoDatabaseQuery query)
+    [HttpPost]
+    public Task<Result<LoadToPredictIntoDatabaseResponse>> LoadToPredictIntoDatabase(LoadToPredictIntoDbQuery query)
     =>pmuService.LoadToPredictIntoDatabase(query);
 }

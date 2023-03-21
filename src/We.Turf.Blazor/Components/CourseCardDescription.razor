@@ -1,0 +1,14 @@
+﻿<Column ColumnSize="ColumnSize.Is8" Class="course-card-description ms-2">
+    <Row>
+        <h3 aria-level="3" dir="auto" role="heading" >@Description1</h3>
+    </Row>
+    <Row>
+        <h3 aria-level="3" dir="auto" role="heading">@Description2</h3>
+
+    </Row>
+</Column>
+
+@code {
+    [Parameter] public string Description1 { get; set; }
+    [Parameter] public string Description2 { get; set; }
+}

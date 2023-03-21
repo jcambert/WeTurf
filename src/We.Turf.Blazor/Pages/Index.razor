@@ -1,4 +1,11 @@
 ﻿@page "/"
+@page "/{Date}"
+@using System.ComponentModel;
+@using System.Runtime.CompilerServices;
+@using We.Turf.Entities;
+@using We.Utilities;
+@inject IPmuServiceAppService pmuService;
+@implements INotifyPropertyChanged
 <Row>
     <Column ColumnSize="ColumnSize.Is8">
         <Div Class="main-tab container">
@@ -18,7 +25,9 @@
             </Row>
             <Row>
                 <Column ColumnSize="ColumnSize.IsFull">
-                    <ProgrammeContent></ProgrammeContent>
+                    <CascadingValue Name="Predicteds" Value="Predicteds">
+                        <ProgrammeContent ></ProgrammeContent>
+                    </CascadingValue>
 
                 </Column>
 
@@ -28,5 +37,63 @@
 
 </Row>
 @code {
+    private DateOnly _date;
+    private DateOnly Today;
+    private IDisposable _whenDateChanged;
+    public Index()
+    {
+        _whenDateChanged = this.WhenPropertyChanged()
+       .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
+       .Select(e => _date)
+       .Subscribe(async date => await LoadPredictedAsync(date));
+    }
+    protected override void OnInitialized()
+    {
+        Today = DateOnly.FromDateTime(DateTime.Now);
 
+    }
+
+    [Parameter]
+    public string Date
+    {
+        get => _date.ToShortDateString();
+        set
+        {
+            var res = value.TryParseToDateOnly(out var __date);
+            if (!res)
+            {
+                __date = DateOnlyExtensions.Now;
+            }
+            CurrentDate = __date;
+
+        }
+    }
+    internal DateOnly CurrentDate
+    {
+        get => _date;
+        set
+        {
+            _date = value;
+            NotifyPropertyChanged();
+        }
+    }
+    private List<PredictedDto> Predicteds { get; set; }
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private async Task LoadPredictedAsync(DateOnly date)
+    {
+        var t = pmuService.BrowsePrediction(new() { Date = date });
+        var (res, response) = await t;
+        if (res)
+        {
+            Predicteds = response.Predicteds;
+
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+    protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+  
 }

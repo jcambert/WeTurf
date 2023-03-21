@@ -1,0 +1,18 @@
+﻿h3 {
+    text-transform: capitalize;
+    line-height: 18px;
+    font-size: 18px;
+    color: rgb(128, 128, 128);
+    font-family: Roboto;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border: 0px solid black;
+    box-sizing: border-box;
+    display: inline;
+    margin: 0px;
+    padding: 0px;
+    overflow-wrap: break-word;
+    background-color: rgba(0, 0, 0, 0);
+}
