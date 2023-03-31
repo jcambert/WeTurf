@@ -4,6 +4,9 @@ body {
     background-repeat: no-repeat;
 }
 */
+body{
+    min-width:370px;
+}
 audio, canvas, embed, iframe, img, object, svg, video {
     display: block;
     vertical-align: middle;
@@ -27,7 +30,7 @@ audio, canvas, embed, iframe, img, object, svg, video {
 }
 
 .programme-header {
-    height: 138px;
+    min-height: 138px;
 }
 
 .programme-calendar-button {
@@ -63,7 +66,7 @@ audio, canvas, embed, iframe, img, object, svg, video {
     cursor: pointer;
     user-select: none;
     transition-property: opacity;
-    padding: 10px;
+    padding: 13px;
     border-radius: 12px;
     border: 0px solid black;
     box-sizing: border-box;

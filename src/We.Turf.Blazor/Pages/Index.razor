@@ -6,14 +6,9 @@
 @using We.Utilities;
 @inject IPmuServiceAppService pmuService;
 @implements INotifyPropertyChanged
-<Row>
-    <Column ColumnSize="ColumnSize.Is8">
-        <Div Class="main-tab container">
-            MAIN
-
-        </Div>
-    </Column>
-    <Column ColumnSize="ColumnSize.Is4">
+<Row >
+   
+    <Column Class="col-sm-8 col-md-6 col-lg-5  mx-auto ">
 
         <Div Class="programme-tab container">
             <Row>
@@ -34,7 +29,12 @@
             </Row>
         </Div>
     </Column>
+    <Column Class="col-lg-7 d-none d-lg-block">
+        <Div Class="main-tab container">
+            MAIN
 
+        </Div>
+    </Column>
 </Row>
 @code {
     private DateOnly _date;
