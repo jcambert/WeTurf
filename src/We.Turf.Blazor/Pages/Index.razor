@@ -14,7 +14,9 @@
             <Row>
                 <Column ColumnSize="ColumnSize.IsFull">
 
-                    <ProgrammeHeader></ProgrammeHeader>
+                    <CascadingValue Name="Date" Value="CurrentDate" TValue="DateOnly" >
+                        <ProgrammeHeader DateChanged="SetDate"></ProgrammeHeader>
+                    </CascadingValue>
                 </Column>
 
             </Row>
@@ -36,6 +38,7 @@
         </Div>
     </Column>
 </Row>
+
 @code {
     private DateOnly _date;
     private DateOnly Today;
@@ -76,6 +79,11 @@
             _date = value;
             NotifyPropertyChanged();
         }
+    }
+
+    private void SetDate(DateOnly d)
+    {
+        CurrentDate = d;
     }
     private List<PredictedDto> Predicteds { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;

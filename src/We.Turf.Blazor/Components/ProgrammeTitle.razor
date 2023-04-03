@@ -1,26 +1,68 @@
 ﻿<Column ColumnSize="ColumnSize.Is1">
-    <Button Class="btn-outline-success">
-        <i class="fa fa-calendar" aria-hidden="true"></i>
-    </Button>
+    <Field>
+        <Button Class="btn-outline-success" Clicked="@(()=>dateEditRef.ShowPicker())">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+        </Button>
+    </Field>
+   
+    <Field Visibility="Visibility.Invisible">
+        <DateEdit @ref="@dateEditRef" TValue="DateOnly" Date="_internalDate" DateChanged="DateChanged" />
+    </Field>
 </Column>
-<Column Class="col-sm-8 col-md-4">
-    <Div dir="auto" class="programme-date ml-4 text-start">Mer. 1er Févr.</Div>
-</Column>
-<Column Class="mx-auto"/>
-<Column ColumnSize="ColumnSize.Is1" Class="pt-2">
-    <Button Class="btn-outline-success">
-        <i class="fa fa-chevron-left" aria-hidden="true"></i>
-    </Button>
-    
-</Column>
-<Column ColumnSize="ColumnSize.Is1" Class="pt-2">
-    <Button Class="btn-outline-success">
-        <i class="fa fa-chevron-right" aria-hidden="true"></i>
-    </Button>
-</Column>
+<Column Class="col-sm-8 col-md-6">
+    <Div dir="auto" class="programme-date ml-4 text-start">@(_internalDate.ToString("ddd d MMMM yyyy"))</Div>
+    </Column>
+    <Column Class="mx-auto" />
+    <Column ColumnSize="ColumnSize.Is1" Class="pt-2">
+        <Button Class="btn-outline-success" Clicked="OnDateChangeToYesterday">
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        </Button>
+
+    </Column>
+    <Column ColumnSize="ColumnSize.Is1" Class="pt-2">
+        <Button Class="btn-outline-success" Clicked="OnDateChangeToTomorow">
+            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </Button>
+    </Column>
 
 
 
-@code {
+    @code {
+    public DateOnly _internalDate;
+    DateEdit<DateOnly> dateEditRef;
+    [Parameter]
+    public DateOnly? Date {
+        get; 
+        set; 
+    }
+    [Parameter]
+    public EventCallback<DateOnly> OnDateChanged { get; set; }
+    [Parameter]
+    public DateOnly? InitialDate { get; set; }
 
+    private async Task OnDateChangeToYesterday()
+    {
+        await DateChanged(_internalDate.AddDays(-1));
+    }
+
+    private async Task OnDateChangeToTomorow()
+    {
+        await DateChanged(_internalDate.AddDays(1));
+    }
+    private void SetDate(DateOnly? d)
+    {
+        _internalDate = d ?? DateOnly.FromDateTime(DateTime.Now);
+    }
+    private async Task DateChanged(DateOnly d)
+    {
+        SetDate(d);
+        await OnDateChanged.InvokeAsync(d);
+        
+    }
+    protected override Task OnInitializedAsync()
+    {
+        SetDate(InitialDate);
+
+        return base.OnInitializedAsync();
+    }
 }

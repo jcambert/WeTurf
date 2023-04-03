@@ -2,7 +2,10 @@
     <Column ColumnSize="ColumnSize.IsFull">
         <Row Class="ps-2 pe-4 pb-2 pt-2">
 
-            <ProgrammeTitle></ProgrammeTitle>
+            <ProgrammeTitle 
+                InitialDate="Date"
+                OnDateChanged="DateChanged"
+            />
         </Row>
         <Row Class="ps-2 pe-4 pb-2 pt-2">
 
@@ -14,5 +17,21 @@
 </Row>
 
 @code {
-
+    [CascadingParameter(Name ="Date")]
+    public DateOnly Date { 
+        get; 
+        set; }
+    [Parameter]
+    public EventCallback<DateOnly> DateChanged { get; set; }
+    /*private void DateChanged(DateOnly d)
+    {
+        Date = d;
+      //  StateHasChanged();
+    }*/
+    protected override Task OnInitializedAsync()
+    {
+        /*if (Date == null)
+            Date = DateOnly.FromDateTime(DateTime.Now);*/
+        return base.OnInitializedAsync();
+    }
 }
