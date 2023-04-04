@@ -1,5 +1,4 @@
-﻿using Volo.Abp;
-using We.Results;
+﻿using We.Results;
 
 namespace We.Turf;
 
@@ -24,6 +23,9 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
 
     public Task<Result<LoadCourseIntoDbResponse>> LoadCourseIntoDb(LoadCourseIntoDbQuery query)
     =>Mediator.Send(query);
+
+    public Task<Result<LoadOutputFolderIntoDbResponse>> LoadOutputFolderIntoDb(LoadOutputFolderIntoDbQuery query)
+    => Mediator.Send(query);
 
     public Task<Result<LoadPredictedIntoDbResponse>> LoadPredictedIntoDb(LoadPredictedIntoDbQuery query)
     => Mediator.Send(query);

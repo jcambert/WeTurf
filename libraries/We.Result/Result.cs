@@ -6,7 +6,7 @@
 /// </summary>
 public abstract class Result : IResult
 {
-    private readonly List<Error> _errors;
+    protected readonly List<Error> _errors;
     private readonly List<Error> _empty = new();
     protected Result(bool success, params string[] errors)
     {
@@ -29,7 +29,7 @@ public abstract class Result : IResult
     /// <summary>
     /// Errors if result is failure, empty if success
     /// </summary>
-    public IReadOnlyList<Error> Errors => IsFailure ? _errors : _empty;
+    public virtual IReadOnlyList<Error> Errors => IsFailure ? _errors : _empty;
 
     internal void AddError(Error error)
     {
@@ -64,6 +64,23 @@ public abstract class Result : IResult
     /// <param name="exceptions"></param>
     /// <returns></returns>
     public static Result<T> Failure<T>(params Exception[] exceptions)=> new Failure<T>(exceptions);
+
+    /// <summary>
+    /// Create a Success with failure Result based on Exception
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="exceptions"></param>
+    /// <returns></returns>
+    public static Result<T> ValidWithFailure<T>(T result,params Exception[] exceptions) => new ValidWithFailure<T>(result,exceptions);
+
+    /// <summary>
+    /// Create a Success with failure Result based on Exception
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="result"></param>
+    /// <param name="errors"></param>
+    /// <returns></returns>
+    public static Result<T> ValidWithFailure<T>(T result, params Error[] errors) => new ValidWithFailure<T>(result,errors);
 
     /// <summary>
     /// Create a success Result

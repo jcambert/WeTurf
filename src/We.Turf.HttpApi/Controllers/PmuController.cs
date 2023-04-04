@@ -47,6 +47,10 @@ public class PmuController : TurfController, IPmuServiceAppService
     => pmuService.LoadCourseIntoDb(query);
 
     [HttpPost]
+    public Task<Result<LoadOutputFolderIntoDbResponse>> LoadOutputFolderIntoDb(LoadOutputFolderIntoDbQuery query)
+    => pmuService.LoadOutputFolderIntoDb(query);
+
+    [HttpPost]
     public Task<Result<LoadPredictedIntoDbResponse>> LoadPredictedIntoDb(LoadPredictedIntoDbQuery query)
     =>pmuService.LoadPredictedIntoDb(query);
 

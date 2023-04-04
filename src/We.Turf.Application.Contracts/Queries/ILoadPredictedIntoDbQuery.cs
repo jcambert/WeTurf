@@ -5,7 +5,8 @@ namespace We.Turf.Queries;
 
 public interface ILoadPredictedIntoDbQuery:IQuery< LoadPredictedIntoDbResponse>
 {
-    string Filename { get; set; }   
+    string Filename { get; set; }
+    bool Rename { get; set; }
 }
 
 public sealed record LoadPredictedIntoDbResponse(List<PredictedDto> Predicted):Response;

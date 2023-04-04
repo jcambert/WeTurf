@@ -1,4 +1,6 @@
-﻿namespace We.Results;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace We.Results;
 
 /// <summary>
 /// a Valid Result
@@ -24,5 +26,30 @@ public sealed class Valid<T> : Result<T>,IValid
     {
         
     }
+
+}
+
+public sealed class ValidWithFailure : Result,IValidWithFailure
+{
+    internal ValidWithFailure(params Error[] errors) : base(true, errors)
+    {
+    }
+
+    internal ValidWithFailure(params Exception[] exceptions) : base(true, Error.Create(exceptions))
+    {
+    }
+    public override IReadOnlyList<Error> Errors =>_errors ;
+}
+
+public sealed class ValidWithFailure<T> : Result<T>, IValidWithFailure<T>
+{
+    internal ValidWithFailure(T result,params Error[] errors) : base(result,true, errors)
+    {
+    }
+
+    internal ValidWithFailure(T result,params Exception[] exceptions) : base(result,true, Error.Create(exceptions))
+    {
+    }
+    public override IReadOnlyList<Error> Errors => _errors;
 
 }

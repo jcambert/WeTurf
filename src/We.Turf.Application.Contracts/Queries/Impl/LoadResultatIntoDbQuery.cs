@@ -5,4 +5,5 @@
 public class LoadResultatIntoDbQuery : ILoadResultatIntoDbQuery
 {
     public string Filename { get; set; }
+    public bool Rename { get; set; } = true;
 }

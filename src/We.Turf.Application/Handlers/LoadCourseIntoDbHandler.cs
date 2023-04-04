@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Reactive.Linq;
-using Volo.Abp.Domain.Repositories;
 using We.AbpExtensions;
 using We.Csv;
 using We.Results;
@@ -40,7 +39,8 @@ public class LoadCourseIntoDbHandler : AbpHandler.With<LoadCourseIntoDbQuery, Lo
                     },
                         () =>
                         {
-                            File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
+                            if (request.Rename)
+                                File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
                         });
 
                 await reader.Start(cancellationToken);

@@ -16,7 +16,7 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
     {
     }
 
-    public override async Task<Result< LoadResultatIntoDbResponse>> Handle(LoadResultatIntoDbQuery request, CancellationToken cancellationToken)
+    public override async Task<Result<LoadResultatIntoDbResponse>> Handle(LoadResultatIntoDbQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -37,7 +37,8 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
                             resultats.Add(o.Value);
                         }, () =>
                         {
-                            File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
+                            if (request.Rename)
+                                File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
                         });
 
                 await reader.Start(cancellationToken);
@@ -46,8 +47,9 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
 
                 return new LoadResultatIntoDbResponse(ObjectMapper.Map<List<Resultat>, List<ResultatDto>>(resultats));
             }
-            return Result.Failure<LoadResultatIntoDbResponse>(new Error( $"{request.Filename} n'existe pas" ));
-        }catch(Exception ex)
+            return Result.Failure<LoadResultatIntoDbResponse>(new Error($"{request.Filename} n'existe pas"));
+        }
+        catch (Exception ex)
         {
             return Result.Failure<LoadResultatIntoDbResponse>(ex);
         }

@@ -42,7 +42,8 @@ public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQue
                         },
                         () =>
                         {
-                            File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
+                            if (request.Rename)
+                                File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
                         });
 
                 await reader.Start(cancellationToken);

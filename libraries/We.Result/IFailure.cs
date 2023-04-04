@@ -16,3 +16,5 @@ public interface IFailure<T> : IFailure, IResult<T>
 {
 
 }
+
+

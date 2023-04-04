@@ -4,5 +4,6 @@
 [ExposeServices(typeof(ILoadPredictedIntoDbQuery))]
 public class LoadPredictedIntoDbQuery : ILoadPredictedIntoDbQuery
 {
-    public string Filename { get; set; } 
+    public string Filename { get; set; }
+    public bool Rename { get; set; } = true;
 }
