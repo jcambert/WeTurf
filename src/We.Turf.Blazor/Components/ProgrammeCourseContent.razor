@@ -1,0 +1,37 @@
+﻿@using We.Turf.Entities;
+@if (Courses != null)
+{
+    @foreach (var course in Courses.OrderBy(x => x.Reunion).ThenBy(x => x.Course))
+    {
+        <CourseCard>
+            <Column ColumnSize="ColumnSize.IsFull">
+
+                <Row>
+                    <CourseCardNumber Reunion="course.Reunion" Course="course.Course"/>
+                    <CourseCardDescription Description1="@(course.Hippodrome)" Description2="@(course.Libelle)" />
+                    <Column ColumnSize="ColumnSize.Is2">
+
+                    </Column>
+                </Row>
+                <Row>
+                    <Column ColumnSize="ColumnSize.Is2">&nbsp;</Column>
+                    <Column ColumnSize="ColumnSize.Is8">
+
+                        <Row Class="course-resume ms-1">@course.Discipline - @course.Distance @course.DistanceUnite - @course.NombrePartants Partants</Row>
+                        <Row Class="course-resultat ms-1">
+                            @( string.Join('-', course.Arrivee.Take(5)))
+                        </Row>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is2">&nbsp;</Column>
+
+                </Row>
+            </Column>
+        </CourseCard>
+    }
+}
+
+
+@code {
+    [CascadingParameter(Name = "ProgrammeCourses")] public List<ProgrammeCourseDto> Courses { get; set; }
+
+}

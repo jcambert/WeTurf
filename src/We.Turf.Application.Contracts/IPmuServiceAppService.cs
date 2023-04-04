@@ -4,6 +4,7 @@ namespace We.Turf;
 
 public interface IPmuServiceAppService:IApplicationService
 {
+    Task<Result<BrowseProgrammeCourseResponse>> BrowseProgrammeCourse(BrowseProgrammeCourseQuery query);
     Task<Result<LoadOutputFolderIntoDbResponse>> LoadOutputFolderIntoDb(LoadOutputFolderIntoDbQuery query);
     Task<Result<LoadCourseIntoDbResponse>> LoadCourseIntoDb(LoadCourseIntoDbQuery query);
     Task<Result< LoadToPredictIntoDatabaseResponse>> LoadToPredictIntoDatabase(LoadToPredictIntoDbQuery query);

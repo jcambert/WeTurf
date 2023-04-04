@@ -1,11 +1,16 @@
 ﻿<Column ColumnSize="ColumnSize.Is8" Class="course-card-description ms-2">
+    @if(!string.IsNullOrEmpty(Description1)){
     <Row>
-        <h3 aria-level="3" dir="auto" role="heading" >@Description1</h3>
+        <h3 aria-level="3" dir="auto" role="heading">@Description1</h3>
     </Row>
-    <Row>
-        <h3 aria-level="3" dir="auto" role="heading">@Description2</h3>
+    }
+    @if(!string.IsNullOrEmpty(Description2)){
+        <Row>
+            <h3 aria-level="3" dir="auto" role="heading">@Description2</h3>
 
-    </Row>
+        </Row>
+
+    }
 </Column>
 
 @code {

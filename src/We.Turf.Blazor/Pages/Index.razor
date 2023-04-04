@@ -6,15 +6,15 @@
 @using We.Utilities;
 @inject IPmuServiceAppService pmuService;
 @implements INotifyPropertyChanged
-<Row >
-   
+<Row>
+
     <Column Class="col-sm-8 col-md-6 col-lg-5  mx-auto ">
 
         <Div Class="programme-tab container">
             <Row>
                 <Column ColumnSize="ColumnSize.IsFull">
 
-                    <CascadingValue Name="Date" Value="CurrentDate" TValue="DateOnly" >
+                    <CascadingValue Name="Date" Value="CurrentDate" TValue="DateOnly">
                         <ProgrammeHeader DateChanged="SetDate"></ProgrammeHeader>
                     </CascadingValue>
                 </Column>
@@ -22,9 +22,19 @@
             </Row>
             <Row>
                 <Column ColumnSize="ColumnSize.IsFull">
-                    <CascadingValue Name="Predicteds" Value="Predicteds">
-                        <ProgrammeContent ></ProgrammeContent>
-                    </CascadingValue>
+                    @if (CurrentDate == Today)
+                    {
+                        <CascadingValue Name="Predicteds" Value="Predicteds">
+                            <ProgrammeContent/>
+                        </CascadingValue>
+
+                    }
+                    else if (CurrentDate < Today)
+                    {
+                        <CascadingValue Name="ProgrammeCourses" Value="ProgrammeCourses">
+                            <ProgrammeCourseContent/>
+                        </CascadingValue>
+                    }
 
                 </Column>
 
@@ -42,13 +52,21 @@
 @code {
     private DateOnly _date;
     private DateOnly Today;
-    private IDisposable _whenDateChanged;
+    private IDisposable _whenDateChangedToToday;
+    private IDisposable _whenDateChangeBeforeToday;
     public Index()
     {
-        _whenDateChanged = this.WhenPropertyChanged()
+        _whenDateChangedToToday = this.WhenPropertyChanged()
+       .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate) )
+       .Select(e => _date)
+       .Where(d=>d==Today)
+       .Subscribe(async date => await LoadPredictedAsync(date));
+
+        _whenDateChangeBeforeToday = this.WhenPropertyChanged()
        .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
        .Select(e => _date)
-       .Subscribe(async date => await LoadPredictedAsync(date));
+       .Where(d => d < Today)
+       .Subscribe(async date => await LoadProgammeCourseAsync(date));
     }
     protected override void OnInitialized()
     {
@@ -86,7 +104,9 @@
         CurrentDate = d;
     }
     private List<PredictedDto> Predicteds { get; set; }
+    private List<ProgrammeCourseDto> ProgrammeCourses{ get; set; }
     public event PropertyChangedEventHandler PropertyChanged;
+
 
     private async Task LoadPredictedAsync(DateOnly date)
     {
@@ -99,9 +119,18 @@
         }
         await InvokeAsync(StateHasChanged);
     }
+
+    private async Task LoadProgammeCourseAsync(DateOnly date)
+    {
+        var t = pmuService.BrowseProgrammeCourse(new() { Date = date });
+        var (res, response) = await t;
+        if (res)
+            ProgrammeCourses = response.Programmes;
+        await InvokeAsync(StateHasChanged);
+    }
     protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-  
+
 }

@@ -23,23 +23,27 @@ public class PmuController : TurfController, IPmuServiceAppService
     => (pmuService) = (service);
 
     [HttpGet]
-    public Task<Result< BrowseAccuracyOfClassifierResponse>> BrowseAccuracyOfClassifier(BrowseAccuracyOfClassifierQuery query)
+    public Task<Result< BrowseAccuracyOfClassifierResponse>> BrowseAccuracyOfClassifier([FromQuery] BrowseAccuracyOfClassifierQuery query)
     =>pmuService.BrowseAccuracyOfClassifier(query);
 
     [HttpGet]
-    public Task<Result<BrowsePredictionResponse>> BrowsePrediction(BrowsePredictionQuery query)
+    public Task<Result<BrowsePredictionResponse>> BrowsePrediction([FromQuery] BrowsePredictionQuery query)
     =>pmuService.BrowsePrediction(query);   
 
     [HttpGet]
-    public Task<Result<BrowsePredictionPerClassifierResponse>> BrowsePredictionPerClassifier(BrowsePredictionPerClassifierQuery query)
+    public Task<Result<BrowsePredictionPerClassifierResponse>> BrowsePredictionPerClassifier([FromQuery] BrowsePredictionPerClassifierQuery query)
     =>pmuService.BrowsePredictionPerClassifier(query);
 
     [HttpGet]
-    public Task<Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted(BrowseResultatOfPredictedQuery query)
+    public Task<Result<BrowseProgrammeCourseResponse>> BrowseProgrammeCourse([FromQuery] BrowseProgrammeCourseQuery query)
+    =>pmuService.BrowseProgrammeCourse(query);
+
+    [HttpGet]
+    public Task<Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted([FromQuery] BrowseResultatOfPredictedQuery query)
     =>pmuService.BrowseResultatOfPredicted(query);
 
     [HttpGet]
-    public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query)
+    public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier([FromQuery] BrowseResultatPerClassifierQuery query)
     => pmuService.BrowseResultatPerClassifier(query);
 
     [HttpPost]
