@@ -24,6 +24,9 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
     public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier(BrowseResultatPerClassifierQuery query)
     => Mediator.Send(query);
 
+    public Task<Result<GetProgrammeCourseResponse>> GetProgrammeCourse(GetProgrammeCourseQuery query)
+    => Mediator.Send(query);
+
     public Task<Result<LoadCourseIntoDbResponse>> LoadCourseIntoDb(LoadCourseIntoDbQuery query)
     =>Mediator.Send(query);
 

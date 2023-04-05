@@ -5,6 +5,7 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.Linq;
 using Volo.Abp.ObjectMapping;
 using We.Mediatr;
+using We.Results;
 
 namespace We.AbpExtensions;
 /*
@@ -84,6 +85,10 @@ public static class AbpHandler
         public void LogWithLevel(LogLevel logLevel, string message) => Logger.LogWithLevel(logLevel, message);
 
         #endregion
+
+        #region Result
+
+        #endregion
     }
     public abstract class With<TQuery, TResponse> : Handler.With<TQuery, TResponse>, IBaseHandler
         where TQuery : IQuery<TResponse>
@@ -122,7 +127,10 @@ public static class AbpHandler
         public void LogWithLevel(LogLevel logLevel, string message) => Logger.LogWithLevel(logLevel, message);
         #endregion
 
-        //public abstract Task<Result<TResponse>> Handle(TQuery request, CancellationToken cancellationToken);
+        #region Result
+        protected Result<TResponse> NotFound(string failure,string message=null)
+            => Result.Failure<TResponse>(HttpStatusCode.NOT_FOUND,failure,message);
+        #endregion
     }
 
 }

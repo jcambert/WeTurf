@@ -65,6 +65,11 @@ public abstract class Result : IResult
     /// <returns></returns>
     public static Result<T> Failure<T>(params Exception[] exceptions)=> new Failure<T>(exceptions);
 
+    public static Result<T> Failure<T>(string failure) => new Failure<T>(new Error(failure));
+    public static Result<T> Failure<T>(string failure,string message) => new Failure<T>(new Error(failure,message));
+    public static Result<T> Failure<T>(int code,string failure, string message) => new Failure<T>(new Error(code,failure, message));
+
+
     /// <summary>
     /// Create a Success with failure Result based on Exception
     /// </summary>

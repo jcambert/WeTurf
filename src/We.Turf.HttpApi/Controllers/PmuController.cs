@@ -46,6 +46,10 @@ public class PmuController : TurfController, IPmuServiceAppService
     public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier([FromQuery] BrowseResultatPerClassifierQuery query)
     => pmuService.BrowseResultatPerClassifier(query);
 
+    [HttpGet]
+    public Task<Result<GetProgrammeCourseResponse>> GetProgrammeCourse([FromQuery] GetProgrammeCourseQuery query)
+    => pmuService.GetProgrammeCourse(query);
+
     [HttpPost]
     public Task<Result<LoadCourseIntoDbResponse>> LoadCourseIntoDb( LoadCourseIntoDbQuery query)
     => pmuService.LoadCourseIntoDb(query);

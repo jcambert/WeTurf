@@ -9,6 +9,12 @@ internal class ProgrammeCourseByDate : Specification<ProgrammeCourse>
     {
     }
 }
+internal class ProgrammeCourseById : Specification<ProgrammeCourse>
+{
+    public ProgrammeCourseById(Guid id) : base(e => e.Id == id)
+    {
+    }
+}
 public class BrowseProgrammeCourseHandler : AbpHandler.With<BrowseProgrammeCourseQuery, BrowseProgrammeCourseResponse>
 {
     IRepository<ProgrammeCourse, Guid> repository => GetRequiredService<IRepository<ProgrammeCourse, Guid>>();
