@@ -17,6 +17,7 @@ public class AnacondaActivationCommand : AnacondaCommand, IAnacondaActivationCom
 
     public override void Send(TextWriter writer)
     {
+        
         // Vital to activate Anaconda
         writer.WriteLine($@"{Conda.BasePath}\Scripts\activate.bat");
 
@@ -32,4 +33,17 @@ public class AnacondaActivationCommand : AnacondaCommand, IAnacondaActivationCom
         // Activate your environment
         await writer.WriteLineAsync($"activate {Conda.EnvironmentName}");
     }
+}
+public class AnacondaDeactivationCommand : AnacondaCommand, IAnacondaDeactivationCommand
+{
+    public AnacondaDeactivationCommand(IAnaconda conda) : base(conda)
+    {
+    }
+
+    public AnacondaDeactivationCommand(IServiceProvider serviceProvider) : base(serviceProvider)
+    {
+    }
+
+    public override string GetCommand()
+    => "conda deactivate";
 }

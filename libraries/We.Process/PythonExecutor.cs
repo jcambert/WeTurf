@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Diagnostics;
 using System.Reactive.Linq;
-using System.Text;
 using We.Results;
 using We.Utilities;
 namespace We.Processes;
@@ -20,29 +17,38 @@ public class PythonExecutor : BaseExecutor, IPythonExecutor
     public PythonExecutor(PythonExecutorOptions options, IAnaconda anaconda, params ICommand[] commands) : base(options)
     {
         Commands = commands;
+
         Configure(options, anaconda);
     }
     public PythonExecutor(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-       
+
         Configure(serviceProvider.GetRequiredService<IOptions<PythonExecutorOptions>>().Value);
 
     }
     protected virtual void Configure(PythonExecutorOptions options, IAnaconda anaconda = null)
     {
         base.Configure(options);
+        if (options.UseAnaconda && !options.ExecuteInConsole)
+            ExecuteInConsole = true;
         PythonPath = options.PythonPath.EnsureEndsWith(Path.DirectorySeparatorChar.ToString());
         UseAnaconda = options.UseAnaconda;
         if (UseAnaconda)
             if (ServiceProvider is not null)
+            {
                 AnacondaActivationCommand = ServiceProvider.GetService<IAnacondaActivationCommand>();
-            else
+                AnacondaDeactivationCommand = ServiceProvider.GetService<IAnacondaDeactivationCommand>();
+            }else
+            {
+
                 AnacondaActivationCommand = new AnacondaActivationCommand(anaconda);
-    }
+                AnacondaDeactivationCommand = new AnacondaDeactivationCommand(anaconda);
+            }
+        }
 
     public string PythonPath { get; private set; }
     public bool UseAnaconda { get; private set; }
-    protected override string GetProcessFilename() 
+    protected override string GetProcessFilename()
         => ExecuteInConsole || UseAnaconda ? "cmd.exe" : $"{PythonPath}python.exe";
     protected override string GetArguments(params ICommand[] commands)
     {
@@ -65,14 +71,18 @@ public class PythonExecutor : BaseExecutor, IPythonExecutor
         return result;
     }
     protected IAnacondaActivationCommand AnacondaActivationCommand { get; private set; }
+    protected IAnacondaDeactivationCommand AnacondaDeactivationCommand { get; private set; }
 
     protected override Action<StreamWriter> GetBeforeSendCommands()
-    => (StreamWriter sw)=>AnacondaActivationCommand?.Send(sw);
+    => (StreamWriter sw) => AnacondaActivationCommand?.Send(sw);
+
+    protected override Action<StreamWriter> GetAfterSendCommands()
+    => (StreamWriter sw) => AnacondaDeactivationCommand?.Send(sw);
 
     protected override Func<ICommand, bool> GetFilterCommand()
     => (ICommand command) => !(!UseAnaconda && command is IAnacondaCommand);
-           
-    
+
+
     /* private async Task<Result> ExecuteWithoutReactive(ProcessStartInfo psi, CancellationToken cancellationToken, params ICommand[] commands)
      {
          StringBuilder result = new StringBuilder();

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Diagnostics;
 using We.Results;
 using Xunit.Abstractions;
@@ -85,6 +86,44 @@ namespace We.Processes.Tests
                 return "dir";
             }
         }
+
+        [Theory]
+        [InlineData(true, false, "print('Hi')")]
+        [InlineData(false, false, "print('Hi')")]
+        [InlineData(true, false, "test.py toto")]
+        public async Task TestAnacondaActivation(bool inConsole, bool useReactiveOutput,string msg)
+        {
+            IServiceCollection services = new ServiceCollection();
+            services.UsePythonExecutor(o =>
+            {
+                o.ExecuteInConsole = inConsole;
+                o.UseAnaconda = true;
+                o.UseReactiveOutput = useReactiveOutput;
+                o.AnacondBasePath = "E:\\anaconda\\";
+                o.EnvironmentName = "base";
+                
+            });
+            using (ServiceProvider sp = services.BuildServiceProvider())
+            {
+                var exe = sp.GetService<IPythonExecutor>();
+                Assert.NotNull(exe);
+                var result = await exe.SendAsync(msg);
+                Assert.NotNull(result);
+                Assert.True(result.IsSuccess);
+                if (useReactiveOutput)
+                {
+                    Assert.True(result.GetType().Equals(typeof(Valid)));
+                }
+                else
+                {
+                    Assert.True(result.GetType().Equals(typeof(Valid<string>)));
+
+                    var value = (result as Valid<string>).Value;
+                    Assert.NotNull(value);
+                    output.WriteLine(value);
+                }
+            }
+        }
         private class ClearCommand : BaseCommand
         {
             public override string GetCommand()
@@ -106,7 +145,7 @@ namespace We.Processes.Tests
                     opt.UseReactiveOutput = useReactiveOutput;
                 })
                 .AddTransient<ICommand, SayHelloCommand>()
-                .AddTransient<ICommand, ClearCommand>(); 
+                .AddTransient<ICommand, ClearCommand>();
             using (ServiceProvider sp = services.BuildServiceProvider())
             {
                 var exe = sp.GetService<ICommandExecutor>();

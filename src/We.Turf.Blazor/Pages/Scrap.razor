@@ -1,8 +1,51 @@
 ﻿@page "/scrap"
-@page "/scrap/{date}"
-<h3>Scrap</h3>
+@page "/scrap/{start}"
+@page "/scrap/{start}/{end}"
+@using We.Turf.Queries;
+@using We.Utilities;
+@inject IPmuScrapAppService Scrapper;
+
+<div class="mb-3">
+    <label for="console" class="form-label">Example textarea</label>
+    <textarea class="form-control" id="console" rows="3" @bind="ConsoleOutput"></textarea>
+</div>
 
 @code {
+    [Parameter()]
+    public string Start{ get; set; }
+
     [Parameter]
-    public string Date{ get; set; }
+    public string End { get; set; }
+
+
+    //public int Count { get; set; } = 1;
+
+    public string ConsoleOutput { get; set; }
+    protected override void OnInitialized()
+    {
+
+
+        var res_start = Start.TryParseToDateOnly(out var _date_start);
+        var res_end = End.TryParseToDateOnly(out var _date_end);
+
+        if (!res_start)
+            _date_start = DateOnlyExtensions.Now;
+        if (!res_end)
+        {
+            if (!Int32.TryParse(End, out int _count))
+                _count = 1;
+            _date_end=_date_start.AddDays(_count);
+        }
+
+
+        if( _date_start > _date_end)
+        {
+            var tmp = _date_start;
+            _date_start = _date_end;
+            _date_end = tmp;
+        }
+
+        var result=Scrapper.Scrap(new ScrapQuery() { Start = _date_start, End = _date_end });
+        ConsoleOutput = $"Start:{_date_start.ToShortDateString()} - End:{_date_end.ToShortDateString()}\nLaunched ...";
+    }
 }

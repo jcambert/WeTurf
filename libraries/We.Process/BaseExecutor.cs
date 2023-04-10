@@ -40,8 +40,8 @@ public abstract class BaseExecutor : IExecutor
     public IObservable<string> OnOutput => _output.AsObservable();
     protected IServiceProvider ServiceProvider { get; }
     protected ILogger Logger { get; }
-    public bool UseReactiveOutput { get; private set; }
-    public bool ExecuteInConsole { get; private set; }
+    public bool UseReactiveOutput { get; protected set; }
+    public bool ExecuteInConsole { get; protected set; }
     protected ProcessStartInfo CreateProcessStartInfo(string filename, string args, string workingDirectory)
     => new ProcessStartInfo()
     {
@@ -62,7 +62,10 @@ public abstract class BaseExecutor : IExecutor
 
     protected virtual Func<ICommand, bool> GetFilterCommand() => null;
     protected virtual Action<StreamWriter> GetBeforeSendCommands() => null;
-    public virtual Task<Result> Execute(CancellationToken cancellationToken=default, params ICommand[] commands)
+    protected virtual Action<StreamWriter> GetAfterSendCommands() => null;
+    public virtual Task<Result> Execute(
+        CancellationToken cancellationToken=default, 
+        params ICommand[] commands)
     {
         CancellationTokenSource stoppingTokenSource = new CancellationTokenSource();
         var stoppingToken = stoppingTokenSource.Token;
@@ -71,15 +74,17 @@ public abstract class BaseExecutor : IExecutor
         
 
         var psi = CreateProcessStartInfo(filename, args, WorkingDirectory);
-        Func<ProcessStartInfo, CancellationToken, Func<ICommand, bool>,Action<StreamWriter>, ICommand[], Task<Result>> fn =
+        Func<ProcessStartInfo, CancellationToken, Func<ICommand, bool>,Action<StreamWriter>,Action<StreamWriter>, ICommand[], Task<Result>> fn =
             UseReactiveOutput ? ExecuteWithReactive : ExecuteWithoutReactive;
-        return  fn(psi, cancellationToken,GetFilterCommand(),GetBeforeSendCommands(), commands);
+        return  fn(psi, cancellationToken,GetFilterCommand(),GetBeforeSendCommands(),GetAfterSendCommands(), commands);
     }
 
-    protected virtual async Task<Result> ExecuteWithoutReactive(ProcessStartInfo psi,
+    protected virtual async Task<Result> ExecuteWithoutReactive(
+        ProcessStartInfo psi,
         CancellationToken cancellationToken,
         Func<ICommand, bool> filterCommand = null,
         Action<StreamWriter> beforeSendCommands = null,
+        Action<StreamWriter> afterSendCommands = null, 
         params ICommand[] commands)
     {
         StringBuilder result = new StringBuilder();
@@ -108,6 +113,8 @@ public abstract class BaseExecutor : IExecutor
                             continue;
                         await command.SendAsync(sw);
                     }
+                    if (afterSendCommands is not null)
+                        afterSendCommands(sw);
                 }
             }
             using (StreamReader reader = proc.StandardOutput)
@@ -124,6 +131,7 @@ public abstract class BaseExecutor : IExecutor
         CancellationToken cancellationToken, 
         Func<ICommand,bool> filterCommand=null,
         Action<StreamWriter> beforeSendCommands=null,
+        Action<StreamWriter> afterSendCommands = null,
         params ICommand[] commands)
     {
         CancellationTokenSource stoppingTokenSource = new CancellationTokenSource();
@@ -170,6 +178,8 @@ public abstract class BaseExecutor : IExecutor
                          //   continue;
                         await command.SendAsync(sw);
                     }
+                    if (afterSendCommands is not null)
+                        afterSendCommands(sw);
                 }
             }
 
