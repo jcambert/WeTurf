@@ -9,9 +9,10 @@ using We.Utilities;
 
 namespace We.Turf.Handlers;
 
-public class LoadCourseIntoDbHandler : AbpHandler.With<LoadCourseIntoDbQuery, LoadCourseIntoDbResponse>
+
+
+public class LoadCourseIntoDbHandler : AbpHandler.With<LoadCourseIntoDbQuery, LoadCourseIntoDbResponse, Course, CourseDto, Guid>
 {
-    IRepository<Course, Guid> _repository => GetRequiredService<IRepository<Course, Guid>>();
     public LoadCourseIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
@@ -23,8 +24,8 @@ public class LoadCourseIntoDbHandler : AbpHandler.With<LoadCourseIntoDbQuery, Lo
             if (File.Exists(request.Filename))
             {
 
-                var query0 = await _repository.GetQueryableAsync();
-                var query1 = query0.Select(x => new { x.Date, x.Reunion, x.Numero }).Distinct();
+                var query = await Repository.GetQueryableAsync();
+                var query1=   query.Select(x => new { x.Date, x.Reunion, x.Numero }).Distinct();
                 var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
 
                 var reader = new Reader<Course>($"{request.Filename}", true, ';');
@@ -45,9 +46,9 @@ public class LoadCourseIntoDbHandler : AbpHandler.With<LoadCourseIntoDbQuery, Lo
 
                 await reader.Start(cancellationToken);
 
-                await _repository.InsertManyAsync(courses, true, cancellationToken);
+                await Repository.InsertManyAsync(courses, true, cancellationToken);
 
-                return new LoadCourseIntoDbResponse(ObjectMapper.Map<List<Course>, List<CourseDto>>(courses));
+                return new LoadCourseIntoDbResponse(MapToDtoList(courses));
             }
             return Result.Failure<LoadCourseIntoDbResponse>(new Error($"{request.Filename} n'existe pas"));
         }

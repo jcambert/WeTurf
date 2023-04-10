@@ -4,6 +4,7 @@ using We.Utilities;
 
 namespace We.Turf.Entities;
 
+[Serializable]
 public class ProgrammeCourseDto:EntityDto<Guid>
 {
     static Regex regex = new Regex("[0-9][0-9]*", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);

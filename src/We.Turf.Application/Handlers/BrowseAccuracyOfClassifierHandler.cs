@@ -4,10 +4,9 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-public class BrowseAccuracyOfClassifierHandler :AbpHandler.With<BrowseAccuracyOfClassifierQuery, BrowseAccuracyOfClassifierResponse>
+public class BrowseAccuracyOfClassifierHandler :AbpHandler.With<BrowseAccuracyOfClassifierQuery, BrowseAccuracyOfClassifierResponse, AccuracyPerClassifier, AccuracyPerClassifierDto>
 {
-    IRepository<AccuracyPerClassifier> repository => GetRequiredService<IRepository<AccuracyPerClassifier>>();
-
+ 
 
     public BrowseAccuracyOfClassifierHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
@@ -15,7 +14,7 @@ public class BrowseAccuracyOfClassifierHandler :AbpHandler.With<BrowseAccuracyOf
 
     public override async Task<Result<BrowseAccuracyOfClassifierResponse>> Handle(BrowseAccuracyOfClassifierQuery request, CancellationToken cancellationToken)
     {
-        var res = await repository.ToListAsync();
-        return new BrowseAccuracyOfClassifierResponse(ObjectMapper.Map<List<AccuracyPerClassifier>, List<AccuracyPerClassifierDto>>(res));
+        var res = await Repository.ToListAsync();
+        return new BrowseAccuracyOfClassifierResponse(MapToDtoList(res));
     }
 }

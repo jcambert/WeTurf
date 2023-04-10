@@ -3,17 +3,19 @@ using We.Results    ;
 using We.Turf.Entities;
 namespace We.Turf.Handlers;
 
-public class GetLastScrappedHandler : AbpHandler.With<GetLastScrappedQuery, GetLastScrappedResponse>
+public class GetLastScrappedHandler : AbpHandler.With<GetLastScrappedQuery, GetLastScrappedResponse, LastScrapped, LastScrappedDto>
 {
-    IRepository<LastScrapped> repository=>GetRequiredService<IRepository<LastScrapped>>();
     public GetLastScrappedHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
 
     public override async Task<Result< GetLastScrappedResponse>> Handle(GetLastScrappedQuery request, CancellationToken cancellationToken)
     {
-        var result=await repository.FirstOrDefaultAsync();
-
-        return result!=null? new GetLastScrappedResponse(ObjectMapper.Map<LastScrapped,LastScrappedDto>(result)): new GetLastScrappedResponse(null);
+        var result=await Repository.FirstOrDefaultAsync();
+        if(result == null)
+        {
+            return NotFound($"{nameof(LastScrapped)} didn't exists");
+        }
+        return new GetLastScrappedResponse(MapToDto(result));
     }
 }

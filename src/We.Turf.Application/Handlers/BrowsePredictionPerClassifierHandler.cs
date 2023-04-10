@@ -4,7 +4,7 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-public class BrowsePredictionPerClassifierHandler : AbpHandler.With<BrowsePredictionPerClassifierQuery, BrowsePredictionPerClassifierResponse>
+public class BrowsePredictionPerClassifierHandler : AbpHandler.With<BrowsePredictionPerClassifierQuery, BrowsePredictionPerClassifierResponse, PredictionPerClassifier, PredictionPerClassifierDto>
 {
     public BrowsePredictionPerClassifierHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
@@ -13,8 +13,8 @@ public class BrowsePredictionPerClassifierHandler : AbpHandler.With<BrowsePredic
     IRepository<PredictionPerClassifier> repository=>GetRequiredService<IRepository<PredictionPerClassifier>>();    
     public override async Task<Result<BrowsePredictionPerClassifierResponse>> Handle(BrowsePredictionPerClassifierQuery request, CancellationToken cancellationToken)
     {
-        var query = await repository.GetQueryableAsync();
+        var query = await Repository.GetQueryableAsync();
         var result= await AsyncExecuter.ToListAsync(query, cancellationToken);
-        return new BrowsePredictionPerClassifierResponse(ObjectMapper.Map<List<PredictionPerClassifier>,List<PredictionPerClassifierDto> >(result));
+        return new BrowsePredictionPerClassifierResponse(MapToDtoList(result));
     }
 }

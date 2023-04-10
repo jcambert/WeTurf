@@ -2,7 +2,7 @@
 
 namespace We.Turf.Entities;
 
-public class AccuracyPerClassifier:IEntity
+public class AccuracyPerClassifier:Entity
 {
     
     public string Classifier { get; set; }
@@ -12,6 +12,6 @@ public class AccuracyPerClassifier:IEntity
 
     public double Percentage{ get; set; }
 
-    public object[] GetKeys()
+    public override object[] GetKeys()
     => new object[] {  Classifier };
 }

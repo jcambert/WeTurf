@@ -48,6 +48,7 @@ public class TurfDbContext :
     public DbSet<ScrapTrigger> Triggers { get; set; }
     public DbSet<LastScrapped> LastScrappeds { get; set; }
     public DbSet<ProgrammeCourse> ProgrammeCourses { get; set; }
+    public DbSet<ProgrammeReunion> ProgrammeReunions { get; set; }
     public DbSet<AccuracyPerClassifier> AccuracyPerClassifiers { get; set; }
 
     //Identity
@@ -181,5 +182,14 @@ public class TurfDbContext :
             b.Property(x => x.Course).HasColumnName("Numero");
             b.Property(x => x.Hippodrome).HasColumnName("HippoCourt");
         });
+        builder.Entity<ProgrammeReunion>(b =>
+        {
+            b.HasNoKey();
+            b.ToView("turfprogrammereunion");
+            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            b.Property(x => x.Nombre).HasColumnName("count");
+            b.Property(x => x.Hippodrome).HasColumnName("HippoCourt");
+        });
+        
     }
 }

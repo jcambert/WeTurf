@@ -39,6 +39,10 @@ public class PmuController : TurfController, IPmuServiceAppService
     =>pmuService.BrowseProgrammeCourse(query);
 
     [HttpGet]
+    public Task<Result<BrowseProgrammeReunionResponse>> BrowseProgrammeReunion([FromQuery] BrowseProgrammeReunionQuery query)
+    => pmuService.BrowseProgrammeReunion(query);
+
+    [HttpGet]
     public Task<Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted([FromQuery] BrowseResultatOfPredictedQuery query)
     =>pmuService.BrowseResultatOfPredicted(query);
 

@@ -1,25 +1,16 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Components.Notifications;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Linq;
 using Volo.Abp.ObjectMapping;
 using We.Mediatr;
 using We.Results;
 
 namespace We.AbpExtensions;
-/*
-public interface IQueryHandler<TQuery> : IRequestHandler<TQuery>
-    where TQuery : IQuery
-{
-
-}
-public interface IQueryHandler<TQuery, TResponse> : IRequestHandler<TQuery, Result<TResponse>>
-    where TQuery : IQuery<TResponse>
-    where TResponse : Response
-{
-
-}*/
 
 public interface IBaseHandler
 {
@@ -133,4 +124,29 @@ public static class AbpHandler
         #endregion
     }
 
+    public abstract class With<TQuery, TResponse, TEntity,TEntityDto> : With<TQuery, TResponse>
+        where TQuery : IQuery<TResponse>
+        where TResponse : Response
+        where TEntity : Entity
+        where TEntityDto:EntityDto
+    {
+        protected IRepository<TEntity> Repository => GetRequiredService<IRepository<TEntity>>();
+        protected With(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
+        {
+        }
+
+        protected List<TEntityDto> MapToDtoList(List<TEntity> entities) => ObjectMapper.Map<List<TEntity>, List<TEntityDto>>(entities);
+        protected TEntityDto MapToDto(TEntity entity) => ObjectMapper.Map<TEntity, TEntityDto>(entity);
+    }
+
+    public abstract class With<TQuery, TResponse, TEntity, TEntityDto, TKey> : With<TQuery, TResponse, TEntity, TEntityDto>
+        where TQuery : IQuery<TResponse>
+        where TResponse : Response
+        where TEntity : Entity<TKey>
+        where TEntityDto : EntityDto<TKey>
+    {
+        protected With(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
+        {
+        }
+    }
 }

@@ -9,9 +9,8 @@ using We.Results;
 
 namespace We.Turf.Handlers;
 
-public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery, LoadResultatIntoDbResponse>
+public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery, LoadResultatIntoDbResponse, Resultat, ResultatDto, Guid>
 {
-    IRepository<Resultat, Guid> _repository => GetRequiredService<IRepository<Resultat, Guid>>();
     public LoadResultatIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
@@ -22,7 +21,7 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
         {
             if (File.Exists(request.Filename))
             {
-                var query0 = await _repository.GetQueryableAsync();
+                var query0 = await Repository.GetQueryableAsync();
                 var query1 = query0.Select(x => new { x.Date, x.Reunion, x.Course }).Distinct();
                 var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
 
@@ -43,9 +42,9 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
 
                 await reader.Start(cancellationToken);
 
-                await _repository.InsertManyAsync(resultats, true, cancellationToken);
+                await Repository.InsertManyAsync(resultats, true, cancellationToken);
 
-                return new LoadResultatIntoDbResponse(ObjectMapper.Map<List<Resultat>, List<ResultatDto>>(resultats));
+                return new LoadResultatIntoDbResponse(MapToDtoList(resultats));
             }
             return Result.Failure<LoadResultatIntoDbResponse>(new Error($"{request.Filename} n'existe pas"));
         }

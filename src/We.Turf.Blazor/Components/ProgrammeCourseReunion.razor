@@ -1,16 +1,21 @@
 ﻿
 <Column ColumnSize="ColumnSize.IsHalf">
-    <Div Class=" ">
-        <Button Class="btn-outline-success w-100 fw-bold fs-6">Courses</Button>
-    </Div>
+    <Button Class="btn-outline-success w-100 fw-bold fs-6" Active="Mode==SelectMode.Course" Clicked="_=>OnSelectClicked(SelectMode.Course)">Courses</Button>
 </Column>
 <Column ColumnSize="ColumnSize.IsHalf">
-    <Div Class=" ">
-        <Button Class="btn-outline-success w-100 fw-bold fs-6">Reunions</Button>
-    </Div>
+    <Button Class="btn-outline-success w-100 fw-bold fs-6" Active="Mode==SelectMode.Reunion" Clicked="_=>OnSelectClicked(SelectMode.Reunion)">Reunions</Button>
 </Column>
 
 
 @code {
+    
+    [CascadingParameter(Name ="SelectMode")]
+    public SelectMode Mode { get; set; }
+    [Parameter]
+    public EventCallback<SelectMode> OnSelectMode { get; set; }
 
+    private void OnSelectClicked(SelectMode mode)
+    {
+        OnSelectMode.InvokeAsync(mode);
+    }
 }

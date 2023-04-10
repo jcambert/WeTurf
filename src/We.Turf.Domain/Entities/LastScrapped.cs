@@ -3,10 +3,10 @@ using Volo.Abp.Domain.Entities;
 
 namespace We.Turf.Entities;
 
-public class LastScrapped : IEntity
+public class LastScrapped : Entity
 {
     public DateTime LastDate { get; set; }
 
-    public object[] GetKeys()
+    public override object[] GetKeys()
     => new object[] { LastDate };
 }

@@ -13,9 +13,10 @@
         <Div Class="programme-tab container">
             <Row>
                 <Column ColumnSize="ColumnSize.IsFull">
-
-                    <CascadingValue Name="Date" Value="CurrentDate" TValue="DateOnly">
-                        <ProgrammeHeader DateChanged="SetDate"></ProgrammeHeader>
+                    <CascadingValue Name="SelectMode" Value="_mode">
+                        <CascadingValue Name="Date" Value="CurrentDate" TValue="DateOnly">
+                            <ProgrammeHeader DateChanged="SetDate" OnSelectMode="ShowCourseOrReunion"></ProgrammeHeader>
+                        </CascadingValue>
                     </CascadingValue>
                 </Column>
 
@@ -25,16 +26,24 @@
                     @if (CurrentDate == Today)
                     {
                         <CascadingValue Name="Predicteds" Value="Predicteds">
-                            <ProgrammeContent/>
+                            <ProgrammeContent />
                         </CascadingValue>
 
                     }
-                    else if (CurrentDate < Today)
+                    else if (CurrentDate < Today && ShowProgrammeCourse)
                     {
                         <CascadingValue Name="ProgrammeCourses" Value="ProgrammeCourses">
-                            <ProgrammeCourseContent/>
+                            <ProgrammeCourseContent />
                         </CascadingValue>
                     }
+                    else if (CurrentDate < Today && ShowProgrammeReunion)
+                    {
+
+                        <CascadingValue Name="ProgrammeReunions" Value="ProgrammeReunions">
+                            <ProgrammeReunionContent />
+                        </CascadingValue>
+                    }
+
 
                 </Column>
 
@@ -54,23 +63,31 @@
     private DateOnly Today;
     private IDisposable _whenDateChangedToToday;
     private IDisposable _whenDateChangeBeforeToday;
+    private SelectMode _mode;
     public Index()
     {
+    }
+    protected override void OnInitialized()
+    {
         _whenDateChangedToToday = this.WhenPropertyChanged()
-       .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate) )
+       .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
        .Select(e => _date)
-       .Where(d=>d==Today)
+       .Where(d => d == Today)
        .Subscribe(async date => await LoadPredictedAsync(date));
 
         _whenDateChangeBeforeToday = this.WhenPropertyChanged()
        .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
        .Select(e => _date)
        .Where(d => d < Today)
-       .Subscribe(async date => await LoadProgammeCourseAsync(date));
-    }
-    protected override void OnInitialized()
-    {
+       .Subscribe(async date =>
+       {
+           await LoadProgammeCourseAsync(date);
+           await LoadProgammeReunionAsync(date);
+           await InvokeAsync(StateHasChanged);
+       });
+        ShowCourseOrReunion(SelectMode.Course);
         Today = DateOnly.FromDateTime(DateTime.Now);
+        NotifyPropertyChanged("CurrentDate");
 
     }
 
@@ -103,8 +120,18 @@
     {
         CurrentDate = d;
     }
+    private void ShowCourseOrReunion(SelectMode mode)
+    {
+        _mode = mode;
+        // ShowProgrammeCourse = mode == SelectMode.Course;
+        //ShowProgrammeReunion = !ShowProgrammeCourse;
+        StateHasChanged();
+    }
+    private bool ShowProgrammeCourse => _mode == SelectMode.Course;
+    private bool ShowProgrammeReunion => _mode == SelectMode.Reunion;
     private List<PredictedDto> Predicteds { get; set; }
-    private List<ProgrammeCourseDto> ProgrammeCourses{ get; set; }
+    private List<ProgrammeCourseDto> ProgrammeCourses { get; set; }
+    private List<ProgrammeReunionDto> ProgrammeReunions { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;
 
 
@@ -126,7 +153,16 @@
         var (res, response) = await t;
         if (res)
             ProgrammeCourses = response.Programmes;
-        await InvokeAsync(StateHasChanged);
+        //await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadProgammeReunionAsync(DateOnly date)
+    {
+        var t = pmuService.BrowseProgrammeReunion(new() { Date = date });
+        var (res, response) = await t;
+        if (res)
+            ProgrammeReunions = response.Reunions;
+        //await InvokeAsync(StateHasChanged);
     }
     protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     {

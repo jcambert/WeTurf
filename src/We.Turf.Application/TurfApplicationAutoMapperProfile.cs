@@ -21,5 +21,6 @@ public class TurfApplicationAutoMapperProfile : Profile
         CreateMap<AccuracyPerClassifier, AccuracyPerClassifierDto>().ReverseMap();  
         CreateMap<Course,CourseDto>().ReverseMap();
         CreateMap<ProgrammeCourse,ProgrammeCourseDto>().ReverseMap();
+        CreateMap<ProgrammeReunion, ProgrammeReunionDto>().ReverseMap();    
     }
 }

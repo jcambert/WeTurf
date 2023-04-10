@@ -15,9 +15,9 @@ internal class ProgrammeCourseById : Specification<ProgrammeCourse>
     {
     }
 }
-public class BrowseProgrammeCourseHandler : AbpHandler.With<BrowseProgrammeCourseQuery, BrowseProgrammeCourseResponse>
+public class BrowseProgrammeCourseHandler : AbpHandler.With<BrowseProgrammeCourseQuery, BrowseProgrammeCourseResponse, ProgrammeCourse, ProgrammeCourseDto,Guid>
 {
-    IRepository<ProgrammeCourse, Guid> repository => GetRequiredService<IRepository<ProgrammeCourse, Guid>>();
+    
 
     public BrowseProgrammeCourseHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
@@ -25,9 +25,9 @@ public class BrowseProgrammeCourseHandler : AbpHandler.With<BrowseProgrammeCours
 
     public override async Task<Result<BrowseProgrammeCourseResponse>> Handle(BrowseProgrammeCourseQuery request, CancellationToken cancellationToken)
     {
-        var query = await repository.GetQueryableAsync();
+        var query = await Repository.GetQueryableAsync();
         query = query.GetQuery(new ProgrammeCourseByDate(request.Date));
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
-        return new BrowseProgrammeCourseResponse(ObjectMapper.Map<List<ProgrammeCourse>, List<ProgrammeCourseDto>>(result));
+        return new BrowseProgrammeCourseResponse(MapToDtoList(result));
     }
 }

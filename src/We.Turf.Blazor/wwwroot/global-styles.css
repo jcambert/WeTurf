@@ -131,17 +131,17 @@ audio, canvas, embed, iframe, img, object, svg, video {
 
 
 
-.main-tab , .programme-tab {
+.main-tab, .programme-tab {
     overflow: auto;
-    flex-shrink: 0;
-    color:rgb(22, 54, 51);
-    font-family:Roboto;
-    font-size:24px;
-    margin: 0px auto auto;
+    color: rgb(22, 54, 51);
+    font-family: Roboto;
+    font-size: 24px;
+    margin: 4px 4px 4px 4px;
     background-color: rgb(233, 237, 237);
-    height: 100%;
+    min-height: 300px;
     border-radius: 20px;
     box-shadow: 3px 3px 2px rgb(128, 128, 128);
+    padding-left:10px;
 }
 .programme-course-card {
     -webkit-box-align: stretch;

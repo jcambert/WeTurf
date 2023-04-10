@@ -16,4 +16,14 @@ public static class StringExtensions
             yield return value.Substring(i, part).Trim();
         }
     }
+
+    public static string EnsureEndsWith(this string value, string suffix)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        if (string.IsNullOrEmpty(value))
+            return value;
+        if (!value.EndsWith(suffix))
+            return $"{value}{suffix}";
+        return value;
+    }
 }

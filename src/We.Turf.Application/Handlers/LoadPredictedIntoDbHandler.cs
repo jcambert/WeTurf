@@ -11,10 +11,9 @@ namespace We.Turf.Handlers;
 
 
 
-public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQuery, LoadPredictedIntoDbResponse>
+public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQuery, LoadPredictedIntoDbResponse, Predicted, PredictedDto, Guid>
 {
-    IRepository<Predicted, Guid> _repository => GetRequiredService<IRepository<Predicted, Guid>>();
-
+   
     public LoadPredictedIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
@@ -26,7 +25,7 @@ public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQue
             if (File.Exists(request.Filename))
             {
 
-                var query0 = await _repository.GetQueryableAsync();
+                var query0 = await Repository.GetQueryableAsync();
                 var query1 = query0.Select(x => new { x.Date, x.Reunion, x.Course }).Distinct();
                 var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
 
@@ -48,9 +47,9 @@ public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQue
 
                 await reader.Start(cancellationToken);
 
-                await _repository.InsertManyAsync(predicted, true, cancellationToken);
+                await Repository.InsertManyAsync(predicted, true, cancellationToken);
 
-                return new LoadPredictedIntoDbResponse(ObjectMapper.Map<List<Predicted>, List<PredictedDto>>(predicted));
+                return new LoadPredictedIntoDbResponse(MapToDtoList(predicted));
             }
             return Result.Failure<LoadPredictedIntoDbResponse>(new Error($"{request.Filename} n'existe pas"));
         }

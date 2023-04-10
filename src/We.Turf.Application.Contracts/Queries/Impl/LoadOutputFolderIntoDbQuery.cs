@@ -3,7 +3,7 @@
 [ExposeServices(typeof(ILoadOutputFolderIntoDbQuery))]
 public class LoadOutputFolderIntoDbQuery : ILoadOutputFolderIntoDbQuery
 {
-    private readonly string _defaultFolder;
+    
     public LoadOutputFolderIntoDbQuery()
     {
         

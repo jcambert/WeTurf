@@ -3,9 +3,8 @@ using Volo.Abp.Domain.Entities;
 
 namespace We.Turf.Entities;
 
-public class ProgrammeCourse:IEntity<Guid>
+public class ProgrammeCourse:Entity<Guid>
 {
-    public Guid Id { get; set; }
     public DateOnly Date { get; set; }
     public int Reunion { get; set; }
     public int Course { get; set; }
@@ -17,6 +16,6 @@ public class ProgrammeCourse:IEntity<Guid>
     public int NombrePartants { get; set; }
     public string OrdreArrivee { get; set; }
     public string  Hippodrome{ get; set; }
-    public object[] GetKeys()
+    public override object[] GetKeys()
      => new object[] {Id };
 }

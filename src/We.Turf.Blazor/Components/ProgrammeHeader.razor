@@ -9,7 +9,9 @@
         </Row>
         <Row Class="ps-2 pe-4 pb-2 pt-2">
 
-            <ProgrammeCourseReunion></ProgrammeCourseReunion>
+            <ProgrammeCourseReunion
+                OnSelectMode="OnSelectMode"
+                />
         </Row>
 
     </Column>
@@ -23,6 +25,8 @@
         set; }
     [Parameter]
     public EventCallback<DateOnly> DateChanged { get; set; }
+    [Parameter]
+    public EventCallback<SelectMode> OnSelectMode{ get; set; }
     /*private void DateChanged(DateOnly d)
     {
         Date = d;
