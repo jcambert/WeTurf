@@ -69,6 +69,7 @@ public abstract class Result : IResult
     public static Result<T> Failure<T>(string failure,string message) => new Failure<T>(new Error(failure,message));
     public static Result<T> Failure<T>(int code,string failure, string message) => new Failure<T>(new Error(code,failure, message));
 
+    
 
     /// <summary>
     /// Create a Success with failure Result based on Exception
@@ -76,7 +77,9 @@ public abstract class Result : IResult
     /// <typeparam name="T"></typeparam>
     /// <param name="exceptions"></param>
     /// <returns></returns>
-    public static Result<T> ValidWithFailure<T>(T result,params Exception[] exceptions) => new ValidWithFailure<T>(result,exceptions);
+    //public static Result<T> ValidWithFailure<T>(T result,params Exception[] exceptions) => new ValidWithFailure<T>(result,exceptions);
+    
+    public static Result ValidWithFailure<T>(params T[] exceptions) where T:Exception => new ValidWithFailure(exceptions);
 
     /// <summary>
     /// Create a Success with failure Result based on Exception
@@ -86,6 +89,7 @@ public abstract class Result : IResult
     /// <param name="errors"></param>
     /// <returns></returns>
     public static Result<T> ValidWithFailure<T>(T result, params Error[] errors) => new ValidWithFailure<T>(result,errors);
+    public static Result ValidWithFailure( params Error[] errors) => new ValidWithFailure(errors);
 
     /// <summary>
     /// Create a success Result
@@ -98,13 +102,13 @@ public abstract class Result : IResult
     /// <typeparam name="T"></typeparam>
     /// <param name="result">Inner value</param>
     /// <returns>a Success Result</returns>
-    public static Result<T> Sucess<T>(T result)=> new Valid<T>(result);
+    public static Result<T> Success<T>(T result)=> new Valid<T>(result);
     /// <summary>
     /// Create a success Result
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns>a Success Result</returns>
-    public static Result<T> Sucess<T>()=> new Valid<T>();
+    public static Result<T> Success<T>()=> new Valid<T>();
 
     /// <summary>
     /// Create a Success default result with inner value
@@ -114,7 +118,7 @@ public abstract class Result : IResult
     /// <param name="result"></param>
     /// <returns>A Success result</returns>
     public static Result<T> Create<T>(T result)
-        =>Sucess(result);
+        =>Success(result);
 
 
 }

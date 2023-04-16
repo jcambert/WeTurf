@@ -1835,6 +1835,30 @@ namespace We.Turf.Migrations
                     b.ToView("turfprogrammecourse", (string)null);
                 });
 
+            modelBuilder.Entity("We.Turf.Entities.ProgrammeReunion", b =>
+                {
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Discipline")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Hippodrome")
+                        .HasColumnType("text")
+                        .HasColumnName("HippoCourt");
+
+                    b.Property<int>("Nombre")
+                        .HasColumnType("integer")
+                        .HasColumnName("count");
+
+                    b.Property<int>("Reunion")
+                        .HasColumnType("integer");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("turfprogrammereunion", (string)null);
+                });
+
             modelBuilder.Entity("We.Turf.Entities.Resultat", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1947,6 +1971,118 @@ namespace We.Turf.Migrations
                     b.HasIndex("Start");
 
                     b.ToTable("turfscraptrigger", (string)null);
+                });
+
+            modelBuilder.Entity("We.Turf.Entities.ToPredict", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Course")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Deferre")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Distance")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GainsAnneeEnCours")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GainsAnneePrecedente")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GainsCarriere")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GainsPlaces")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GainsVictoires")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("HadicapDistance")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("HadicapValeur")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("HandicapPoids")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("HippoCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HippoNom")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IndicateurInedit")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Musique")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nom")
+                        .HasColumnType("text");
+
+                    b.Property<int>("NombreCourses")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NombrePlaces")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NombrePlacesSecond")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NombrePlacesTroisieme")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NombreVictoires")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NumeroPmu")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Oeilleres")
+                        .HasColumnType("text");
+
+                    b.Property<int>("OrdreArrivee")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PlaceCorde")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Race")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Rapport")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Reunion")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Sexe")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Statut")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Course");
+
+                    b.HasIndex("Date");
+
+                    b.HasIndex("Reunion");
+
+                    b.ToTable("turftopredict", (string)null);
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

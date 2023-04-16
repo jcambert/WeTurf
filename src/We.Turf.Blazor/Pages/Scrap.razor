@@ -1,51 +1,252 @@
 ﻿@page "/scrap"
 @page "/scrap/{start}"
 @page "/scrap/{start}/{end}"
+@using System.IO;
+@using We.Processes;
 @using We.Turf.Queries;
 @using We.Utilities;
+@using We.Blazor.Csv
 @inject IPmuScrapAppService Scrapper;
+@inject IPmuServiceAppService AppService;
+@inject IReactiveOutputExecutor Output;
+<div class="mb-3">
+    <Fields>
+        <Field ColumnSize="ColumnSize.Is1.OnDesktop">
+            <Check TValue="bool" @bind-Checked="@scrap">Scrap</Check>
+        </Field>
+        <Field ColumnSize="ColumnSize.Is1.OnDesktop">
+            <Check TValue="bool" @bind-Checked="@predict">Predict</Check>
+        </Field>
+        <Field ColumnSize="ColumnSize.Is1.OnDesktop">
+            <Check TValue="bool" @bind-Checked="@resultat">Resulat</Check>
+        </Field>
+
+    </Fields>
+</div>
+<div class="mb-3">
+    <Fields>
+
+        <Field ColumnSize="ColumnSize.Is3.OnDesktop">
+            <FieldLabel>Date Start</FieldLabel>
+            <TextEdit Placeholder="Entrer date de debut" Text="@InnerStart" />
+        </Field>
+        <Field ColumnSize="ColumnSize.Is3.OnDesktop">
+            <FieldLabel>Date End</FieldLabel>
+            <TextEdit Placeholder="Entrer date de fin" Text="@InnerEnd" />
+        </Field>
+    </Fields>
+</div>
+<div class="mb-3">
+
+    <Button Color="Color.Primary" Clicked="Extract" Loading="@isExtractRunning" Disabled="@isExtractRunning" Visibility="@ExtractDatasVisibility">Extraction et Prediction</Button>
+    <Button Color="Color.Secondary" Clicked="InsertDatas" Loading="@isInsertDatasRunning" Disabled="@isInsertDatasRunning" Visibility="@InsertDatasVisibility">Inserer dans la Base de données</Button>
+</div>
 
 <div class="mb-3">
-    <label for="console" class="form-label">Example textarea</label>
-    <textarea class="form-control" id="console" rows="3" @bind="ConsoleOutput"></textarea>
+    <Tabs SelectedTab="@selectedTab" SelectedTabChanged="@OnSelectedTabChanged">
+        <Items>
+            <Tab Name="output">Sortie</Tab>
+            <Tab Name="to_predict">A Prédire</Tab>
+            <Tab Name="predicted">Prediction</Tab>
+            <Tab Name="courses">Courses</Tab>
+            <Tab Name="resultats">Arrivées</Tab>
+        </Items>
+        <Content>
+            <TabPanel Name="output">
+                <Fields>
+                    <Field ColumnSize="ColumnSize.Is6.OnDesktop">
+                        <label for="console" class="form-label">Console</label>
+                        <textarea class="form-control" id="console" rows="30" @bind="ConsoleOutput"></textarea>
+                    </Field>
+                </Fields>
+            </TabPanel>
+
+            <ScrapTabPanelFile Name="to_predict" Files="ToPredictFiles" Type="PmuFileType.ToPredict" CsvHasHeader="true" />
+            <ScrapTabPanelFile Name="predicted" Files="PredictedFiles" Type="PmuFileType.Predicted" CsvHasHeader="false" />
+            <ScrapTabPanelFile Name="courses" Files="CoursesFiles" Type="PmuFileType.Course" CsvHasHeader="true" />
+            <ScrapTabPanelFile Name="resultats" Files="ResultatsFiles" Type="PmuFileType.Resultat" CsvHasHeader="true" />
+
+
+        </Content>
+    </Tabs>
 </div>
 
 @code {
-    [Parameter()]
-    public string Start{ get; set; }
+    bool scrap, predict, resultat;
+    [Parameter]
+    public string Start { get; set; }
 
     [Parameter]
     public string End { get; set; }
 
+    public string InnerStart { get; set; }
+    public string InnerEnd { get; set; }
+    bool isExtractRunning = false;
+    bool isInsertDatasRunning = false;
+    bool CanInsertdatas => ToPredictFiles.Any() && PredictedFiles.Any() && CoursesFiles.Any() && ResultatsFiles.Any();
+    Visibility InsertDatasVisibility => CanInsertdatas ? Visibility.Visible : Visibility.Invisible;
+    Visibility ExtractDatasVisibility => isInsertDatasRunning ? Visibility.Invisible : Visibility.Visible;
 
-    //public int Count { get; set; } = 1;
-
+    List<FileWithContent> files = new();
+    List<string> ColumnNames = new List<string>() { "date", "reunion", "course", "nom", "numPmu" };
     public string ConsoleOutput { get; set; }
-    protected override void OnInitialized()
+    IEnumerable<FileWithContent> ToPredictFiles => files.Where(x => x.Type == PmuFileType.ToPredict);
+    IEnumerable<FileWithContent> PredictedFiles => files.Where(x => x.Type == PmuFileType.Predicted);
+    IEnumerable<FileWithContent> CoursesFiles => files.Where(x => x.Type == PmuFileType.Course);
+    IEnumerable<FileWithContent> ResultatsFiles => files.Where(x => x.Type == PmuFileType.Resultat);
+
+
+    protected override async Task OnInitializedAsync()
     {
+        ConsoleOutput = string.Empty;
+        Output.OnOutput.Subscribe(x => ConsoleOutput = $"{ConsoleOutput}\n{x}");
+        var dates = await ParseDate(Start, End);
+        InnerStart = dates.Item1.ToString("ddMMyyyy");
+        InnerEnd = dates.Item2.ToString("ddMMyyyy");
+        await UpdateFiles();
+    }
+    async Task UpdateFiles()
+    {
+        files = new();
 
+        var res0 = await Scrapper.BrowseToPredictFiles(new() { Path = @"e:\projets\pmu_scrapper\input" });
+        if (res0)
+            files.AddRange(res0.Value.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.ToPredict }));
 
-        var res_start = Start.TryParseToDateOnly(out var _date_start);
-        var res_end = End.TryParseToDateOnly(out var _date_end);
+        var res1 = await Scrapper.BrowsePredictedFiles(new() { Filename = @"e:\projets\pmu_scrapper\output\predicted.csv" });
+        if (res1)
+            files.Add(new FileWithContent() { Path = res1.Value.File, Type = PmuFileType.Predicted });
+
+        var res2 = await Scrapper.BrowseCourseFiles(new() { Filename = @"e:\projets\pmu_scrapper\output\courses.csv" });
+        if (res2)
+            files.Add(new FileWithContent() { Path = res2.Value.File, Type = PmuFileType.Course });
+
+        var res3 = await Scrapper.BrowseResultatsFiles(new() { Path = @"e:\projets\pmu_scrapper\output" });
+        if (res3)
+            files.AddRange(res3.Value.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.Resultat }));
+    }
+
+    private async Task<(DateOnly, DateOnly)> ParseDate(string startDate, string endDate)
+    {
+        var res_start = startDate.TryParseToDateOnly(out var _date_start);
+        var res_end = endDate.TryParseToDateOnly(out var _date_end);
 
         if (!res_start)
-            _date_start = DateOnlyExtensions.Now;
+        {
+            var ldate_result = await Scrapper.GetLastScrapped(new());
+            if (ldate_result)
+                _date_start = DateOnly.FromDateTime(ldate_result.Value.LastScrapped.LastDate).AddDays(1);
+            else
+                _date_start = DateOnlyExtensions.Now;
+        }
         if (!res_end)
         {
-            if (!Int32.TryParse(End, out int _count))
+            if (!Int32.TryParse(endDate, out int _count))
                 _count = 1;
-            _date_end=_date_start.AddDays(_count);
+            _date_end = _date_start.AddDays(_count);
         }
 
 
-        if( _date_start > _date_end)
+        if (_date_start > _date_end)
         {
             var tmp = _date_start;
             _date_start = _date_end;
             _date_end = tmp;
         }
+        return (_date_start, _date_end);
+    }
+    public async Task Extract()
+    {
+        isExtractRunning = true;
+        ConsoleOutput = string.Empty;
+        var dates = await ParseDate(InnerStart, InnerEnd);
+        Output.WriteLine("Démarrage");
+        if (scrap)
+        {
 
-        var result=Scrapper.Scrap(new ScrapQuery() { Start = _date_start, End = _date_end });
-        ConsoleOutput = $"Start:{_date_start.ToShortDateString()} - End:{_date_end.ToShortDateString()}\nLaunched ...";
+            Output.WriteLine($"Scrap Start:{dates.Item1.ToShortDateString()} to Scrap End:{dates.Item2.ToShortDateString()}\nLaunched ...");
+
+            var result0 = await Scrapper.Scrap(
+                new ScrapQuery()
+                    {
+                        Start = dates.Item1,
+                        End = dates.Item2,
+                        DeleteFilesIfExists = true
+                    });
+
+            if (!result0)
+                Output.WriteLine(result0.Errors);
+        }
+
+        if (predict)
+        {
+            Output.WriteLine("Prediction");
+            var result0 = await Scrapper.Predict(new PredictQuery() { DeleteFilesIfExists = true });
+            if (!result0)
+                Output.WriteLine(result0.Errors);
+        }
+
+        if (resultat)
+        {
+            Output.WriteLine("Resultats");
+            var result0 = await Scrapper.Resultats(new ResultatQuery()
+                {
+                    Start = dates.Item1,
+                    End = dates.Item2,
+                    DeleteFilesIfExists = true
+                });
+            if (!result0)
+                Output.WriteLine(result0.Errors);
+        }
+
+        Output.WriteLine("Fini..");
+
+        await UpdateFiles();
+
+        isExtractRunning = false;
+    }
+
+    public async Task InsertDatas()
+    {
+        ConsoleOutput = string.Empty;
+        isInsertDatasRunning = true;
+        if (scrap)
+        {
+            Output.Write("Insertion des chevaux a predire");
+            //foreach (var f in ToPredictFiles)
+            //{
+            var f = ToPredictFiles.First();
+            var result=await AppService.LoadToPredictIntoDatabase(new LoadToPredictIntoDbQuery() { Filename = f.Path, Rename = false });
+
+            foreach (var error in result.Errors)
+            {
+
+                Output.WriteLine($"[ERROR] {error.Failure} ");
+            }
+            
+            //}
+        }
+        isInsertDatasRunning = false;
+
+    }
+
+    private async Task RefreshFileContent(PmuFileType type)
+    {
+        foreach (var f in files.Where(x => x.Type == type))
+            await RefreshFileContent(f);
+    }
+    private async Task RefreshFileContent(FileWithContent file)
+    {
+        //if (file is null)
+        await file.RefreshFileContent();
+    }
+
+    string selectedTab = "output";
+
+    private Task OnSelectedTabChanged(string name)
+    {
+        selectedTab = name;
+
+        return Task.CompletedTask;
     }
 }

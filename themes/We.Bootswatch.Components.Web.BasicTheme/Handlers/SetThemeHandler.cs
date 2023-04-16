@@ -31,7 +31,7 @@ public class SetThemeHandler : AbpHandler.With<SetThemeCommand, SetThemeCommandR
             };
             var httpContext = Context.HttpContext;
             httpContext.Response.Cookies.Append(CookieName, request.Name, options);
-            return Result.Sucess<SetThemeCommandResult>();
+            return Result.Success<SetThemeCommandResult>();
 
         }
         catch (Exception ex)

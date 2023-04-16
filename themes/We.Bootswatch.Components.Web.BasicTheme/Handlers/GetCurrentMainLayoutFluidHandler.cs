@@ -19,6 +19,6 @@ public class GetCurrentMainLayoutFluidHandler : AbpHandler.With<GetCurrentMainLa
     {
         //FOR TEST
         //return Result.Failure< GetCurrentMainLayoutFluidResult>(new Error("cannot get if it is Fluid or not"));
-        return Result.Sucess(new GetCurrentMainLayoutFluidResult(fluidProvider.GetCurrent()));
+        return Result.Success(new GetCurrentMainLayoutFluidResult(fluidProvider.GetCurrent()));
     }
 }

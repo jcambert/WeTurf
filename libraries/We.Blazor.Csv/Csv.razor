@@ -1,0 +1,34 @@
+﻿@using Blazorise
+@using System.Collections;
+@using We.Utilities;
+
+    <Table>
+        @if (HasHeader && Header is not null)
+        {
+            <TableHeader>
+                <TableRow>
+                    @foreach (string col in FilterColmun(Header))
+                    {
+                        <TableHeaderCell>@col</TableHeaderCell>
+
+                    }
+                </TableRow>
+            </TableHeader>
+        }
+        @if (Count > 0)
+        {
+            <TableBody>
+                @foreach (Row line in Lines)
+                {
+                    <TableRow>
+                        @foreach (var col in FilterColmun(line))
+                        {
+                            <TableRowHeader>@col</TableRowHeader>
+                        }
+                    </TableRow>
+                }
+            </TableBody>
+        }
+
+    </Table>
+

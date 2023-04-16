@@ -29,7 +29,7 @@ public class SetMenuStyleHandler : AbpHandler.With<SetMenuStyleCommand, SetMenuS
             };
             var httpContext = Context.HttpContext;
             httpContext.Response.Cookies.Append(CookieName, request.Style, options);
-            return Result.Sucess<SetMenuStyleResult>();
+            return Result.Success<SetMenuStyleResult>();
 
         }
         catch (Exception ex)

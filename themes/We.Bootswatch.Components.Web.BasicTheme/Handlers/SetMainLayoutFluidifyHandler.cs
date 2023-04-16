@@ -34,7 +34,7 @@ internal class SetMainLayoutFluidifyHandler : AbpHandler.With<SetMainLayoutFluid
             var httpContext = Context.HttpContext;
             httpContext.Response.Cookies.Append(CookieName, f.Name, options);
 
-            return Result.Sucess(new SetMainLayoutFluidifyResult(f));
+            return Result.Success(new SetMainLayoutFluidifyResult(f));
 
         }
         catch (Exception ex)

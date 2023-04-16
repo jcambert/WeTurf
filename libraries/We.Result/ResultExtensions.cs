@@ -17,6 +17,15 @@ public static class ResultExtensions
         return result.IsSuccess ? onSuccess() : onFailure(result);
     }
 
+  /*  public static async Task<TOut> Match<TIn,TOut>(
+        this Task<Result<TIn>> resultTask,
+        Func<TIn, TOut> onSuccess,
+        Func<Result, TOut> onFailure)
+    {
+        Result<TIn> result = await resultTask;
+        return result ? onSuccess(result.Value) : onFailure(result);
+    }*/
+
     /// <summary>
     /// Ensure that a result statisfy predicate
     /// </summary>
@@ -51,7 +60,7 @@ public static class ResultExtensions
     {
         Guard.Argument(result).NotNull();
         Guard.Argument(mappingFunc).NotNull();
-        return result ? Result.Sucess(mappingFunc(result.Value)) :Result.Failure<TOut>( result.Errors.ToArray());
+        return result ? Result.Success(mappingFunc(result.Value)) :Result.Failure<TOut>( result.Errors.ToArray());
     }
 
     /// <summary>

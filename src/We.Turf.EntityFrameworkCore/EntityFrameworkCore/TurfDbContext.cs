@@ -42,6 +42,7 @@ public class TurfDbContext :
     public DbSet<Course> Courses { get; set; }
     public DbSet<Predicted> Predicteds{ get; set; }
     public DbSet<Resultat> Resultats{ get; set; }
+    public DbSet<ToPredict> ToPredicts { get; set; }
     public DbSet<ResultatOfPredicted> ResultatOfPredicted { get; set; }
     public DbSet<PredictionPerClassifier> PredictionPerClassifier { get; set; }
     public DbSet<ResultatPerClassifier> ResultatPerClassifier { get; set; }
@@ -127,6 +128,17 @@ public class TurfDbContext :
             b.HasIndex(x => x.Course);
             b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
         });
+
+        builder.Entity<ToPredict>(b => {
+            b.ToTable(TurfConsts.DbTablePrefix + nameof(ToPredict).ToLower(), TurfConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.HasIndex(x => x.Date);
+            b.HasIndex(x => x.Reunion);
+            b.HasIndex(x => x.Course);
+            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+
+        });
+
         builder.Entity<ResultatOfPredicted>(b => {
             b.HasNoKey();
             b.ToView("turfresultatofpredicted");

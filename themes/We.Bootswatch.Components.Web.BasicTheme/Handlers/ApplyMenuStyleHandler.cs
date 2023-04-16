@@ -25,7 +25,7 @@ public class ApplyMenuStyleHandler : AbpHandler.With<ApplyMenuStyleCommand, Appl
             var uri = string.Format(BootswatchConsts.APPLY_MENUSTYLE_URL , relativeUrl, name);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Result.Sucess<ApplyMenuStyleResult>();
+            return Result.Success<ApplyMenuStyleResult>();
         }
         catch (Exception ex)
         {

@@ -26,7 +26,7 @@ internal class ApplyThemeHandler : AbpHandler.With<ApplyThemeCommand, ApplyTheme
             var uri = string.Format(BootswatchConsts.APPLY_THEME_URL, relativeUrl, name);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Result.Sucess<ApplyThemeResult>();
+            return Result.Success<ApplyThemeResult>();
         }
         catch (Exception ex)
         {

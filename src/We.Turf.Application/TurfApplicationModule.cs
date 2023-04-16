@@ -32,8 +32,11 @@ public class TurfApplicationModule : AbpModule
         context.Services.UsePythonExecutor(opt =>
         {
             opt.UseAnaconda = true;
+            opt.AnacondBasePath = @"E:\anaconda\";
             opt.UseReactiveOutput=true;
-            
+            opt.PythonPath = @"e:\anaconda\";
+            opt.ExecuteInConsole=true;
+            opt.WorkingDirectory = @"E:\projets\pmu_scrapper\";
         });
     }
 }

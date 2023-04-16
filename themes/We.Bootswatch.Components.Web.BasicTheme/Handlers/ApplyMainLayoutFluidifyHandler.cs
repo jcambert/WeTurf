@@ -26,7 +26,7 @@ public class ApplyMainLayoutFluidifyHandler : AbpHandler.With<ApplyMainLayoutFlu
             //string name = request.Value;//DOT NOT CHANGE THIS
             var uri = string.Format(BootswatchConsts.APPLY_MAINLAYOUT_FLUID_URL, relativeUrl, request.Value.Name);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Result.Sucess<ApplyMainLayoutFluidifyResult>();
+            return Result.Success<ApplyMainLayoutFluidifyResult>();
         }
         catch (Exception ex)
         {

@@ -15,7 +15,7 @@ public static class ExecutorExtensions
     public static IServiceCollection UsePythonExecutor(this IServiceCollection services, Action<PythonExecutorOptions> opt)
     {
         services.UseExecutor();
-        services.Configure(PythonExecutorOptions.NAME,opt);
+        services.Configure(opt);
         services.AddTransient<IAnaconda, Anaconda>(sp =>
         {
             var di = sp.GetRequiredService<DriveService>();
@@ -27,6 +27,8 @@ public static class ExecutorExtensions
         services.AddTransient<IAnacondaActivationCommand, AnacondaActivationCommand>(sp=>new AnacondaActivationCommand(sp));
         services.AddTransient<IAnacondaDeactivationCommand, AnacondaDeactivationCommand>(sp=>new AnacondaDeactivationCommand(sp));
         services.AddTransient<IPythonExecutor, PythonExecutor>();
+        services.AddScoped<IReactiveOutputExecutor, ReactiveOutputExecutor>();
+        services.AddScoped<ISchedulerProvider, SchedulerProvider>();
         return services;
 
     }

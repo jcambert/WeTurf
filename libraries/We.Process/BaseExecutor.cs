@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
@@ -13,14 +14,18 @@ public abstract class BaseExecutor : IExecutor
 {
     public BaseExecutor(ExecutorOptions options)
     {
+        Scheduler = new EventLoopScheduler();
         Configure(options);
     }
     public BaseExecutor(IServiceProvider serviceProvider)
     {
         this.ServiceProvider = serviceProvider;
+        OutputPipe = serviceProvider.GetService<IReactiveOutputExecutor>();
         Commands = ServiceProvider.GetServices<ICommand>();
         Logger = ServiceProvider.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
         var o = serviceProvider.GetRequiredService<IOptions<ExecutorOptions>>().Value;
+
+        Scheduler = serviceProvider.GetRequiredService<ISchedulerProvider>().Scheduler;
         Configure(o);
     }
     protected virtual void Configure(ExecutorOptions options)
@@ -28,9 +33,10 @@ public abstract class BaseExecutor : IExecutor
         if (!string.IsNullOrEmpty(options.WorkingDirectory))
             WorkingDirectory = options.WorkingDirectory;
         UseReactiveOutput = options.UseReactiveOutput;
-       
         ExecuteInConsole = options.ExecuteInConsole;
-        
+        if (UseReactiveOutput && OutputPipe != null)
+            OutputPipe.Connect(this);
+
     }
 
     protected IEnumerable<ICommand> Commands { get; init; }
@@ -39,9 +45,12 @@ public abstract class BaseExecutor : IExecutor
     protected ISubject<string> _output = new Subject<string>();
     public IObservable<string> OnOutput => _output.AsObservable();
     protected IServiceProvider ServiceProvider { get; }
+    public IReactiveOutputExecutor OutputPipe { get; }
     protected ILogger Logger { get; }
     public bool UseReactiveOutput { get; protected set; }
     public bool ExecuteInConsole { get; protected set; }
+    public IScheduler Scheduler { get; init; }
+
     protected ProcessStartInfo CreateProcessStartInfo(string filename, string args, string workingDirectory)
     => new ProcessStartInfo()
     {
@@ -64,19 +73,19 @@ public abstract class BaseExecutor : IExecutor
     protected virtual Action<StreamWriter> GetBeforeSendCommands() => null;
     protected virtual Action<StreamWriter> GetAfterSendCommands() => null;
     public virtual Task<Result> Execute(
-        CancellationToken cancellationToken=default, 
+        CancellationToken cancellationToken = default,
         params ICommand[] commands)
     {
         CancellationTokenSource stoppingTokenSource = new CancellationTokenSource();
         var stoppingToken = stoppingTokenSource.Token;
         string filename = GetProcessFilename();
-        string args =GetArguments(commands);
-        
+        string args = GetArguments(commands);
+
 
         var psi = CreateProcessStartInfo(filename, args, WorkingDirectory);
-        Func<ProcessStartInfo, CancellationToken, Func<ICommand, bool>,Action<StreamWriter>,Action<StreamWriter>, ICommand[], Task<Result>> fn =
+        Func<ProcessStartInfo, CancellationToken, Func<ICommand, bool>, Action<StreamWriter>, Action<StreamWriter>, ICommand[], Task<Result>> fn =
             UseReactiveOutput ? ExecuteWithReactive : ExecuteWithoutReactive;
-        return  fn(psi, cancellationToken,GetFilterCommand(),GetBeforeSendCommands(),GetAfterSendCommands(), commands);
+        return fn(psi, cancellationToken, GetFilterCommand(), GetBeforeSendCommands(), GetAfterSendCommands(), commands);
     }
 
     protected virtual async Task<Result> ExecuteWithoutReactive(
@@ -84,7 +93,7 @@ public abstract class BaseExecutor : IExecutor
         CancellationToken cancellationToken,
         Func<ICommand, bool> filterCommand = null,
         Action<StreamWriter> beforeSendCommands = null,
-        Action<StreamWriter> afterSendCommands = null, 
+        Action<StreamWriter> afterSendCommands = null,
         params ICommand[] commands)
     {
         StringBuilder result = new StringBuilder();
@@ -108,7 +117,7 @@ public abstract class BaseExecutor : IExecutor
                     //AnacondaActivationCommand?.Send(sw);
                     foreach (var command in _commands)
                     {
-                        
+
                         if (filterCommand is not null && !filterCommand(command))
                             continue;
                         await command.SendAsync(sw);
@@ -119,24 +128,24 @@ public abstract class BaseExecutor : IExecutor
             }
             using (StreamReader reader = proc.StandardOutput)
             {
-                var res = await reader.ReadToEndAsync();
+                var res = await reader.ReadToEndAsync(cancellationToken);
                 result.AppendLine(res);
             }
 
         }
-        return Result.Sucess<string>(result.ToString());
+        return Result.Success<string>(result.ToString());
     }
     protected virtual async Task<Result> ExecuteWithReactive(
-        ProcessStartInfo psi, 
-        CancellationToken cancellationToken, 
-        Func<ICommand,bool> filterCommand=null,
-        Action<StreamWriter> beforeSendCommands=null,
+        ProcessStartInfo psi,
+        CancellationToken cancellationToken,
+        Func<ICommand, bool> filterCommand = null,
+        Action<StreamWriter> beforeSendCommands = null,
         Action<StreamWriter> afterSendCommands = null,
         params ICommand[] commands)
     {
         CancellationTokenSource stoppingTokenSource = new CancellationTokenSource();
         var stoppingToken = stoppingTokenSource.Token;
-
+        
         var proc = new Process()
         {
             StartInfo = psi
@@ -145,19 +154,28 @@ public abstract class BaseExecutor : IExecutor
 
         if (proc.Start())
         {
+            var scheduler = new EventLoopScheduler();
             Logger?.LogInformation("Executor Process Started");
-            var i = Observable.Using(
-                () => proc.StandardOutput,
-                reader => Observable.FromAsync(reader.ReadLineAsync)
-                    .Repeat()
-                    .TakeWhile(x => x != null)
-                );
-            i.Subscribe(
-                x => _output.OnNext(x),
-                () =>
-                {
-                    stoppingTokenSource.Cancel();
-                });
+
+           /* var i=Observable.Generate(
+                    proc.StandardOutput,
+                    reader => !reader.EndOfStream,
+                    reader => reader,
+                    reader => reader.ReadLine()
+                );*/
+            var j = Observable.Using(
+               () => proc.StandardOutput,
+               reader => Observable.FromAsync(reader.ReadLineAsync, Scheduler)
+                   .Repeat()
+                   .TakeWhile(x => x != null)
+
+               ).ObserveOn(Scheduler);
+           j.SubscribeOn(Scheduler).Subscribe(
+               x => _output.OnNext(x),
+               () =>
+               {
+                   stoppingTokenSource.Cancel();
+               });
             //copy Commands that might be in ServiceCollection
             //and add to it function passed arguments
             var _commands = new List<ICommand>(Commands);
@@ -174,8 +192,8 @@ public abstract class BaseExecutor : IExecutor
                     {
                         if (filterCommand is not null && !filterCommand(command))
                             continue;
-                       // if (!UseAnaconda && command is IAnacondaCommand)
-                         //   continue;
+                        // if (!UseAnaconda && command is IAnacondaCommand)
+                        //   continue;
                         await command.SendAsync(sw);
                     }
                     if (afterSendCommands is not null)

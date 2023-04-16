@@ -3,9 +3,15 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using We.Results;
 
 namespace We.Csv;
-
+public class ReaderColumnSetException : Exception
+{
+    public ReaderColumnSetException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
+}
 public record ReaderResponse<T>(int Index, T Value, Reader<T> Reader)
     where T : class, new();
 public class Reader<T>
@@ -49,11 +55,19 @@ public class Reader<T>
         {
             if (col.Index >= 0 && col.Index <= values.Length)
             {
-                var v = values[col.Index];
-                var vv = To(v, col?.Property?.GetSetMethod()?.GetParameters()?.First().ParameterType);
-                col?.Property?.GetSetMethod()?.Invoke(result, new object?[] { vv });
+                try
+                {
+
+                    var v = values[col.Index];
+                    var vv = To(v, col?.Property?.GetSetMethod()?.GetParameters()?.First().ParameterType);
+                    col?.Property?.GetSetMethod()?.Invoke(result, new object?[] { vv });
+                }
+                catch (Exception ex) {
+                    throw new ReaderColumnSetException($"Column:{col.InternalName} -> {ex.Message}", ex);
+                }
             }
         }
+
 
         return result;
     }
@@ -62,9 +76,9 @@ public class Reader<T>
         return to?.Name switch
         {
             nameof(DateOnly) => ToDateOnly(from),
-            nameof(String) => from ?? "",
-            nameof(Int32) => Int32.Parse(from?.Split(".")[0] ?? ""),
-            nameof(Double) => Double.Parse(from ?? "", NumberStyles.Any, CultureInfo.InvariantCulture),
+            nameof(String) => from ?? string.Empty,
+            nameof(Int32) => Int32.Parse(string.IsNullOrEmpty(from)?"0": (from?.Split(".")[0] ?? "0")),
+            nameof(Double) => Double.Parse(string.IsNullOrEmpty(from)?"0" :(from ?? "0"), NumberStyles.Any, CultureInfo.InvariantCulture),
             _ => throw new NotSupportedException($"{to?.Name} is not supported for conversion")
         };
     }
@@ -91,29 +105,47 @@ public class Reader<T>
             throw new FormatException($"Malformed Date for day {from} :{string.Join("", v[2])}");
         return new DateOnly(year, month, day);
     }
-    public async Task Start(CancellationToken cancellationToken = default)
+    public async Task<Result> Start(CancellationToken cancellationToken = default)
     {
-
+        List<Error> exceptions = new List<Error>();
         using (StreamReader reader = new StreamReader(Filename))
         {
             bool skipped = false;
             while (!reader.EndOfStream)
             {
-                var line = await reader.ReadLineAsync(cancellationToken);
-                if (HasHeader && !skipped)
+                try
                 {
-                    skipped = true;
-                    continue;
-                }
-                var v = _onReadLineMapping(line, Separator);
-                LineRead++;
+                    var line = await reader.ReadLineAsync(cancellationToken);
+                    if (HasHeader && !skipped)
+                    {
+                        skipped = true;
+                        continue;
+                    }
+                    var v = _onReadLineMapping(line, Separator);
+                    LineRead++;
 
-                _onReadLine.OnNext(new ReaderResponse<T>(LineRead, v, this));
+                    _onReadLine.OnNext(new ReaderResponse<T>(LineRead, v, this));
+
+                }
+                catch(ReaderColumnSetException ex)
+                {
+                    var error=new Error($"Line {LineRead}-{ex.Message}", ex);
+                    exceptions.Add(error);
+                }
+                catch (Exception ex)
+                {
+                    _onReadLine.OnError(ex);
+                }
             }
 
         }
         _onReadLine.OnCompleted();
-
+        if (exceptions.Any())
+        {
+            var res= Result.ValidWithFailure(exceptions.ToArray());
+            return res;
+        }
+        return Result.Success();
 
     }
 

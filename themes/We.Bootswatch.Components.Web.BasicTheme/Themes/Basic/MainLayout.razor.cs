@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Components.Notifications;
@@ -33,7 +31,7 @@ public partial class MainLayout : IDisposable
 
         NavigationManager.LocationChanged += OnLocationChanged;
         Style = MenuStyleManager.GetCurrent();
-        await Result
+        var result=await Result
             .Create(new GetCurrentMainLayoutFluidCommand())
             .Bind(c => Mediator.Send(c))
             .Match(

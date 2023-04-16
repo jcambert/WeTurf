@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\We.Blazor.Csv\We.Blazor.Csv.csproj" />
     <ProjectReference Include="..\..\libraries\We.Utilities\We.Utilities.csproj" />
     <ProjectReference Include="..\..\themes\We.Bootswatch.Components.Web.BasicTheme\We.Bootswatch.Components.Web.BasicTheme.csproj" />
     <ProjectReference Include="..\..\themes\We.Bootswatch.Server.BasicTheme\We.Bootswatch.Server.BasicTheme.csproj" />

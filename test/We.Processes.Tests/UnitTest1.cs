@@ -91,7 +91,7 @@ namespace We.Processes.Tests
         [InlineData(true, false, "print('Hi')")]
         [InlineData(false, false, "print('Hi')")]
         [InlineData(true, false, "test.py toto")]
-        public async Task TestAnacondaActivation(bool inConsole, bool useReactiveOutput,string msg)
+        public async Task TestAnacondaActivation(bool inConsole, bool useReactiveOutput, string msg)
         {
             IServiceCollection services = new ServiceCollection();
             services.UsePythonExecutor(o =>
@@ -101,7 +101,7 @@ namespace We.Processes.Tests
                 o.UseReactiveOutput = useReactiveOutput;
                 o.AnacondBasePath = "E:\\anaconda\\";
                 o.EnvironmentName = "base";
-                
+
             });
             using (ServiceProvider sp = services.BuildServiceProvider())
             {
@@ -170,6 +170,34 @@ namespace We.Processes.Tests
                     Assert.NotNull(value);
                     output.WriteLine(value);
                 }
+            }
+        }
+
+        [Theory]
+        [InlineData("scrap.py", "01042023", "02042023")]
+        public async Task TestScrap(string script,string start,string end)
+        {
+            IServiceCollection services = new ServiceCollection();
+            services.UsePythonExecutor(o =>
+            {
+
+                o.UseAnaconda = true;
+                o.UseReactiveOutput = true;
+                o.PythonPath = @"E:\anaconda\";
+                o.WorkingDirectory = @"E:\projets\pmu_scrapper";
+
+            });
+            using (ServiceProvider sp = services.BuildServiceProvider())
+            {
+                var exe = sp.GetService<IPythonExecutor>();
+                Assert.NotNull(exe);
+
+                exe.OnOutput.Subscribe(x =>
+                {
+                    output.WriteLine(x);
+                });
+                var msg = $"{script} start={start} end={end}";
+                var result = await exe.SendAsync(msg);
             }
         }
 

@@ -1,7 +1,7 @@
-﻿using We.Turf.Localization;
-using Volo.Abp.AspNetCore.Components;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Volo.Abp.AspNetCore.Components;
+using We.Turf.Localization;
 
 namespace We.Turf.Blazor;
 
@@ -18,4 +18,6 @@ public abstract class TurfComponentBase : AbpComponentBase, INotifyPropertyChang
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+   
 }

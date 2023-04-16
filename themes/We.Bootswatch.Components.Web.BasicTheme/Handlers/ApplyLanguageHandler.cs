@@ -26,7 +26,7 @@ public class ApplyLanguageHandler :AbpHandler.With<ApplyLanguageCommand, ApplyLa
             string uiCultureName = request.UiCultureName;//DOT NOT CHANGE THIS
             var uri = string.Format(BootswatchConsts.APPLY_LANGUAGE_URL, relativeUrl, cultureName, uiCultureName);
             NavigationManager.NavigateTo(uri, forceLoad: true);
-            return Result.Sucess<ApplyLanguageResult>();
+            return Result.Success<ApplyLanguageResult>();
         }
         catch (Exception ex)
         {
