@@ -44,9 +44,12 @@ public class LoadCourseIntoDbHandler : AbpHandler.With<LoadCourseIntoDbQuery, Lo
                                 File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
                         });
 
-                await reader.Start(cancellationToken);
+                var result=await reader.Start(cancellationToken);
 
                 await Repository.InsertManyAsync(courses, true, cancellationToken);
+
+                if (result.Errors.Any())
+                    return Result.ValidWithFailure(new LoadCourseIntoDbResponse(MapToDtoList(courses)), result.Errors.ToArray());
 
                 return new LoadCourseIntoDbResponse(MapToDtoList(courses));
             }

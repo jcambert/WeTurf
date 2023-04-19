@@ -1,5 +1,4 @@
 ﻿using We.Mediatr;
-using We.Results;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
@@ -10,7 +9,4 @@ public interface ILoadToPredictIntoDbQuery:IQuery<LoadToPredictIntoDatabaseRespo
     bool Rename { get; set; }
 }
 
-public sealed record LoadToPredictIntoDatabaseResponse(List<ToPredictDto> Courses) : Response { 
-
-    public IReadOnlyList<Error> Errors { get; set; }
-}
+public sealed record LoadToPredictIntoDatabaseResponse(List<ToPredictDto> Courses) : Response;

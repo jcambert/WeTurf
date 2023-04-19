@@ -45,9 +45,12 @@ public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQue
                                 File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
                         });
 
-                await reader.Start(cancellationToken);
+                var result=await reader.Start(cancellationToken);
 
                 await Repository.InsertManyAsync(predicted, true, cancellationToken);
+
+                if (result.Errors.Any())
+                    return Result.ValidWithFailure(new LoadPredictedIntoDbResponse(MapToDtoList(predicted)), result.Errors.ToArray());
 
                 return new LoadPredictedIntoDbResponse(MapToDtoList(predicted));
             }

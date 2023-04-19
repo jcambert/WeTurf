@@ -40,9 +40,11 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
                                 File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
                         });
 
-                await reader.Start(cancellationToken);
+                var result = await reader.Start(cancellationToken);
 
                 await Repository.InsertManyAsync(resultats, true, cancellationToken);
+                if (result.Errors.Any())
+                    return Result.ValidWithFailure(new LoadResultatIntoDbResponse(MapToDtoList(resultats)), result.Errors.ToArray());
 
                 return new LoadResultatIntoDbResponse(MapToDtoList(resultats));
             }
