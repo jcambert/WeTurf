@@ -124,6 +124,12 @@ public static class ResultExtensions
         return result;
     }
 
+    public static Result AddErrors(this Result result, IEnumerable<Error> errors)
+    {
+        result.AddErrors(errors);
+        return result;
+    }
+
     /// <summary>
     /// Append an error to result
     /// usefull for fluent error validation

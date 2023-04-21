@@ -27,14 +27,28 @@ public abstract class Result : IResult
     /// </summary>
     public bool IsFailure => !IsSuccess;
     /// <summary>
+    /// Has some result errors
+    /// </summary>
+    public bool HasError => Errors.Any();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public virtual bool IsValidFailure => false;
+    /// <summary>
     /// Errors if result is failure, empty if success
     /// </summary>
     public virtual IReadOnlyList<Error> Errors => IsFailure ? _errors : _empty;
 
     internal void AddError(Error error)
     {
-        if (IsFailure) 
+        if (IsFailure || IsValidFailure) 
             _errors.Add(error);
+    }
+    internal void AddErrors(IEnumerable<Error> errors)
+    {
+        if (IsFailure || IsValidFailure)
+            _errors.AddRange(errors);
     }
 
     /// <summary>
@@ -79,7 +93,7 @@ public abstract class Result : IResult
     /// <returns></returns>
     //public static Result<T> ValidWithFailure<T>(T result,params Exception[] exceptions) => new ValidWithFailure<T>(result,exceptions);
     
-    public static Result ValidWithFailure<T>(params T[] exceptions) where T:Exception => new ValidWithFailure(exceptions);
+    //public static Result ValidWithFailure<T>(params T[] exceptions) where T:Exception => new ValidWithFailure(exceptions);
 
     /// <summary>
     /// Create a Success with failure Result based on Exception
@@ -90,7 +104,8 @@ public abstract class Result : IResult
     /// <returns></returns>
     public static Result<T> ValidWithFailure<T>(T result, params Error[] errors) => new ValidWithFailure<T>(result,errors);
     public static Result ValidWithFailure( params Error[] errors) => new ValidWithFailure(errors);
-
+    public static Result<T> ValidWithFailure<T>(Error errors) => new ValidWithFailure<T>( errors);
+    public static Result<T> ValidWithFailure<T>(Exception exception) => new ValidWithFailure<T>(exception);
     /// <summary>
     /// Create a success Result
     /// </summary>
