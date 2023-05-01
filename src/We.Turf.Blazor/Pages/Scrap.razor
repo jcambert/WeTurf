@@ -20,7 +20,9 @@
         <Field ColumnSize="ColumnSize.Is1.OnDesktop">
             <Check TValue="bool" @bind-Checked="@resultat">Resulat</Check>
         </Field>
-
+        <Field ColumnSize="ColumnSize.Is1.OnDesktop">
+            <Check TValue="bool" @bind-Checked="@setInFolder">Set In folder</Check>
+        </Field>
     </Fields>
 </div>
 <div class="mb-3">
@@ -72,7 +74,7 @@
 </div>
 
 @code {
-    bool scrap, predict, resultat;
+    bool scrap, predict, resultat,setInFolder;
     [Parameter]
     public string Start { get; set; }
 
