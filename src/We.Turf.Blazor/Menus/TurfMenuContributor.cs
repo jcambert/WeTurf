@@ -33,6 +33,16 @@ public class TurfMenuContributor : IMenuContributor
                 order: 0
             )
         );
+        context.Menu.Items.Insert(
+            1,
+            new ApplicationMenuItem(
+                TurfMenus.Scrap,
+                l["Menu:Scrap"],
+                "/scrap",
+                icon: "fas fa-home",
+                order: 1
+            )
+        );
 #pragma warning disable CS1634,CS0162,IDE0035
         if (MultiTenancyConsts.IsEnabled)
         {

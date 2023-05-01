@@ -28,11 +28,11 @@
 
         <Field ColumnSize="ColumnSize.Is3.OnDesktop">
             <FieldLabel>Date Start</FieldLabel>
-            <TextEdit Placeholder="Entrer date de debut" Text="@InnerStart" />
+            <TextEdit Placeholder="Entrer date de debut" @bind-Text="@InnerStart"  />
         </Field>
         <Field ColumnSize="ColumnSize.Is3.OnDesktop">
             <FieldLabel>Date End</FieldLabel>
-            <TextEdit Placeholder="Entrer date de fin" Text="@InnerEnd" />
+            <TextEdit Placeholder="Entrer date de fin" @bind-Text="@InnerEnd" />
         </Field>
     </Fields>
 </div>
