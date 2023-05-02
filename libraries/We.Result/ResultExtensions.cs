@@ -1,6 +1,5 @@
 ﻿using Dawn;
 
-
 namespace We.Results;
 
 /// <summary>
@@ -61,6 +60,14 @@ public static class ResultExtensions
         Guard.Argument(result).NotNull();
         Guard.Argument(mappingFunc).NotNull();
         return result ? Result.Success(mappingFunc(result.Value)) :Result.Failure<TOut>( result.Errors.ToArray());
+    }
+
+    public static  Result<TOut> MapFailureTo<TIn, TOut>(this Result<TIn> result)
+    {
+        Guard.Argument(result).NotNull();
+        Guard.Argument(result).Member(x => x.HasError, y => y.True());
+        return  Result.Failure<TOut>(result.Errors.ToArray());
+
     }
 
     /// <summary>
