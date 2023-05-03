@@ -10,8 +10,8 @@ public static class TurfDtoExtensions
 
     public static void Configure()
     {
-        OneTimeRunner.Run(() =>
-        {
+        OneTimeRunner.Run(
+            () => {
                 /* You can add extension properties to DTOs
                  * defined in the depended modules.
                  *
@@ -23,6 +23,7 @@ public static class TurfDtoExtensions
                  * See the documentation for more:
                  * https://docs.abp.io/en/abp/latest/Object-Extensions
                  */
-        });
+            }
+        );
     }
 }

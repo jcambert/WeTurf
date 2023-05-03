@@ -1,4 +1,4 @@
-﻿using MediatR;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using System;
@@ -9,9 +9,14 @@ using We.AbpExtensions.Queries;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Bootswatch.Components.Web.BasicTheme.Services;
 using We.Results;
-
+#if MEDIATR
+using MediatR;
+#endif
+#if MEDIATOR
+using Mediator;
+#endif
 namespace We.Bootswatch.Components.Web.BasicTheme.Themes.Basic;
-
+#pragma warning disable CS8618
 public partial class MainLayout : IDisposable
 {
     [Inject] private IMediator Mediator { get; set; }
@@ -31,7 +36,7 @@ public partial class MainLayout : IDisposable
 
         NavigationManager.LocationChanged += OnLocationChanged;
         Style = MenuStyleManager.GetCurrent();
-        var result=await Result
+        var result = await Result
             .Create(new GetCurrentMainLayoutFluidCommand())
             .Bind(c => Mediator.Send(c))
             .Match(
@@ -64,9 +69,10 @@ public partial class MainLayout : IDisposable
     {
         if (NavigationManager is not null)
             NavigationManager.LocationChanged -= OnLocationChanged;
+        GC.SuppressFinalize(this);
     }
 
-    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         IsCollapseShown = false;
         InvokeAsync(StateHasChanged);
@@ -74,7 +80,7 @@ public partial class MainLayout : IDisposable
 
     public IFluidable Fluidable { get; protected set; }
     public bool IsFluid => Fluidable?.IsFluid ?? false;
-    public IWeMenuStyle Style { get; set; }
+    public IWeMenuStyle? Style { get; set; }
 
     public async Task ChangeFluid(IFluidable fluidable)
     {
@@ -110,3 +116,4 @@ public partial class MainLayout : IDisposable
         }
     }
 }
+#pragma warning restore CS8618

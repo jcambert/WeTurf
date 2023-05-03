@@ -6,21 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
  
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(MediatorName)'=='bogard'">
-        <DefineConstants>$(DefineConstants);MEDIATR</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(MediatorName)'=='othamar'">
-        <DefineConstants>$(DefineConstants);MEDIATOR</DefineConstants>
-    </PropertyGroup>
   <ItemGroup Condition="'$(MediatorName)'=='bogard'">
-
-        <PackageReference Include="$(MediatorBogardLibraryName)" Version="$(MediatorBogardVersion)" />
         <PackageReference Include="$(MediatorBogardAbstractionLibraryName)" Version="$(MediatorBogardAbstractionVersion)" />
   </ItemGroup>
   <ItemGroup Condition="'$(MediatorName)'=='othamar'">
-     
-        <PackageReference Include="$(MediatorOthamarLibraryName)" Version="$(MediatorOthamarVersion)" />
         <PackageReference Include="$(MediatorOthamarAbstractionLibraryName)" Version="$(MediatorOthamarAbstractionVersion)" />
   </ItemGroup>
   <ItemGroup>

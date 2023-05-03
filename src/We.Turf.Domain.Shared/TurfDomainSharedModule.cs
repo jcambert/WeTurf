@@ -23,8 +23,8 @@ namespace We.Turf;
     typeof(AbpOpenIddictDomainSharedModule),
     typeof(AbpPermissionManagementDomainSharedModule),
     typeof(AbpSettingManagementDomainSharedModule),
-    typeof(AbpTenantManagementDomainSharedModule)    
-    )]
+    typeof(AbpTenantManagementDomainSharedModule)
+)]
 public class TurfDomainSharedModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -35,24 +35,30 @@ public class TurfDomainSharedModule : AbpModule
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        Configure<AbpVirtualFileSystemOptions>(options =>
-        {
-            options.FileSets.AddEmbedded<TurfDomainSharedModule>();
-        });
+        Configure<AbpVirtualFileSystemOptions>(
+            options =>
+            {
+                options.FileSets.AddEmbedded<TurfDomainSharedModule>();
+            }
+        );
 
-        Configure<AbpLocalizationOptions>(options =>
-        {
-            options.Resources
-                .Add<TurfResource>("en")
-                .AddBaseTypes(typeof(AbpValidationResource))
-                .AddVirtualJson("/Localization/Turf");
+        Configure<AbpLocalizationOptions>(
+            options =>
+            {
+                options.Resources
+                    .Add<TurfResource>("en")
+                    .AddBaseTypes(typeof(AbpValidationResource))
+                    .AddVirtualJson("/Localization/Turf");
 
-            options.DefaultResourceType = typeof(TurfResource);
-        });
+                options.DefaultResourceType = typeof(TurfResource);
+            }
+        );
 
-        Configure<AbpExceptionLocalizationOptions>(options =>
-        {
-            options.MapCodeNamespace("Turf", typeof(TurfResource));
-        });
+        Configure<AbpExceptionLocalizationOptions>(
+            options =>
+            {
+                options.MapCodeNamespace("Turf", typeof(TurfResource));
+            }
+        );
     }
 }

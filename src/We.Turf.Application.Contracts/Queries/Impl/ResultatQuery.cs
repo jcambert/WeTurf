@@ -2,7 +2,7 @@
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
 [ExposeServices(typeof(IResultatQuery))]
-public class ResultatQuery: IResultatQuery
+public class ResultatQuery : IResultatQuery
 {
     public DateOnly Start { get; set; }
     public DateOnly End { get; set; }

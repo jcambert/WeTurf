@@ -2,9 +2,9 @@
 
 namespace We.Turf.Queries;
 
-public interface IBrowseToPredictFilesQuery:IQuery<BrowseToPredictFilesResponse>
+public interface IBrowseToPredictFilesQuery : IQuery<BrowseToPredictFilesResponse>
 {
     string Path { get; set; }
 }
 
-public sealed record BrowseToPredictFilesResponse(List<string> Files):Response;
+public sealed record BrowseToPredictFilesResponse(List<string> Files) : Response;

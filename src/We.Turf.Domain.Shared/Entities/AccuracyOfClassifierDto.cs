@@ -1,7 +1,7 @@
 namespace We.Turf.Entities;
 
 [Serializable]
-public class AccuracyPerClassifierDto:EntityDto
+public class AccuracyPerClassifierDto : EntityDto
 {
     public string? Classifier { get; set; }
     public int PredictionCount { get; set; }

@@ -1,4 +1,4 @@
-﻿using We.Results;
+using We.Results;
 
 namespace We.Turf;
 

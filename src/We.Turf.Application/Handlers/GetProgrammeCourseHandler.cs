@@ -1,4 +1,4 @@
-﻿using We.AbpExtensions;
+using We.AbpExtensions;
 using We.Results;
 using We.Turf.Entities;
 
@@ -10,7 +10,11 @@ public class GetProgrammeCourseHandler : AbpHandler.With<GetProgrammeCourseQuery
     {
     }
 
+#if MEDIATOR
+    public override async ValueTask<Result<GetProgrammeCourseResponse>> Handle(GetProgrammeCourseQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<GetProgrammeCourseResponse>> Handle(GetProgrammeCourseQuery request, CancellationToken cancellationToken)
+#endif
     {
         var query = await Repository.GetQueryableAsync();
         query = query.GetQuery(new ProgrammeCourseById(request.Id));

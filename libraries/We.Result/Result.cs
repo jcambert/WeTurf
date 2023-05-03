@@ -194,6 +194,8 @@ public abstract class Result<T> : Result, IResult<T>
 
     public static implicit operator Task<Result<T>>(Result<T> result) => result.AsTask();
 
+    public static implicit operator ValueTask<Result<T>>(Result<T> result) => result.AsValueTask();
+
     public static implicit operator Result<T>(T value) => Result.Create<T>(value);
 
     public static implicit operator Result<T>(Exception exception) => Result.Failure<T>(exception);

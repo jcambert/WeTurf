@@ -10,7 +10,8 @@ namespace We.Turf.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var sql = @"
+            var sql =
+                @"
 CREATE OR REPLACE VIEW public.turfgetlastpredicationdate
  AS
  SELECT DISTINCT min(p.""Date"") AS datedebut,
@@ -31,13 +32,14 @@ ALTER TABLE public.turfgetlastresultatdate
     OWNER TO weturf_root;
 ";
             migrationBuilder.Sql(sql);
-
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"DROP VIEW turfgetlastpredicationdate;DROP VIEW  turfgetlastresultatdate");
+            migrationBuilder.Sql(
+                @"DROP VIEW turfgetlastpredicationdate;DROP VIEW  turfgetlastresultatdate"
+            );
         }
     }
 }

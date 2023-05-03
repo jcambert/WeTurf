@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using We.Csv;
 using We.Turf.Entities;
@@ -14,8 +14,11 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
     public LoadResultatIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-
+#if MEDIATOR
+    public override async ValueTask<Result<LoadResultatIntoDbResponse>> Handle(LoadResultatIntoDbQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<LoadResultatIntoDbResponse>> Handle(LoadResultatIntoDbQuery request, CancellationToken cancellationToken)
+#endif
     {
         try
         {
@@ -32,7 +35,7 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
                     .Where(x => !existings.Any(y => y.Date == x.Value.Date && y.Reunion == x.Value.Reunion && y.Course == x.Value.Course))
                     .Subscribe(o =>
                         {
-                            Logger.LogInformation($"{o.Index} / {o}");
+                            Logger.LogInformation("{Index} / {Response}", o.Index, o); 
                             resultats.Add(o.Value);
                         }, () =>
                         {

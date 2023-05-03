@@ -2,6 +2,4 @@
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
 [ExposeServices(typeof(IBrowseResultatPerClassifierQuery))]
-public class BrowseResultatPerClassifierQuery: IBrowseResultatPerClassifierQuery
-{
-}
+public class BrowseResultatPerClassifierQuery : IBrowseResultatPerClassifierQuery { }

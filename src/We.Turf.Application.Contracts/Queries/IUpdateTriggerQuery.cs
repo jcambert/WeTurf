@@ -3,10 +3,10 @@ using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IUpdateTriggerQuery: IQuery<UpdateTriggerResponse>
+public interface IUpdateTriggerQuery : IQuery<UpdateTriggerResponse>
 {
     Guid Id { get; set; }
     TimeOnly Start { get; set; }
 }
 
-public sealed record UpdateTriggerResponse(ScrapTriggerDto Trigger):Response;
+public sealed record UpdateTriggerResponse(ScrapTriggerDto Trigger) : Response;

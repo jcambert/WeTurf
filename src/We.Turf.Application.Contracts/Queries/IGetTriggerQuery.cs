@@ -3,9 +3,9 @@ using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IGetTriggerQuery: IQuery<GetTriggerResponse>
+public interface IGetTriggerQuery : IQuery<GetTriggerResponse>
 {
     Guid Id { get; }
 }
 
-public sealed record GetTriggerResponse(ScrapTriggerDto Trigger):Response;
+public sealed record GetTriggerResponse(ScrapTriggerDto Trigger) : Response;

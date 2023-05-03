@@ -10,7 +10,8 @@ namespace We.Turf.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var sql = @"CREATE OR REPLACE VIEW public.turfprogrammecourse
+            var sql =
+                @"CREATE OR REPLACE VIEW public.turfprogrammecourse
  AS
  SELECT turfcourse.""Id"",
     turfcourse.""Date"",
@@ -30,7 +31,6 @@ ALTER TABLE public.turfprogrammecourse
     OWNER TO weturf_root;";
 
             migrationBuilder.Sql(sql);
-
         }
 
         /// <inheritdoc />

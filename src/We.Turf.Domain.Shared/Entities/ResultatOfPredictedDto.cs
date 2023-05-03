@@ -1,6 +1,7 @@
 namespace We.Turf.Entities;
+
 [Serializable]
-public class ResultatOfPredictedDto:EntityDto<Guid>
+public class ResultatOfPredictedDto : EntityDto<Guid>
 {
     public string? Classifier { get; set; }
     public DateOnly Date { get; set; }

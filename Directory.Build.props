@@ -2,7 +2,7 @@
   <PropertyGroup>
     <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
@@ -21,7 +21,7 @@
 
   <PropertyGroup>
     <DotNetVersion>7.0.0</DotNetVersion>
-    <MediatorName>bogard</MediatorName>
+    <MediatorName>othamar</MediatorName>
     <MediatorOthamarLibraryName>Mediator.SourceGenerator</MediatorOthamarLibraryName>
     <MediatorOthamarVersion>2.1.1</MediatorOthamarVersion>
     <MediatorOthamarAbstractionLibraryName>Mediator.Abstractions</MediatorOthamarAbstractionLibraryName>
@@ -31,6 +31,13 @@
     <MediatorBogardAbstractionLibraryName>MediatR.Contracts</MediatorBogardAbstractionLibraryName>
     <MediatorBogardAbstractionVersion>2.0.1</MediatorBogardAbstractionVersion>
   </PropertyGroup>
+
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(MediatorName)'=='bogard'">
+        <DefineConstants>$(DefineConstants);MEDIATR</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(MediatorName)'=='othamar'">
+        <DefineConstants>$(DefineConstants);MEDIATOR</DefineConstants>
+    </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CSharpier.MsBuild" Version="0.16.0">

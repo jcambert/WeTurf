@@ -20,7 +20,7 @@ namespace We.Turf;
     typeof(AbpTenantManagementHttpApiModule),
     typeof(AbpFeatureManagementHttpApiModule),
     typeof(AbpSettingManagementHttpApiModule)
-    )]
+)]
 public class TurfHttpApiModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -31,26 +31,24 @@ public class TurfHttpApiModule : AbpModule
 
     private void ConfigureLocalization()
     {
-        Configure<AbpLocalizationOptions>(options =>
-        {
-            options.Resources
-                .Get<TurfResource>()
-                .AddBaseTypes(
-                    typeof(AbpUiResource)
-                );
-        });
+        Configure<AbpLocalizationOptions>(
+            options =>
+            {
+                options.Resources.Get<TurfResource>().AddBaseTypes(typeof(AbpUiResource));
+            }
+        );
     }
 
     private void ConfigureAutoApiControllers()
     {
-        Configure<AbpAspNetCoreMvcOptions>(options =>
-        {
-            // options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
-            options.ConventionalControllers.Create(typeof(TurfHttpApiModule).Assembly);
-            //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
+        Configure<AbpAspNetCoreMvcOptions>(
+            options =>
+            {
+                // options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+                options.ConventionalControllers.Create(typeof(TurfHttpApiModule).Assembly);
+                //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
 
-        });
+            }
+        );
     }
-
-
 }

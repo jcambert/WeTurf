@@ -1,4 +1,4 @@
-﻿using We.Turf.Entities;
+using We.Turf.Entities;
 using We.AbpExtensions;
 using We.Results;
 
@@ -14,7 +14,11 @@ public class BrowsePredictionHandler : AbpHandler.With<BrowsePredictionQuery, Br
     public BrowsePredictionHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
+#if MEDIATOR
+    public override async ValueTask<Result< BrowsePredictionResponse>> Handle(BrowsePredictionQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result< BrowsePredictionResponse>> Handle(BrowsePredictionQuery request, CancellationToken cancellationToken)
+#endif
     {
         LogTrace($"{nameof(BrowsePredictionHandler)}");
         var date = request.Date ?? DateOnly.FromDateTime(DateTime.Now);

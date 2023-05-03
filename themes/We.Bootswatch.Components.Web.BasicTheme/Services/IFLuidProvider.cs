@@ -50,7 +50,7 @@ public class FluidProvider : SelectorProvider<IFluidable>, IFluidProvider
     {
     }
 
-    protected override IFluidable Default => Values.FirstOrDefault(t => t.Name == _options.Value.IsFluid) ?? Fluidable.is_fluid;
+    protected override IFluidable Default => Values.FirstOrDefault(t => t.Name == Options.Value.IsFluid) ?? Fluidable.is_fluid;
     protected override List<IFluidable> Values  => Fluidable.Fluids;
     protected override string CookieName => BootswatchConsts.FluidCookie;
 }

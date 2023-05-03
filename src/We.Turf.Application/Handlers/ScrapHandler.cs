@@ -1,4 +1,4 @@
-﻿using We.AbpExtensions;
+using We.AbpExtensions;
 using We.Processes;
 using We.Results;
 using We.Turf.Queries;
@@ -11,8 +11,11 @@ public class ScrapHandler : AbpHandler.With<ScrapQuery, ScrapResponse>
     public ScrapHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-
+#if MEDIATOR
+    public override async ValueTask<Result<ScrapResponse>> Handle(ScrapQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<ScrapResponse>> Handle(ScrapQuery request, CancellationToken cancellationToken)
+#endif
     {
         var exe = Python;
         string args = string.Empty;

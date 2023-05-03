@@ -14,8 +14,8 @@ public static class TurfEfCoreEntityExtensionMappings
         TurfGlobalFeatureConfigurator.Configure();
         TurfModuleExtensionConfigurator.Configure();
 
-        OneTimeRunner.Run(() =>
-        {
+        OneTimeRunner.Run(
+            () => {
                 /* You can configure extra properties for the
                  * entities defined in the modules used by your application.
                  *
@@ -39,6 +39,7 @@ public static class TurfEfCoreEntityExtensionMappings
                  * See the documentation for more:
                  * https://docs.abp.io/en/abp/latest/Customizing-Application-Modules-Extending-Entities
                  */
-        });
+            }
+        );
     }
 }

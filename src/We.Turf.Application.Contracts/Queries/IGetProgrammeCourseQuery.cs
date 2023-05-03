@@ -3,10 +3,9 @@ using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-
 public interface IGetProgrammeCourseQuery : IQuery<GetProgrammeCourseResponse>
 {
-    Guid Id { get;set; }
+    Guid Id { get; set; }
 }
 
-public sealed record GetProgrammeCourseResponse(ProgrammeCourseDto Course):Response;
+public sealed record GetProgrammeCourseResponse(ProgrammeCourseDto Course) : Response;

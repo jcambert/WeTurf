@@ -29,15 +29,17 @@ public class SampleRepositoryTests : TurfEntityFrameworkCoreTestBase
         /* Need to manually start Unit Of Work because
          * FirstOrDefaultAsync should be executed while db connection / context is available.
          */
-        await WithUnitOfWorkAsync(async () =>
-        {
+        await WithUnitOfWorkAsync(
+            async () =>
+            {
                 //Act
                 var adminUser = await (await _appUserRepository.GetQueryableAsync())
-                .Where(u => u.UserName == "admin")
-                .FirstOrDefaultAsync();
+                    .Where(u => u.UserName == "admin")
+                    .FirstOrDefaultAsync();
 
                 //Assert
                 adminUser.ShouldNotBeNull();
-        });
+            }
+        );
     }
 }

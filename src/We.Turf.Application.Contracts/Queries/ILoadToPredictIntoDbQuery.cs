@@ -3,7 +3,7 @@ using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface ILoadToPredictIntoDbQuery:IQuery<LoadToPredictIntoDatabaseResponse>
+public interface ILoadToPredictIntoDbQuery : IQuery<LoadToPredictIntoDatabaseResponse>
 {
     string Filename { get; set; }
     bool Rename { get; set; }

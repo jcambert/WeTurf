@@ -4,5 +4,5 @@
 [ExposeServices(typeof(IBrowseProgrammeCourseQuery))]
 public class BrowseProgrammeCourseQuery : IBrowseProgrammeCourseQuery
 {
-    public DateOnly Date { get; set; }=DateOnly.FromDateTime(DateTime.Now);
+    public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 }

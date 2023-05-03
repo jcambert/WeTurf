@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Reactive.Linq;
 using We.AbpExtensions;
@@ -18,7 +18,11 @@ public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQue
     {
     }
 
+#if MEDIATOR
+    public override async ValueTask<Result<LoadPredictedIntoDbResponse>> Handle(LoadPredictedIntoDbQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<LoadPredictedIntoDbResponse>> Handle(LoadPredictedIntoDbQuery request, CancellationToken cancellationToken)
+#endif
     {
         try
         {
@@ -30,13 +34,13 @@ public class LoadPredictedIntoDbHandler : AbpHandler.With<LoadPredictedIntoDbQue
                 var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
 
                 var reader = new Reader<Predicted>($"{request.Filename}", true, ';');
-                List<Predicted> predicted = new List<Predicted>();
+                List<Predicted> predicted = new ();
                 reader
                     .OnReadLine
                     .Where(x => !existings.Any(y => y.Date == x.Value.Date && y.Reunion == x.Value.Reunion && y.Course == x.Value.Course))
                     .Subscribe(o =>
                         {
-                            Logger.LogInformation($"{o.Index} / {o.ToString()}");
+                            Logger.LogInformation("{Index} / {Response}", o.Index, o); 
                             predicted.Add(o.Value);
                         },
                         () =>

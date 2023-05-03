@@ -10,7 +10,8 @@ namespace We.Turf.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var sql = @"
+            var sql =
+                @"
 CREATE OR REPLACE VIEW public.turfaccuracyperclassifier
  AS
  SELECT p.""Classifier"" AS classifier,

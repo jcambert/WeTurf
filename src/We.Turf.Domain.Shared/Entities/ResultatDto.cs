@@ -1,6 +1,7 @@
 namespace We.Turf.Entities;
+
 [Serializable]
-public class ResultatDto:EntityDto<Guid>
+public class ResultatDto : EntityDto<Guid>
 {
     public DateOnly Date { get; set; }
     public int Reunion { get; set; }

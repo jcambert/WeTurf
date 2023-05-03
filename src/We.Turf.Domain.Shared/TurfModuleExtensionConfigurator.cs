@@ -11,11 +11,13 @@ public static class TurfModuleExtensionConfigurator
 
     public static void Configure()
     {
-        OneTimeRunner.Run(() =>
-        {
-            ConfigureExistingProperties();
-            ConfigureExtraProperties();
-        });
+        OneTimeRunner.Run(
+            () =>
+            {
+                ConfigureExistingProperties();
+                ConfigureExtraProperties();
+            }
+        );
     }
 
     private static void ConfigureExistingProperties()

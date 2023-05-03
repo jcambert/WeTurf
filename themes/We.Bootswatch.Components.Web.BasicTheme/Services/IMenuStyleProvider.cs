@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ public interface IWeMenuStyle : INameable, IEquatable<IWeMenuStyle>, IEqualityCo
 
 internal abstract class MenuStyle : IWeMenuStyle
 {
-    internal static readonly List<IWeMenuStyle> Styles = new List<IWeMenuStyle>();
+    internal static readonly List<IWeMenuStyle> Styles = new();
     internal static readonly MenuStyle Default = new StyleDefault();
     internal static readonly MenuStyle Left = new StyleLeft();
 
@@ -28,14 +28,15 @@ internal abstract class MenuStyle : IWeMenuStyle
     public WeMenuStyle Style { get; }
     public string Name { get; }
 
-    public bool Equals(IWeMenuStyle other)
+    public bool Equals(IWeMenuStyle? other)
     {
         if (other == null) return false;
         return GetType() == other.GetType() && Name == other.Name;
     }
 
-    public bool Equals(IWeMenuStyle x, IWeMenuStyle y)
-     => x.Name == y.Name;
+    
+    public bool Equals(IWeMenuStyle? x, IWeMenuStyle? y)
+     => x?.Name == y?.Name;
 
     public int GetHashCode([DisallowNull] IWeMenuStyle obj)
     => obj.Name.GetHashCode();
@@ -68,7 +69,7 @@ public class MenuStyleProvider : SelectorProvider<IWeMenuStyle>, IMenuStyleProvi
     {
     }
 
-    protected override IWeMenuStyle Default => Values.FirstOrDefault(t => t.Name == _options.Value.MenuStyle) ?? MenuStyle.Default;
+    protected override IWeMenuStyle Default => Values.FirstOrDefault(t => t.Name == Options.Value.MenuStyle) ?? MenuStyle.Default;
     protected override List<IWeMenuStyle> Values => MenuStyle.Styles;
     protected override string CookieName =>BootswatchConsts.MenuStyleCookie;
 }

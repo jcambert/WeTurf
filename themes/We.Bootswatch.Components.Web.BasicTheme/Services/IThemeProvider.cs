@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
@@ -26,7 +26,7 @@ public interface ITheme : INameable, IEquatable<ITheme>, IEqualityComparer<IThem
 internal abstract class Theme : ITheme
 {
 
-    internal static readonly List<ITheme> Themes = new List<ITheme>();
+    internal static readonly List<ITheme> Themes = new ();
     internal static readonly ITheme Default = new ThemeDefault();
     internal static readonly ITheme Darkly = new ThemeDarkly();
     internal static readonly ITheme Cerulean = new ThemeCerulean();
@@ -44,14 +44,14 @@ internal abstract class Theme : ITheme
     public string Name { get; protected init; }
     public string Menu { get; protected init; }
 
-    public bool Equals(ITheme other)
+    public bool Equals(ITheme? other)
     {
         if (other == null) return false;
         return GetType() == other.GetType() && Name == other.Name;
     }
 
-    public bool Equals(ITheme x, ITheme y)
-        => x.Name == y.Name;
+    public bool Equals(ITheme? x, ITheme? y)
+        => x?.Name == y?.Name;
 
     public int GetHashCode([DisallowNull] ITheme obj)
         => obj.Name.GetHashCode();
@@ -100,7 +100,7 @@ public class ThemeProvider : SelectorProvider<ITheme>, IThemeProvider
     {
     }
 
-    protected override ITheme Default => Values.FirstOrDefault(t => t.Name ==  _options.Value.Theme) ?? Theme.Default;
+    protected override ITheme Default => Values.FirstOrDefault(t => t.Name ==  Options.Value.Theme) ?? Theme.Default;
     protected override List<ITheme> Values => Theme.Themes;
     protected override string CookieName => BootswatchConsts.ThemeCookie;
 }

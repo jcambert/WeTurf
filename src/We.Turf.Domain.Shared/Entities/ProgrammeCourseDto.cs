@@ -4,7 +4,7 @@ using We.Utilities;
 namespace We.Turf.Entities;
 
 [Serializable]
-public partial class ProgrammeCourseDto:EntityDto<Guid>
+public partial class ProgrammeCourseDto : EntityDto<Guid>
 {
     static readonly Regex regex = MyRegex();
     public DateOnly Date { get; set; }
@@ -19,8 +19,12 @@ public partial class ProgrammeCourseDto:EntityDto<Guid>
     public string? OrdreArrivee { get; set; }
     public string? Hippodrome { get; set; }
 
-    public int[] Arrivee=>regex.Matches(OrdreArrivee??string.Empty).ToIntArray();
+    public int[] Arrivee => regex.Matches(OrdreArrivee ?? string.Empty).ToIntArray();
 
-    [GeneratedRegex("[0-9][0-9]*", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace, "fr-FR")]
+    [GeneratedRegex(
+        "[0-9][0-9]*",
+        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace,
+        "fr-FR"
+    )]
     private static partial Regex MyRegex();
 }

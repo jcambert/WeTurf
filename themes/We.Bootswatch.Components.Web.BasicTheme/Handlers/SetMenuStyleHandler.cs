@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,8 +18,11 @@ public class SetMenuStyleHandler : AbpHandler.With<SetMenuStyleCommand, SetMenuS
 
     private IHttpContextAccessor Context { get; }
     private string CookieName => BootswatchConsts.MenuStyleCookie;
-
+#if MEDIATOR
+    public override ValueTask<Result<SetMenuStyleResult>> Handle(SetMenuStyleCommand request, CancellationToken cancellationToken)
+#else
     public override Task<Result<SetMenuStyleResult>> Handle(SetMenuStyleCommand request, CancellationToken cancellationToken)
+#endif
     {
         try
         {
@@ -28,13 +31,13 @@ public class SetMenuStyleHandler : AbpHandler.With<SetMenuStyleCommand, SetMenuS
                 Expires = DateTime.UtcNow.AddYears(10)
             };
             var httpContext = Context.HttpContext;
-            httpContext.Response.Cookies.Append(CookieName, request.Style, options);
+            httpContext?.Response.Cookies.Append(CookieName, request.Style, options);
             return Result.Success<SetMenuStyleResult>();
 
         }
         catch (Exception ex)
         {
-            return Result.Failure<SetMenuStyleResult>( ex);
+            return Result.Failure<SetMenuStyleResult>(ex);
         }
     }
 }

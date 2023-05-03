@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +16,11 @@ public class ApplyMenuStyleHandler : AbpHandler.With<ApplyMenuStyleCommand, Appl
     }
 
     private NavigationManager NavigationManager => GetRequiredService<NavigationManager>();
+#if MEDIATOR
+    public override ValueTask<Result<ApplyMenuStyleResult>> Handle(ApplyMenuStyleCommand request, CancellationToken cancellationToken)
+#else
     public override Task<Result<ApplyMenuStyleResult>> Handle(ApplyMenuStyleCommand request, CancellationToken cancellationToken)
+#endif
     {
         try
         {

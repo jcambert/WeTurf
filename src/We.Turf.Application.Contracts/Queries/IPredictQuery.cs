@@ -2,8 +2,9 @@
 
 namespace We.Turf.Queries;
 
-public interface IPredictQuery:IQuery<PredictResponse>
+public interface IPredictQuery : IQuery<PredictResponse>
 {
     bool DeleteFilesIfExists { get; set; }
 }
-public sealed record PredictResponse():Response;
+
+public sealed record PredictResponse() : Response;

@@ -2,6 +2,4 @@
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
 [ExposeServices(typeof(IBrowseAccuracyOfClassifierQuery))]
-public class BrowseAccuracyOfClassifierQuery: IBrowseAccuracyOfClassifierQuery
-{
-}
+public class BrowseAccuracyOfClassifierQuery : IBrowseAccuracyOfClassifierQuery { }

@@ -1,4 +1,4 @@
-﻿using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Domain.Repositories;
 using We.AbpExtensions;
 using We.Results;
 using We.Turf.Entities;
@@ -18,7 +18,12 @@ public class BrowseProgrammeReunionHandler : AbpHandler.With<BrowseProgrammeReun
     {
     }
 
+
+#if MEDIATOR
+    public override async ValueTask<Result<BrowseProgrammeReunionResponse>> Handle(BrowseProgrammeReunionQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<BrowseProgrammeReunionResponse>> Handle(BrowseProgrammeReunionQuery request, CancellationToken cancellationToken)
+#endif
     {
         var query = await Repository.GetQueryableAsync();
         query = query.GetQuery(new BrowseProgrammeReunionByDate(request.Date));

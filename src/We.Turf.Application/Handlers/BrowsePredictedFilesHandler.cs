@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using We.AbpExtensions;
 using We.Results;
 
@@ -9,8 +9,11 @@ public class BrowsePredictedFilesHandler : AbpHandler.With<BrowsePredictedFilesQ
     public BrowsePredictedFilesHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-
+#if MEDIATOR
+    public override ValueTask<Result<BrowsePredictedFilesResponse>> Handle(BrowsePredictedFilesQuery request, CancellationToken cancellationToken)
+#else
     public override Task<Result<BrowsePredictedFilesResponse>> Handle(BrowsePredictedFilesQuery request, CancellationToken cancellationToken)
+#endif
     {
         var res = File.Exists(request.Filename);
         if(!res)

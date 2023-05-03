@@ -1,4 +1,5 @@
 ﻿namespace We.Turf.Entities;
+
 [Serializable]
 public class ScrapTriggerDto : EntityDto<Guid>
 {

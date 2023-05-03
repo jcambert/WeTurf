@@ -1,7 +1,7 @@
 namespace We.Turf.Entities;
 
 [Serializable]
-public class ProgrammeReunionDto:EntityDto
+public class ProgrammeReunionDto : EntityDto
 {
     public DateOnly Date { get; set; }
     public int Reunion { get; set; }

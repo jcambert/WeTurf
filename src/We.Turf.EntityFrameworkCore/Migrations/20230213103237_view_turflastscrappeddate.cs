@@ -10,8 +10,8 @@ namespace We.Turf.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            
-            var sql = @"CREATE OR REPLACE VIEW public.turfllastscrapped
+            var sql =
+                @"CREATE OR REPLACE VIEW public.turfllastscrapped
  AS
  SELECT DISTINCT max(p.""Date"") AS lastscrappeddate
    FROM turfpredicted p;

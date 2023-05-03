@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,9 +16,12 @@ public class ApplyMainLayoutFluidifyHandler : AbpHandler.With<ApplyMainLayoutFlu
     }
 
     private NavigationManager NavigationManager=>GetRequiredService<NavigationManager>();
-  
 
+#if MEDIATOR
+    public override ValueTask<Result<ApplyMainLayoutFluidifyResult>> Handle(ApplyMainLayoutFluidifyCommand request, CancellationToken cancellationToken)
+        #else
     public override Task<Result<ApplyMainLayoutFluidifyResult>> Handle(ApplyMainLayoutFluidifyCommand request, CancellationToken cancellationToken)
+#endif
     {
         try
         {

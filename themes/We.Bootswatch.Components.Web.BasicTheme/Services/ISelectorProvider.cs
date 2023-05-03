@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
@@ -15,10 +15,10 @@ public interface ISelectorProvider<T>
 {
     IReadOnlyList<T> GetAll();
     IReadOnlyList<T> GetOthers(T item);
-    T GetByName(string name);
-    T GetCurrent();
+    T? GetByName(string name);
+    T? GetCurrent();
 
-    T GetDefault();
+    T? GetDefault();
     //void SetCurrent(T item);
 
     //void SetCurrent(string name);
@@ -44,10 +44,10 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
         await OnInitializedAsync();
     }
 
-    protected IOptions<LayoutOptions> _options => ServiceProvider.LazyGetRequiredService<IOptions<LayoutOptions>>();
+    protected IOptions<LayoutOptions> Options => ServiceProvider.LazyGetRequiredService<IOptions<LayoutOptions>>();
     protected IHttpContextAccessor Context { get; }
     protected NavigationManager NavigationManager { get; }
-    protected abstract T Default { get; }
+    protected abstract T? Default { get; }
     protected abstract List<T> Values { get; }
     protected abstract string CookieName { get; }
     public IAbpLazyServiceProvider ServiceProvider { get; }
@@ -67,10 +67,10 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
         => Values.OrderBy(x => x.Name).DistinctBy(x => x.Name).ToImmutableList();
 
 
-    public virtual T GetByName(string name)
-        => Values.FirstOrDefault(t => t.Name == name) ?? Default;
+    public virtual T? GetByName(string name)
+        => Values.FirstOrDefault(t => t.Name == name) ?? Default ?? default;
 
-    public virtual T GetCurrent()
+    public virtual T? GetCurrent()
     {
 
         var httpContext = Context.HttpContext;
@@ -85,7 +85,7 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
     public  IReadOnlyList<T> GetOthers(T item)
      => Values?.Where(t => t.Name != item?.Name).OrderBy(t => t.Name).DistinctBy(t => t.Name).ToImmutableList() ??new List<T>().ToImmutableList();
 
-    public T GetDefault() => Default;
+    public T? GetDefault() => Default;
     /*public virtual void SetCurrent(T item)
     {
         var options = new CookieOptions()

@@ -2,9 +2,9 @@
 
 namespace We.Turf.Queries;
 
-public interface IBrowseCourseFilesQuery:IQuery<BrowseCourseFilesResponse>
+public interface IBrowseCourseFilesQuery : IQuery<BrowseCourseFilesResponse>
 {
-    public  string Filename { get; set; }
+    public string Filename { get; set; }
 }
 
-public sealed record BrowseCourseFilesResponse(string File):Response;
+public sealed record BrowseCourseFilesResponse(string File) : Response;

@@ -7,13 +7,11 @@ using Volo.Abp.DependencyInjection;
 
 namespace We.Turf.EntityFrameworkCore;
 
-public class EntityFrameworkCoreTurfDbSchemaMigrator
-    : ITurfDbSchemaMigrator, ITransientDependency
+public class EntityFrameworkCoreTurfDbSchemaMigrator : ITurfDbSchemaMigrator, ITransientDependency
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public EntityFrameworkCoreTurfDbSchemaMigrator(
-        IServiceProvider serviceProvider)
+    public EntityFrameworkCoreTurfDbSchemaMigrator(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
@@ -26,9 +24,6 @@ public class EntityFrameworkCoreTurfDbSchemaMigrator
          * current scope.
          */
 
-        await _serviceProvider
-            .GetRequiredService<TurfDbContext>()
-            .Database
-            .MigrateAsync();
+        await _serviceProvider.GetRequiredService<TurfDbContext>().Database.MigrateAsync();
     }
 }

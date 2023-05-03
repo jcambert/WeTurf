@@ -13,27 +13,29 @@ namespace We.Turf.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "turfscraptrigger",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Start = table.Column<TimeSpan>(type: "interval", nullable: false)
-                },
+                columns: table =>
+                    new
+                    {
+                        Id = table.Column<Guid>(type: "uuid", nullable: false),
+                        Start = table.Column<TimeSpan>(type: "interval", nullable: false)
+                    },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_turfscraptrigger", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_turfscraptrigger_Start",
                 table: "turfscraptrigger",
-                column: "Start");
+                column: "Start"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "turfscraptrigger");
+            migrationBuilder.DropTable(name: "turfscraptrigger");
         }
     }
 }

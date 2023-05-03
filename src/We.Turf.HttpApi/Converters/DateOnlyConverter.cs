@@ -9,30 +9,45 @@ namespace We.Turf.Converters;
 public class DateOnlyConverter : JsonConverter<DateOnly>
 {
     private readonly string serializationFormat;
-    public DateOnlyConverter() : this(serializationFormat: null)
-    {
 
-    }
+    public DateOnlyConverter() : this(serializationFormat: null) { }
+
     public DateOnlyConverter(string? serializationFormat)
     {
         this.serializationFormat = serializationFormat ?? "dd/mm/YYYY";
     }
+
     public override bool CanConvert(Type typeToConvert)
     {
         return base.CanConvert(typeToConvert);
     }
-    public override DateOnly ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    => DateOnly.Parse(reader.GetString()!);
-    
-    public override void WriteAsPropertyName(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
+
+    public override DateOnly ReadAsPropertyName(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    ) => DateOnly.Parse(reader.GetString()!);
+
+    public override void WriteAsPropertyName(
+        Utf8JsonWriter writer,
+        DateOnly value,
+        JsonSerializerOptions options
+    )
     {
         base.WriteAsPropertyName(writer, value, options);
     }
-    public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    => DateOnly.Parse(reader.GetString()!);
 
-    public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
-        => writer.WriteStringValue(value.ToString(serializationFormat));
+    public override DateOnly Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    ) => DateOnly.Parse(reader.GetString()!);
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        DateOnly value,
+        JsonSerializerOptions options
+    ) => writer.WriteStringValue(value.ToString(serializationFormat));
 }
 
 public abstract class StringTypeConverterBase<T> : TypeConverter
@@ -50,7 +65,11 @@ public abstract class StringTypeConverterBase<T> : TypeConverter
         return base.CanConvertFrom(context, sourceType);
     }
 
-    public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+    public override object? ConvertFrom(
+        ITypeDescriptorContext? context,
+        CultureInfo? culture,
+        object value
+    )
     {
         if (value is string str)
         {
@@ -67,7 +86,13 @@ public abstract class StringTypeConverterBase<T> : TypeConverter
         }
         return base.CanConvertTo(context, destinationType);
     }
-    public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
+
+    public override object? ConvertTo(
+        ITypeDescriptorContext? context,
+        CultureInfo? culture,
+        object? value,
+        Type destinationType
+    )
     {
         if (destinationType == typeof(string) && value is T typedValue)
         {
@@ -87,9 +112,12 @@ public abstract class StringTypeConverterBase<T> : TypeConverter
         return (IFormatProvider?)formatInfo ?? culture;
     }
 }
+
 public class DateOnlyTypeConverter : StringTypeConverterBase<DateOnly>
 {
-    protected override DateOnly Parse(string s, IFormatProvider? provider) => DateOnly.Parse(s, provider);
+    protected override DateOnly Parse(string s, IFormatProvider? provider) =>
+        DateOnly.Parse(s, provider);
 
-    protected override string ToIsoString(DateOnly source, IFormatProvider? provider) => source.ToString("O", provider);
+    protected override string ToIsoString(DateOnly source, IFormatProvider? provider) =>
+        source.ToString("O", provider);
 }

@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using We.AbpExtensions;
 using We.Results;
 
@@ -10,7 +10,11 @@ public class BrowseToPredictFilesHandler : AbpHandler.With<BrowseToPredictFilesQ
     {
     }
 
+#if MEDIATOR
+    public override ValueTask<Result<BrowseToPredictFilesResponse>> Handle(BrowseToPredictFilesQuery request, CancellationToken cancellationToken)
+#else
     public override Task<Result<BrowseToPredictFilesResponse>> Handle(BrowseToPredictFilesQuery request, CancellationToken cancellationToken)
+#endif
     {
         var files = Directory.EnumerateFiles(request.Path, "*.csv");
         if (!files.Any())

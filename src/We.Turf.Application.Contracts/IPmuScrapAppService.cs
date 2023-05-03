@@ -2,7 +2,7 @@
 
 namespace We.Turf;
 
-public interface IPmuScrapAppService:IApplicationService
+public interface IPmuScrapAppService : IApplicationService
 {
     Task<Result<GetLastScrappedResponse>> GetLastScrapped(GetLastScrappedQuery query);
 
@@ -12,13 +12,17 @@ public interface IPmuScrapAppService:IApplicationService
 
     Task<Result<ResultatResponse>> Resultats(ResultatQuery query);
 
-    Task<Result<BrowseToPredictFilesResponse>> BrowseToPredictFiles(BrowseToPredictFilesQuery query);
+    Task<Result<BrowseToPredictFilesResponse>> BrowseToPredictFiles(
+        BrowseToPredictFilesQuery query
+    );
 
-    Task<Result<BrowsePredictedFilesResponse>> BrowsePredictedFiles(BrowsePredictedFilesQuery query);
+    Task<Result<BrowsePredictedFilesResponse>> BrowsePredictedFiles(
+        BrowsePredictedFilesQuery query
+    );
 
     Task<Result<BrowseCourseFilesResponse>> BrowseCourseFiles(BrowseCourseFilesQuery query);
 
-    Task<Result<BrowseResultatsFilesResponse>> BrowseResultatsFiles(BrowseResultatsFilesQuery query);
-
-
+    Task<Result<BrowseResultatsFilesResponse>> BrowseResultatsFiles(
+        BrowseResultatsFilesQuery query
+    );
 }

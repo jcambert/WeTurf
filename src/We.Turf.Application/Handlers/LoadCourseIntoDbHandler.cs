@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Reactive.Linq;
 using We.AbpExtensions;
@@ -16,8 +16,11 @@ public class LoadCourseIntoDbHandler : AbpHandler.With<LoadCourseIntoDbQuery, Lo
     public LoadCourseIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-
+#if MEDIATOR
+    public override async ValueTask<Result<LoadCourseIntoDbResponse>> Handle(LoadCourseIntoDbQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<LoadCourseIntoDbResponse>> Handle(LoadCourseIntoDbQuery request, CancellationToken cancellationToken)
+#endif
     {
         try
         {
@@ -29,13 +32,13 @@ public class LoadCourseIntoDbHandler : AbpHandler.With<LoadCourseIntoDbQuery, Lo
                 var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
 
                 var reader = new Reader<Course>($"{request.Filename}", true, ';');
-                List<Course> courses = new List<Course>();
+                List<Course> courses = new ();
                 reader
                     .OnReadLine
                     .Where(x => !existings.Any(y => y.Date == x.Value.Date && y.Reunion == x.Value.Reunion && y.Numero == x.Value.Numero))
                     .Subscribe(o =>
                     {
-                        Logger.LogInformation($"{o.Index} / {o.ToString()}");
+                        Logger.LogInformation("{Index} / {Response}",o.Index,o);
                         courses.Add(o.Value);
                     },
                         () =>

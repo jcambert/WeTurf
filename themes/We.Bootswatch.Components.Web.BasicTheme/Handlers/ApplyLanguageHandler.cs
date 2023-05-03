@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +17,11 @@ public class ApplyLanguageHandler :AbpHandler.With<ApplyLanguageCommand, ApplyLa
 
 
     private NavigationManager NavigationManager =>GetRequiredService<NavigationManager>();
+#if MEDIATOR
+    public override ValueTask<Result<ApplyLanguageResult>> Handle(ApplyLanguageCommand request, CancellationToken cancellationToken)
+#else
     public override Task<Result<ApplyLanguageResult>> Handle(ApplyLanguageCommand request, CancellationToken cancellationToken)
+#endif
     {
         try
         {

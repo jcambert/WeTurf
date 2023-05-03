@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,8 +16,11 @@ internal class ApplyThemeHandler : AbpHandler.With<ApplyThemeCommand, ApplyTheme
     }
 
     private NavigationManager NavigationManager => GetRequiredService<NavigationManager>();
-
+#if MEDIATOR
+    public override ValueTask<Result<ApplyThemeResult>> Handle(ApplyThemeCommand request, CancellationToken cancellationToken)
+#else
     public override Task<Result<ApplyThemeResult>> Handle(ApplyThemeCommand request, CancellationToken cancellationToken)
+#endif
     {
         try
         {
@@ -30,7 +33,7 @@ internal class ApplyThemeHandler : AbpHandler.With<ApplyThemeCommand, ApplyTheme
         }
         catch (Exception ex)
         {
-            return Result.Failure<ApplyThemeResult>( ex);
+            return Result.Failure<ApplyThemeResult>(ex);
         }
     }
 }

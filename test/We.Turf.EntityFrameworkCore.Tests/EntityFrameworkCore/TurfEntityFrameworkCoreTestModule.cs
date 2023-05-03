@@ -14,7 +14,7 @@ namespace We.Turf.EntityFrameworkCore;
     typeof(TurfEntityFrameworkCoreModule),
     typeof(TurfTestBaseModule),
     typeof(AbpEntityFrameworkCoreSqliteModule)
-    )]
+)]
 public class TurfEntityFrameworkCoreTestModule : AbpModule
 {
     private SqliteConnection _sqliteConnection;
@@ -28,13 +28,17 @@ public class TurfEntityFrameworkCoreTestModule : AbpModule
     {
         _sqliteConnection = CreateDatabaseAndGetConnection();
 
-        services.Configure<AbpDbContextOptions>(options =>
-        {
-            options.Configure(context =>
+        services.Configure<AbpDbContextOptions>(
+            options =>
             {
-                context.DbContextOptions.UseSqlite(_sqliteConnection);
-            });
-        });
+                options.Configure(
+                    context =>
+                    {
+                        context.DbContextOptions.UseSqlite(_sqliteConnection);
+                    }
+                );
+            }
+        );
     }
 
     public override void OnApplicationShutdown(ApplicationShutdownContext context)
@@ -47,9 +51,7 @@ public class TurfEntityFrameworkCoreTestModule : AbpModule
         var connection = new SqliteConnection("Data Source=:memory:");
         connection.Open();
 
-        var options = new DbContextOptionsBuilder<TurfDbContext>()
-            .UseSqlite(connection)
-            .Options;
+        var options = new DbContextOptionsBuilder<TurfDbContext>().UseSqlite(connection).Options;
 
         using (var context = new TurfDbContext(options))
         {

@@ -19,9 +19,9 @@ public class TurfDbContextFactory : IDesignTimeDbContextFactory<TurfDbContext>
 
         var configuration = BuildConfiguration();
 
-        var builder = new DbContextOptionsBuilder<TurfDbContext>()
-          
-            .UseNpgsql(configuration.GetConnectionString("Default"));
+        var builder = new DbContextOptionsBuilder<TurfDbContext>().UseNpgsql(
+            configuration.GetConnectionString("Default")
+        );
 
         return new TurfDbContext(builder.Options);
     }

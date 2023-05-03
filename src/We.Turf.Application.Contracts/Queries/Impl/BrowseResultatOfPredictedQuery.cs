@@ -2,6 +2,4 @@
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
 [ExposeServices(typeof(IBrowseResultatOfPredictedQuery))]
-public class BrowseResultatOfPredictedQuery: IBrowseResultatOfPredictedQuery
-{
-}
+public class BrowseResultatOfPredictedQuery : IBrowseResultatOfPredictedQuery { }

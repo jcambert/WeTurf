@@ -1,4 +1,4 @@
-﻿using We.AbpExtensions;
+using We.AbpExtensions;
 using We.Processes;
 using We.Results;
 
@@ -11,7 +11,11 @@ public class ResultatHandler : AbpHandler.With<ResultatQuery, ResultatResponse>
     {
     }
 
+#if MEDIATOR
+    public override async ValueTask<Result<ResultatResponse>> Handle(ResultatQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<ResultatResponse>> Handle(ResultatQuery request, CancellationToken cancellationToken)
+#endif
     {
         var exe = Python;
         string args = string.Empty;
@@ -23,7 +27,7 @@ public class ResultatHandler : AbpHandler.With<ResultatQuery, ResultatResponse>
             args = $"mode=w";
         }
         args = $"{args} start={date_start} end={date_end}";
-        var res = await exe.SendAsync(@$"resultat.py {args}");
+        var res = await exe.SendAsync(@$"resultat.py {args}",cancellationToken);
         if (res.IsSuccess)
             return Result.Success<ResultatResponse>();
         return Result.Failure<ResultatResponse>(res.Errors.ToArray());

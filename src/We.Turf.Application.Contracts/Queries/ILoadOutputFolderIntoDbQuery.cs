@@ -6,4 +6,5 @@ public interface ILoadOutputFolderIntoDbQuery : IQuery<LoadOutputFolderIntoDbRes
 {
     string Folder { get; set; }
 }
-public sealed record LoadOutputFolderIntoDbResponse():Response;
+
+public sealed record LoadOutputFolderIntoDbResponse() : Response;

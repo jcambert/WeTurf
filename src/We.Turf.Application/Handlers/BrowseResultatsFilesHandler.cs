@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using We.AbpExtensions;
 using We.Results;
 
@@ -9,8 +9,11 @@ public class BrowseResultatsFilesHandler : AbpHandler.With<BrowseResultatsFilesQ
     public BrowseResultatsFilesHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-
+#if MEDIATOR
+    public override ValueTask<Result<BrowseResultatsFilesResponse>> Handle(BrowseResultatsFilesQuery request, CancellationToken cancellationToken)
+#else
     public override Task<Result<BrowseResultatsFilesResponse>> Handle(BrowseResultatsFilesQuery request, CancellationToken cancellationToken)
+#endif
     {
         var files = Directory.EnumerateFiles(request.Path, "resultats_*.csv");
         if (!files.Any())

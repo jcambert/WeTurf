@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using We.AbpExtensions;
 using We.Results;
@@ -8,7 +8,7 @@ namespace We.Turf.Handlers;
 
 public class LoadOutputFolderIntoDbHandler : AbpHandler.With<LoadOutputFolderIntoDbQuery, LoadOutputFolderIntoDbResponse>
 {
-    private List<Error> _errors = new List<Error>();
+    private readonly List<Error> _errors = new ();
     public LoadOutputFolderIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
@@ -19,7 +19,11 @@ public class LoadOutputFolderIntoDbHandler : AbpHandler.With<LoadOutputFolderInt
             _errors.AddRange(result.Errors);
         }
     }
+#if MEDIATOR
+    public override async ValueTask<Result<LoadOutputFolderIntoDbResponse>> Handle(LoadOutputFolderIntoDbQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<LoadOutputFolderIntoDbResponse>> Handle(LoadOutputFolderIntoDbQuery request, CancellationToken cancellationToken)
+#endif
     {
         LogTrace($"Start Handling {nameof(LoadOutputFolderIntoDbHandler)}");
         try

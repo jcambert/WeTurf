@@ -1,4 +1,4 @@
-﻿using We.AbpExtensions;
+using We.AbpExtensions;
 using We.Results;
 using We.Turf.Entities;
 
@@ -12,9 +12,13 @@ public class BrowseAccuracyOfClassifierHandler :AbpHandler.With<BrowseAccuracyOf
     {
     }
 
+#if MEDIATOR
+    public override async ValueTask<Result<BrowseAccuracyOfClassifierResponse>> Handle(BrowseAccuracyOfClassifierQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<BrowseAccuracyOfClassifierResponse>> Handle(BrowseAccuracyOfClassifierQuery request, CancellationToken cancellationToken)
+#endif
     {
-        var res = await Repository.ToListAsync();
+        var res = await Repository.ToListAsync(cancellationToken);
         return new BrowseAccuracyOfClassifierResponse(MapToDtoList(res));
     }
 }

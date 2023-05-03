@@ -1,4 +1,4 @@
-﻿using We.AbpExtensions;
+using We.AbpExtensions;
 using We.Results;
 using We.Turf.Entities;
 
@@ -10,8 +10,11 @@ public class BrowsePredictionPerClassifierHandler : AbpHandler.With<BrowsePredic
     {
     }
 
-    IRepository<PredictionPerClassifier> repository=>GetRequiredService<IRepository<PredictionPerClassifier>>();    
+#if MEDIATOR
+    public override async ValueTask<Result<BrowsePredictionPerClassifierResponse>> Handle(BrowsePredictionPerClassifierQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<BrowsePredictionPerClassifierResponse>> Handle(BrowsePredictionPerClassifierQuery request, CancellationToken cancellationToken)
+#endif
     {
         var query = await Repository.GetQueryableAsync();
         var result= await AsyncExecuter.ToListAsync(query, cancellationToken);

@@ -20,10 +20,10 @@ namespace We.Turf.EntityFrameworkCore;
 [ReplaceDbContext(typeof(IIdentityDbContext))]
 [ReplaceDbContext(typeof(ITenantManagementDbContext))]
 [ConnectionStringName("Default")]
-public class TurfDbContext :
-    AbpDbContext<TurfDbContext>,
-    IIdentityDbContext,
-    ITenantManagementDbContext
+public class TurfDbContext
+    : AbpDbContext<TurfDbContext>,
+      IIdentityDbContext,
+      ITenantManagementDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
@@ -40,8 +40,8 @@ public class TurfDbContext :
      * uses this DbContext on runtime. Otherwise, it will use its own DbContext class.
      */
     public DbSet<Course> Courses { get; set; }
-    public DbSet<Predicted> Predicteds{ get; set; }
-    public DbSet<Resultat> Resultats{ get; set; }
+    public DbSet<Predicted> Predicteds { get; set; }
+    public DbSet<Resultat> Resultats { get; set; }
     public DbSet<ToPredict> ToPredicts { get; set; }
     public DbSet<ResultatOfPredicted> ResultatOfPredicted { get; set; }
     public DbSet<PredictionPerClassifier> PredictionPerClassifier { get; set; }
@@ -60,18 +60,13 @@ public class TurfDbContext :
     public DbSet<IdentitySecurityLog> SecurityLogs { get; set; }
     public DbSet<IdentityLinkUser> LinkUsers { get; set; }
 
-
     // Tenant Management
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
     #endregion
 
-    public TurfDbContext(DbContextOptions<TurfDbContext> options)
-        : base(options)
-    {
-
-    }
+    public TurfDbContext(DbContextOptions<TurfDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -97,111 +92,147 @@ public class TurfDbContext :
         //    //...
         //});
 
-        builder.Entity<Course>(b =>
-        {
-            b.ToTable(TurfConsts.DbTablePrefix + nameof(Course).ToLower(), TurfConsts.DbSchema); 
-            b.ConfigureByConvention();
-            b.HasIndex(x => x.Date);
-            b.HasIndex(x => x.HippoCode);
-            b.HasIndex(x => x.Reunion);
-            b.HasIndex(x => x.Numero);
-            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
-        });
-        builder.Entity<Predicted>(b =>
-        {
-            b.ToTable(TurfConsts.DbTablePrefix + nameof(Predicted).ToLower(), TurfConsts.DbSchema);
-            b.ConfigureByConvention(); //auto configure for the base class props
-            b.HasIndex(x => x.Date);
-            b.HasIndex(x => x.Hippodrome);
-            b.HasIndex(x => x.Reunion);
-            b.HasIndex(x => x.Course);
-            b.HasIndex(x => x.Classifier);
-            b.Property(x=>x.Date).HasConversion<DateOnlyConverter,DateOnlyComparer>();
-            //...
-        });
+        builder.Entity<Course>(
+            b =>
+            {
+                b.ToTable(TurfConsts.DbTablePrefix + nameof(Course).ToLower(), TurfConsts.DbSchema);
+                b.ConfigureByConvention();
+                b.HasIndex(x => x.Date);
+                b.HasIndex(x => x.HippoCode);
+                b.HasIndex(x => x.Reunion);
+                b.HasIndex(x => x.Numero);
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }
+        );
+        builder.Entity<Predicted>(
+            b =>
+            {
+                b.ToTable(
+                    TurfConsts.DbTablePrefix + nameof(Predicted).ToLower(),
+                    TurfConsts.DbSchema
+                );
+                b.ConfigureByConvention(); //auto configure for the base class props
+                b.HasIndex(x => x.Date);
+                b.HasIndex(x => x.Hippodrome);
+                b.HasIndex(x => x.Reunion);
+                b.HasIndex(x => x.Course);
+                b.HasIndex(x => x.Classifier);
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+                //...
+            }
+        );
 
-        builder.Entity<Resultat>(b =>{
-            b.ToTable(TurfConsts.DbTablePrefix + nameof(Resultat).ToLower(), TurfConsts.DbSchema);
-            b.ConfigureByConvention();
-            b.HasIndex(x => x.Date);
-            b.HasIndex(x => x.Reunion);
-            b.HasIndex(x => x.Course);
-            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
-        });
+        builder.Entity<Resultat>(
+            b =>
+            {
+                b.ToTable(
+                    TurfConsts.DbTablePrefix + nameof(Resultat).ToLower(),
+                    TurfConsts.DbSchema
+                );
+                b.ConfigureByConvention();
+                b.HasIndex(x => x.Date);
+                b.HasIndex(x => x.Reunion);
+                b.HasIndex(x => x.Course);
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }
+        );
 
-        builder.Entity<ToPredict>(b => {
-            b.ToTable(TurfConsts.DbTablePrefix + nameof(ToPredict).ToLower(), TurfConsts.DbSchema);
-            b.ConfigureByConvention();
-            b.HasIndex(x => x.Date);
-            b.HasIndex(x => x.Reunion);
-            b.HasIndex(x => x.Course);
-            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        builder.Entity<ToPredict>(
+            b =>
+            {
+                b.ToTable(
+                    TurfConsts.DbTablePrefix + nameof(ToPredict).ToLower(),
+                    TurfConsts.DbSchema
+                );
+                b.ConfigureByConvention();
+                b.HasIndex(x => x.Date);
+                b.HasIndex(x => x.Reunion);
+                b.HasIndex(x => x.Course);
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }
+        );
 
-        });
+        builder.Entity<ResultatOfPredicted>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfresultatofpredicted");
+                b.Property(x => x.Resultat_Id).HasColumnName("resultat_id");
+                b.Property(x => x.Dividende).HasColumnName("dividende");
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }
+        );
+        builder.Entity<PredictionPerClassifier>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfpredictionperclassifier");
+                b.Property(x => x.Counting).HasColumnName("counting");
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }
+        );
+        builder.Entity<ResultatPerClassifier>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfresultatperclassifier");
+                b.Property(x => x.Counting).HasColumnName("counting");
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }
+        );
 
-        builder.Entity<ResultatOfPredicted>(b => {
-            b.HasNoKey();
-            b.ToView("turfresultatofpredicted");
-            b.Property(x=>x.Resultat_Id).HasColumnName("resultat_id");
-            b.Property(x => x.Dividende).HasColumnName("dividende");
-            b.Property(x=>x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
-        });
-        builder.Entity<PredictionPerClassifier>(b =>
-        {
-            b.HasNoKey();
-            b.ToView("turfpredictionperclassifier");
-            b.Property(x => x.Counting).HasColumnName("counting");
-            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
-        });
-        builder.Entity<ResultatPerClassifier>(b =>
-        {
-            b.HasNoKey();
-            b.ToView("turfresultatperclassifier");
-            b.Property(x => x.Counting).HasColumnName("counting");
-            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
-        });
+        builder.Entity<AccuracyPerClassifier>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfaccuracyperclassifier");
+                b.Property(x => x.Classifier).HasColumnName("classifier");
+                b.Property(x => x.PredictionCount).HasColumnName("predictioncounting");
+                b.Property(x => x.ResultatCount).HasColumnName("resultatcounting");
+                b.Property(x => x.Percentage).HasColumnName("accuracy");
+            }
+        );
 
-        builder.Entity<AccuracyPerClassifier>(b =>
-        {
-            b.HasNoKey();
-            b.ToView("turfaccuracyperclassifier");
-            b.Property(x => x.Classifier).HasColumnName("classifier");
-            b.Property(x => x.PredictionCount).HasColumnName("predictioncounting");
-            b.Property(x => x.ResultatCount).HasColumnName("resultatcounting");
-            b.Property(x => x.Percentage).HasColumnName("accuracy");
+        builder.Entity<ScrapTrigger>(
+            b =>
+            {
+                b.ToTable(
+                    TurfConsts.DbTablePrefix + nameof(ScrapTrigger).ToLower(),
+                    TurfConsts.DbSchema
+                );
+                b.Property(x => x.Start).HasConversion<TimeOnlyConverter, TimeOnlyComparer>();
+                b.HasIndex(x => x.Start);
+            }
+        );
 
-        });
+        builder.Entity<LastScrapped>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfllastscrapped");
+                b.Property(x => x.LastDate).HasColumnName("lastscrappeddate");
+            }
+        );
 
-        builder.Entity<ScrapTrigger>(b =>
-        {
-            b.ToTable(TurfConsts.DbTablePrefix + nameof(ScrapTrigger).ToLower(), TurfConsts.DbSchema);
-            b.Property(x=>x.Start).HasConversion<TimeOnlyConverter, TimeOnlyComparer>();
-            b.HasIndex(x => x.Start);
-        });
-
-        builder.Entity<LastScrapped>(b =>
-        {
-            b.HasNoKey();
-            b.ToView("turfllastscrapped");
-            b.Property(x => x.LastDate).HasColumnName("lastscrappeddate");
-        });
-
-        builder.Entity<ProgrammeCourse>(b =>
-        {
-            b.HasNoKey();
-            b.ToView("turfprogrammecourse");
-            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
-            b.Property(x => x.Course).HasColumnName("Numero");
-            b.Property(x => x.Hippodrome).HasColumnName("HippoCourt");
-        });
-        builder.Entity<ProgrammeReunion>(b =>
-        {
-            b.HasNoKey();
-            b.ToView("turfprogrammereunion");
-            b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
-            b.Property(x => x.Nombre).HasColumnName("count");
-            b.Property(x => x.Hippodrome).HasColumnName("HippoCourt");
-        });
-        
+        builder.Entity<ProgrammeCourse>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfprogrammecourse");
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+                b.Property(x => x.Course).HasColumnName("Numero");
+                b.Property(x => x.Hippodrome).HasColumnName("HippoCourt");
+            }
+        );
+        builder.Entity<ProgrammeReunion>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfprogrammereunion");
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+                b.Property(x => x.Nombre).HasColumnName("count");
+                b.Property(x => x.Hippodrome).HasColumnName("HippoCourt");
+            }
+        );
     }
 }

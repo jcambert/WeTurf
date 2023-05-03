@@ -2,7 +2,5 @@
 
 namespace We.Turf.EntityFrameworkCore;
 
-public abstract class TurfEntityFrameworkCoreTestBase : TurfTestBase<TurfEntityFrameworkCoreTestModule>
-{
-
-}
+public abstract class TurfEntityFrameworkCoreTestBase
+    : TurfTestBase<TurfEntityFrameworkCoreTestModule> { }

@@ -28,7 +28,8 @@ public class TurfDbMigrationService : ITransientDependency
         IDataSeeder dataSeeder,
         IEnumerable<ITurfDbSchemaMigrator> dbSchemaMigrators,
         ITenantRepository tenantRepository,
-        ICurrentTenant currentTenant)
+        ICurrentTenant currentTenant
+    )
     {
         _dataSeeder = dataSeeder;
         _dbSchemaMigrators = dbSchemaMigrators;
@@ -78,7 +79,10 @@ public class TurfDbMigrationService : ITransientDependency
                 await SeedDataAsync(tenant);
             }
 
-            Logger.LogInformation($"Successfully completed {tenant.Name} tenant database migrations.");
+            Logger.LogInformation(
+                "Successfully completed {Name} tenant database migrations.",
+                tenant.Name
+            );
         }
 
         Logger.LogInformation("Successfully completed all database migrations.");
@@ -88,7 +92,9 @@ public class TurfDbMigrationService : ITransientDependency
     private async Task MigrateDatabaseSchemaAsync(Tenant? tenant = null)
     {
         Logger.LogInformation(
-            $"Migrating schema for {(tenant == null ? "host" : tenant.Name + " tenant")} database...");
+            "Migrating schema for {Name} database...",
+            (tenant == null ? "host" : tenant.Name + " tenant")
+        );
 
         foreach (var migrator in _dbSchemaMigrators)
         {
@@ -98,11 +104,21 @@ public class TurfDbMigrationService : ITransientDependency
 
     private async Task SeedDataAsync(Tenant? tenant = null)
     {
-        Logger.LogInformation($"Executing {(tenant == null ? "host" : tenant.Name + " tenant")} database seed...");
+        Logger.LogInformation(
+            "Executing {Name} database seed...",
+            (tenant == null ? "host" : tenant.Name + " tenant")
+        );
 
-        await _dataSeeder.SeedAsync(new DataSeedContext(tenant?.Id)
-            .WithProperty(IdentityDataSeedContributor.AdminEmailPropertyName, IdentityDataSeedContributor.AdminEmailDefaultValue)
-            .WithProperty(IdentityDataSeedContributor.AdminPasswordPropertyName, IdentityDataSeedContributor.AdminPasswordDefaultValue)
+        await _dataSeeder.SeedAsync(
+            new DataSeedContext(tenant?.Id)
+                .WithProperty(
+                    IdentityDataSeedContributor.AdminEmailPropertyName,
+                    IdentityDataSeedContributor.AdminEmailDefaultValue
+                )
+                .WithProperty(
+                    IdentityDataSeedContributor.AdminPasswordPropertyName,
+                    IdentityDataSeedContributor.AdminPasswordDefaultValue
+                )
         );
     }
 
@@ -134,22 +150,26 @@ public class TurfDbMigrationService : ITransientDependency
         }
         catch (Exception e)
         {
-            Logger.LogWarning("Couldn't determinate if any migrations exist : " + e.Message);
+            Logger.LogWarning(
+                "Couldn't determinate if any migrations exist : {Message} ",
+                e.Message
+            );
             return false;
         }
     }
 
-    private bool DbMigrationsProjectExists()
+    private static bool DbMigrationsProjectExists()
     {
         var dbMigrationsProjectFolder = GetEntityFrameworkCoreProjectFolderPath();
 
         return dbMigrationsProjectFolder != null;
     }
 
-    private bool MigrationsFolderExists()
+    private static bool MigrationsFolderExists()
     {
-        var dbMigrationsProjectFolder = GetEntityFrameworkCoreProjectFolderPath();
-
+        string? dbMigrationsProjectFolder = GetEntityFrameworkCoreProjectFolderPath();
+        if (dbMigrationsProjectFolder is null)
+            return false;
         return Directory.Exists(Path.Combine(dbMigrationsProjectFolder, "Migrations"));
     }
 
@@ -160,7 +180,10 @@ public class TurfDbMigrationService : ITransientDependency
         string argumentPrefix;
         string fileName;
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        if (
+            RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+            || RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+        )
         {
             argumentPrefix = "-c";
             fileName = "/bin/bash";
@@ -171,7 +194,8 @@ public class TurfDbMigrationService : ITransientDependency
             fileName = "cmd.exe";
         }
 
-        var procStartInfo = new ProcessStartInfo(fileName,
+        var procStartInfo = new ProcessStartInfo(
+            fileName,
             $"{argumentPrefix} \"abp create-migration-and-run-migrator \"{GetEntityFrameworkCoreProjectFolderPath()}\"\""
         );
 
@@ -185,30 +209,32 @@ public class TurfDbMigrationService : ITransientDependency
         }
     }
 
-    private string GetEntityFrameworkCoreProjectFolderPath()
+    private static string? GetEntityFrameworkCoreProjectFolderPath()
     {
-        var slnDirectoryPath = GetSolutionDirectoryPath();
-
-        if (slnDirectoryPath == null)
-        {
-            throw new Exception("Solution folder not found!");
-        }
-
+        var slnDirectoryPath =
+            GetSolutionDirectoryPath() ?? throw new Exception("Solution folder not found!");
         var srcDirectoryPath = Path.Combine(slnDirectoryPath, "src");
 
-        return Directory.GetDirectories(srcDirectoryPath)
+        return Directory
+            .GetDirectories(srcDirectoryPath)
             .FirstOrDefault(d => d.EndsWith(".EntityFrameworkCore"));
     }
 
-    private string GetSolutionDirectoryPath()
+    private static string? GetSolutionDirectoryPath()
     {
         var currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-
-        while (Directory.GetParent(currentDirectory.FullName) != null)
+        if (currentDirectory is null)
+            return null;
+        while (Directory.GetParent(currentDirectory?.FullName ?? string.Empty) != null)
         {
-            currentDirectory = Directory.GetParent(currentDirectory.FullName);
+            currentDirectory = Directory.GetParent(currentDirectory?.FullName ?? string.Empty);
 
-            if (Directory.GetFiles(currentDirectory.FullName).FirstOrDefault(f => f.EndsWith(".sln")) != null)
+            if (
+                currentDirectory is not null
+                && Directory
+                    .GetFiles(currentDirectory.FullName)
+                    .FirstOrDefault(f => f.EndsWith(".sln")) != null
+            )
             {
                 return currentDirectory.FullName;
             }

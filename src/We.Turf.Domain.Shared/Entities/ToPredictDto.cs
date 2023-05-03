@@ -1,6 +1,5 @@
 namespace We.Turf.Entities;
 
-
 public class ToPredictDto : EntityDto<Guid>
 {
     //date;reunion;course;

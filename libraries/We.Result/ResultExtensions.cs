@@ -1,4 +1,4 @@
-﻿using Dawn;
+using Dawn;
 
 namespace We.Results;
 
@@ -94,12 +94,20 @@ public static class ResultExtensions
     /// <param name="result"></param>
     /// <param name="func"></param>
     /// <returns></returns>
+#if MEDIATOR
     public static Task<Result> Bind<TIn>(this Result<TIn> result, Func<TIn, Task<Result>> func)
+#else
+    public static Task<Result> Bind<TIn>(this Result<TIn> result, Func<TIn, Task<Result>> func)
+#endif
     {
         Guard.Argument(result).NotNull();
         Guard.Argument(func).NotNull();
         if (!result)
+#if MEDIATOR
             return Task.FromResult(Result.Failure(result.Errors.ToArray()));
+#else
+            return Task.FromResult(Result.Failure(result.Errors.ToArray()));
+#endif
         return func(result.Value);
     }
 
@@ -134,6 +142,16 @@ public static class ResultExtensions
     {
         return Task.FromResult(result);
     }
+
+    /// <summary>
+    /// Return a result as a value task
+    /// usefull for async method
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="result"></param>
+    /// <returns></returns>
+    public static ValueTask<Result<T>> AsValueTask<T>(this Result<T> result) =>
+        ValueTask.FromResult(result);
 
     /// <summary>
     /// Append an error to result

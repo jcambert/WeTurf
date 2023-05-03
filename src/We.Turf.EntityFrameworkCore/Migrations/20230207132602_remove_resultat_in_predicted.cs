@@ -10,17 +10,11 @@ namespace We.Turf.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "DividenceGagnant",
-                table: "turfpredicted");
+            migrationBuilder.DropColumn(name: "DividenceGagnant", table: "turfpredicted");
 
-            migrationBuilder.DropColumn(
-                name: "DividencePlace",
-                table: "turfpredicted");
+            migrationBuilder.DropColumn(name: "DividencePlace", table: "turfpredicted");
 
-            migrationBuilder.DropColumn(
-                name: "Place",
-                table: "turfpredicted");
+            migrationBuilder.DropColumn(name: "Place", table: "turfpredicted");
         }
 
         /// <inheritdoc />
@@ -31,21 +25,24 @@ namespace We.Turf.Migrations
                 table: "turfpredicted",
                 type: "double precision",
                 nullable: false,
-                defaultValue: 0.0);
+                defaultValue: 0.0
+            );
 
             migrationBuilder.AddColumn<double>(
                 name: "DividencePlace",
                 table: "turfpredicted",
                 type: "double precision",
                 nullable: false,
-                defaultValue: 0.0);
+                defaultValue: 0.0
+            );
 
             migrationBuilder.AddColumn<int>(
                 name: "Place",
                 table: "turfpredicted",
                 type: "integer",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0
+            );
         }
     }
 }

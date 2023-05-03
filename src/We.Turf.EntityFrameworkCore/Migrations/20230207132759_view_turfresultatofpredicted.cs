@@ -11,7 +11,8 @@ namespace We.Turf.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var sql = @"CREATE OR REPLACE VIEW public.turfresultatofpredicted
+            var sql =
+                @"CREATE OR REPLACE VIEW public.turfresultatofpredicted
  AS
  SELECT p.""Id"",
     p.""Classifier"",

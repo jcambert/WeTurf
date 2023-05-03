@@ -10,7 +10,8 @@ namespace We.Turf.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var sql = @"CREATE OR REPLACE VIEW public.turfpredictionperclassifier
+            var sql =
+                @"CREATE OR REPLACE VIEW public.turfpredictionperclassifier
  AS
   SELECT p.""Date"", p.""Classifier"",
     count(p.""Classifier"") AS counting

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RequestLocalization;
 using System;
@@ -19,13 +19,14 @@ public interface ILangProvider : ISelectorProvider<ILang>
 }
 public class LangProvider : SelectorProvider<ILang>, ILangProvider
 {
-    private IReadOnlyList<Lang> _values;
-    private Lang _currentLanguage;
+    private IReadOnlyList<Lang>? _values=null;
+    private Lang? _currentLanguage=null;
 
     ILanguageProvider LanguageProvider=>ServiceProvider.LazyGetRequiredService<ILanguageProvider>();
     IAbpRequestLocalizationOptionsProvider RequestLocalizationOptionsProvider => ServiceProvider.LazyGetRequiredService<IAbpRequestLocalizationOptionsProvider>();
     public LangProvider(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context, NavigationManager navigationManager) : base(serviceProvider, context, navigationManager)
     {
+        
     }
     protected override async Task OnInitializedAsync()
     {
@@ -37,7 +38,7 @@ public class LangProvider : SelectorProvider<ILang>, ILangProvider
 
     private async Task SetCurrentAsync()
     {
-        var currentLanguage = _values.Select(x=>x.Language).FindByCulture(
+        var currentLanguage = _values?.Select(x=>x.Language).FindByCulture(
              CultureInfo.CurrentCulture.Name,
              CultureInfo.CurrentUICulture.Name
              );
@@ -64,20 +65,20 @@ public class LangProvider : SelectorProvider<ILang>, ILangProvider
         _currentLanguage = new Lang( currentLanguage);
     }
 
-    protected override ILang Default { get; }
-    protected override List<ILang> Values => _values?.ToList<ILang>();
+    protected override ILang? Default { get; } = null;
+    protected override List<ILang> Values => _values?.ToList<ILang>() ?? new();
     protected override string CookieName { get; } = string.Empty;
     
 
 
-    public override ILang GetCurrent() => _currentLanguage;
+    public override ILang GetCurrent() => _currentLanguage ?? base.GetCurrent();
 }
 public interface ILang : INameable, IEquatable<ILang>, IEqualityComparer<ILang>
 {
     string CultureName { get; }
     string UiCultureName { get;  }
 
-    LanguageInfo LanguageInfo { get; }
+    LanguageInfo Language { get; }
 }
 
 public class Lang : ILang
@@ -86,20 +87,21 @@ public class Lang : ILang
     public LanguageInfo Language { get; init; }
     public string CultureName => Language.CultureName;
     public string UiCultureName =>Language.UiCultureName;
-    public LanguageInfo LanguageInfo { get; }
+   //public LanguageInfo LanguageInfo { get; } 
 
     public Lang(LanguageInfo li)
     {
+        if(li is null) throw new ArgumentNullException(nameof(li));
         this.Language = li;
     }
-    public bool Equals(ILang other)
+    public bool Equals(ILang? other)
     {
         if (other == null) return false;
         return GetType() == other.GetType() && Name == other.Name;
     }
 
-    public bool Equals(ILang x, ILang y)
-     => x.Name == y.Name;
+    public bool Equals(ILang? x, ILang? y)
+     => x?.Name == y?.Name;
 
     public int GetHashCode([DisallowNull] ILang obj)
     => obj.Name.GetHashCode();

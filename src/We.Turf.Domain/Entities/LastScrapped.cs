@@ -7,6 +7,5 @@ public class LastScrapped : Entity
 {
     public DateTime LastDate { get; set; }
 
-    public override object[] GetKeys()
-    => new object[] { LastDate };
+    public override object[] GetKeys() => new object[] { LastDate };
 }

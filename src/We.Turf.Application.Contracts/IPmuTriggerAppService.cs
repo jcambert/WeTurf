@@ -2,7 +2,7 @@
 
 namespace We.Turf;
 
-public interface IPmuTriggerAppService:IApplicationService
+public interface IPmuTriggerAppService : IApplicationService
 {
     Task<Result<GetTriggerResponse>> GetAsync(GetTriggerQuery query);
 

@@ -16,8 +16,11 @@ public class LoadToPredictIntoDbHandler : AbpHandler.With<LoadToPredictIntoDbQue
     public LoadToPredictIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-
+#if MEDIATOR
+    public override async ValueTask<Result<LoadToPredictIntoDatabaseResponse>> Handle(LoadToPredictIntoDbQuery request, CancellationToken cancellationToken)
+#else
     public override async Task<Result<LoadToPredictIntoDatabaseResponse>> Handle(LoadToPredictIntoDbQuery request, CancellationToken cancellationToken)
+#endif
     {
         try
         {

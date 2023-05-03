@@ -1,4 +1,3 @@
-﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Components.Notifications;
@@ -9,7 +8,12 @@ using Volo.Abp.Linq;
 using Volo.Abp.ObjectMapping;
 using We.Mediatr;
 using We.Results;
-
+#if MEDIATR
+using MediatR;
+#endif
+#if MEDIATOR
+using Mediator;
+#endif
 namespace We.AbpExtensions;
 
 public interface IBaseHandler
@@ -99,7 +103,7 @@ public static class AbpHandler
     }
 
     public abstract class With<TQuery, TResponse> : Handler.With<TQuery, TResponse>, IBaseHandler
-        where TQuery : IQuery<TResponse>
+        where TQuery : We.Mediatr.IQuery<TResponse>
         where TResponse : Response
     {
         protected With(IAbpLazyServiceProvider serviceProvider)
@@ -158,7 +162,7 @@ public static class AbpHandler
     }
 
     public abstract class With<TQuery, TResponse, TEntity, TEntityDto> : With<TQuery, TResponse>
-        where TQuery : IQuery<TResponse>
+        where TQuery : We.Mediatr.IQuery<TResponse>
         where TResponse : Response
         where TEntity : Entity
         where TEntityDto : EntityDto
@@ -176,7 +180,7 @@ public static class AbpHandler
 
     public abstract class With<TQuery, TResponse, TEntity, TEntityDto, TKey>
         : With<TQuery, TResponse, TEntity, TEntityDto>
-        where TQuery : IQuery<TResponse>
+        where TQuery : We.Mediatr.IQuery<TResponse>
         where TResponse : Response
         where TEntity : Entity<TKey>
         where TEntityDto : EntityDto<TKey>

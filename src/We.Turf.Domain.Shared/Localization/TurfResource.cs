@@ -3,7 +3,4 @@
 namespace We.Turf.Localization;
 
 [LocalizationResourceName("Turf")]
-public class TurfResource
-{
-
-}
+public class TurfResource { }
