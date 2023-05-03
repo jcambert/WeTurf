@@ -1,4 +1,4 @@
-﻿namespace We.Turf.Entities;
+namespace We.Turf.Entities;
 
 
 public class ToPredictDto : EntityDto<Guid>
@@ -10,19 +10,19 @@ public class ToPredictDto : EntityDto<Guid>
     public DateOnly Date { get; set; }
     public int Reunion { get; set; }
     public int Course { get; set; }
-    public string HippoCode { get; set; }
-    public string HippoNom { get; set; }
-    public string Nom { get; set; }
+    public string? HippoCode { get; set; }
+    public string? HippoNom { get; set; }
+    public string? Nom { get; set; }
     public int NumeroPmu { get; set; }
     public double Rapport { get; set; }
     public int Age { get; set; }
-    public string Sexe { get; set; }
-    public string Race { get; set; }
-    public string Statut { get; set; }
-    public string Oeilleres { get; set; }
-    public string Deferre { get; set; }
-    public string IndicateurInedit { get; set; }
-    public string Musique { get; set; }
+    public string? Sexe { get; set; }
+    public string? Race { get; set; }
+    public string? Statut { get; set; }
+    public string? Oeilleres { get; set; }
+    public string? Deferre { get; set; }
+    public string? IndicateurInedit { get; set; }
+    public string? Musique { get; set; }
 
     ///nombreCourses;nombreVictoires;nombrePlaces;nombrePlacesSecond;nombrePlacesTroisieme;ordreArrivee;
     ///distance;handicapDistance;gain_carriere;gain_victoires;gain_places;gain_annee_en_cours;gain_annee_precedente;

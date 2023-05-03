@@ -2,8 +2,8 @@
 
 public static class StringExtensions
 {
-    public static string[] Split(this string value, int part)
-    => value.SplitEnumerable(part).ToArray();
+    public static string[] Split(this string value, int part) =>
+        value.SplitEnumerable(part).ToArray();
 
     public static IEnumerable<string> SplitEnumerable(this string value, int part)
     {

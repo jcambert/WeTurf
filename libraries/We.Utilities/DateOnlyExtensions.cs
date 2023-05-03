@@ -4,13 +4,13 @@ namespace We.Utilities;
 
 public static class DateOnlyExtensions
 {
-    
-    public static DateOnly Now=>DateOnly.FromDateTime(DateTime.Now);
+    public static DateOnly Now => DateOnly.FromDateTime(DateTime.Now);
 
     public static DateOnly Min => DateOnly.MinValue;
+
     public static bool TryParseToDateOnly(this string value, out DateOnly result)
     {
-        if(string.IsNullOrEmpty(value))
+        if (string.IsNullOrEmpty(value))
         {
             result = Min;
             return false;
@@ -19,8 +19,12 @@ public static class DateOnlyExtensions
             return true;
         try
         {
-            string year, month, day;
-            int _year, _month, _day;
+            string year,
+                month,
+                day;
+            int _year,
+                _month,
+                _day;
             string[] v = null;
             if (value.Length == 6 || value.Length == 8)
             {
@@ -50,23 +54,23 @@ public static class DateOnlyExtensions
             v = Regex.Split(value, "/|-");
             if (v.Length == 3)
             {
-
                 if (!Int32.TryParse(string.Join("", european ? v[2] : v[0]), out _year))
-                    throw new ArgumentException($"Malformed Date for year {value} :{string.Join("", v[0])}");
+                    throw new ArgumentException(
+                        $"Malformed Date for year {value} :{string.Join("", v[0])}"
+                    );
                 if (!Int32.TryParse(string.Join("", v[1]), out _month))
-                    throw new ArgumentException($"Malformed Date for month {value} :{string.Join("", v[1])}");
+                    throw new ArgumentException(
+                        $"Malformed Date for month {value} :{string.Join("", v[1])}"
+                    );
                 if (!Int32.TryParse(string.Join("", european ? v[0] : v[2]), out _day))
-                    throw new ArgumentException($"Malformed Date for day {value} :{string.Join("", v[2])}");
+                    throw new ArgumentException(
+                        $"Malformed Date for day {value} :{string.Join("", v[2])}"
+                    );
                 result = new DateOnly(_year, _month, _day);
                 return true;
             }
-
         }
-        catch
-        {
-
-        }
-        
+        catch { }
 
         return false;
     }

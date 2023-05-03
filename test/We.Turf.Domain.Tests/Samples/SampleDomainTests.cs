@@ -29,14 +29,15 @@ public class SampleDomainTests : TurfDomainTestBase
         /* Need to manually start Unit Of Work because
          * FirstOrDefaultAsync should be executed while db connection / context is available.
          */
-        await WithUnitOfWorkAsync(async () =>
-        {
-            adminUser = await _identityUserRepository
-                .FindByNormalizedUserNameAsync("ADMIN");
+        await WithUnitOfWorkAsync(
+            async () =>
+            {
+                adminUser = await _identityUserRepository.FindByNormalizedUserNameAsync("ADMIN");
 
-            await _identityUserManager.SetEmailAsync(adminUser, "newemail@abp.io");
-            await _identityUserRepository.UpdateAsync(adminUser);
-        });
+                await _identityUserManager.SetEmailAsync(adminUser, "newemail@abp.io");
+                await _identityUserRepository.UpdateAsync(adminUser);
+            }
+        );
 
         adminUser = await _identityUserRepository.FindByNormalizedUserNameAsync("ADMIN");
         adminUser.Email.ShouldBe("newemail@abp.io");

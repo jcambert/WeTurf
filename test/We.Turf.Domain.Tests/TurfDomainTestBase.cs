@@ -1,6 +1,3 @@
 ﻿namespace We.Turf;
 
-public abstract class TurfDomainTestBase : TurfTestBase<TurfDomainTestModule>
-{
-
-}
+public abstract class TurfDomainTestBase : TurfTestBase<TurfDomainTestModule> { }

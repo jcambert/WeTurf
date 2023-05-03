@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+
 namespace We.Processes;
 
 public class Anaconda : IAnaconda
@@ -15,6 +16,7 @@ public class Anaconda : IAnaconda
         }
         BasePath = $@"{Drive}anaconda3";
     }
+
     public string EnvironmentName { get; init; } = "base";
     public string BasePath { get; init; }
     protected string Drive { get; }

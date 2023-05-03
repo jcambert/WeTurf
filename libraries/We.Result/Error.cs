@@ -13,13 +13,16 @@ public static class HttpStatusCode
     public const int FORBIDDEN = 403;
     public const int NOT_FOUND = 404;
     public const int INTERNAL_SERVER_ERROR = 500;
-
 }
+
 public class Error
 {
     internal static Error Create(Exception ex) => new Error(ex);
-    internal static Error[] Create(params Exception[] ex) => ex.Select(ex => new Error(ex)).ToArray();
-    public Error(string failure,Exception ex)
+
+    internal static Error[] Create(params Exception[] ex) =>
+        ex.Select(ex => new Error(ex)).ToArray();
+
+    public Error(string failure, Exception ex)
     {
         Guard.Argument(ex).NotNull();
         Failure = failure;
@@ -27,12 +30,16 @@ public class Error
         Exception = ex;
         Code = HttpStatusCode.DEFAULT;
     }
-    public Error(Exception ex):this(ex.Source,ex)
-    {
-    }
-    public Error(string failure, string message) : this(HttpStatusCode.DEFAULT, failure, message) { }
+
+    public Error(Exception ex) : this(ex.Source, ex) { }
+
+    public Error(string failure, string message) : this(HttpStatusCode.DEFAULT, failure, message)
+    { }
+
     public Error(string failure) : this(HttpStatusCode.DEFAULT, failure, string.Empty) { }
+
     public Error(int code, string failure) : this(code, failure, string.Empty) { }
+
     public Error(int code, string failure, string message)
     {
         Guard.Argument(failure).NotNull().NotEmpty();
@@ -62,4 +69,3 @@ public class Error
     /// </summary>
     public int Code { get; init; }
 }
-

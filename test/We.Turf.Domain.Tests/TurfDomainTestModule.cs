@@ -3,10 +3,5 @@ using Volo.Abp.Modularity;
 
 namespace We.Turf;
 
-[DependsOn(
-    typeof(TurfEntityFrameworkCoreTestModule)
-    )]
-public class TurfDomainTestModule : AbpModule
-{
-
-}
+[DependsOn(typeof(TurfEntityFrameworkCoreTestModule))]
+public class TurfDomainTestModule : AbpModule { }

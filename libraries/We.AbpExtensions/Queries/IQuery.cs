@@ -10,5 +10,3 @@ public interface IQuery<TResponse> : IRequest<Result<TResponse>>
     where TResponse : Response
 {
 }*/
-
-

@@ -15,8 +15,15 @@ namespace We.Blazor.Csv
 
         public ExampleJsInterop(IJSRuntime jsRuntime)
         {
-            moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-                "import", "./_content/We.Blazor.Csv/exampleJsInterop.js").AsTask());
+            moduleTask = new(
+                () =>
+                    jsRuntime
+                        .InvokeAsync<IJSObjectReference>(
+                            "import",
+                            "./_content/We.Blazor.Csv/exampleJsInterop.js"
+                        )
+                        .AsTask()
+            );
         }
 
         public async ValueTask<string> Prompt(string message)

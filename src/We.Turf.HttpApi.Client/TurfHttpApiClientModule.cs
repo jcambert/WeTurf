@@ -30,9 +30,11 @@ public class TurfHttpApiClientModule : AbpModule
             RemoteServiceName
         );
 
-        Configure<AbpVirtualFileSystemOptions>(options =>
-        {
-            options.FileSets.AddEmbedded<TurfHttpApiClientModule>();
-        });
+        Configure<AbpVirtualFileSystemOptions>(
+            options =>
+            {
+                options.FileSets.AddEmbedded<TurfHttpApiClientModule>();
+            }
+        );
     }
 }

@@ -2,7 +2,7 @@
 
 namespace We.AbpExtensions;
 
-public class AbpExtensionsModule:AbpModule
+public class AbpExtensionsModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

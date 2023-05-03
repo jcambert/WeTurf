@@ -1,4 +1,9 @@
+#if MEDIATR
 ﻿using MediatR;
+#endif
+#if MEDIATOR
+using Mediator;
+#endif
 using We.Results;
 
 namespace We.Mediatr;
@@ -20,14 +25,24 @@ public static class Handler
     public abstract class With<TQuery> : IQueryHandler<TQuery>
         where TQuery : IQuery
     {
+#if MEDIATR
         public abstract Task Handle(TQuery request, CancellationToken cancellationToken);
+#endif
+#if MEDIATOR
+    public abstract ValueTask<Unit> Handle(TQuery request, CancellationToken cancellationToken);
+#endif
     }
 
     public abstract class With<TQuery, TResponse> : IQueryHandler<TQuery, TResponse>
         where TQuery : IQuery<TResponse>
         where TResponse : Response
     {
+#if MEDIATR
         public abstract Task<Result<TResponse>> Handle(TQuery request, CancellationToken cancellationToken);
-        
+#endif
+#if MEDIATOR
+        public abstract ValueTask<Result<TResponse>> Handle(TQuery request, CancellationToken cancellationToken);
+#endif
+
     }
 }

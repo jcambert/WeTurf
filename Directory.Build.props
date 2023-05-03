@@ -1,0 +1,41 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>11</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Features>strict</Features>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/jc.ambert/WeTurf</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jc.ambert/WeTurf</RepositoryUrl>
+    <PackageTags>Turf/Prediction</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <Authors>Jc Ambert</Authors>
+    <Copyright>Copyright 2023 Jc Ambert</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DotNetVersion>7.0.0</DotNetVersion>
+    <MediatorName>bogard</MediatorName>
+    <MediatorOthamarLibraryName>Mediator.SourceGenerator</MediatorOthamarLibraryName>
+    <MediatorOthamarVersion>2.1.1</MediatorOthamarVersion>
+    <MediatorOthamarAbstractionLibraryName>Mediator.Abstractions</MediatorOthamarAbstractionLibraryName>
+    <MediatorOthamarAbstractionVersion>2.1.1</MediatorOthamarAbstractionVersion>
+    <MediatorBogardLibraryName>MediatR</MediatorBogardLibraryName>
+    <MediatorBogardVersion>12.0.1</MediatorBogardVersion>
+    <MediatorBogardAbstractionLibraryName>MediatR.Contracts</MediatorBogardAbstractionLibraryName>
+    <MediatorBogardAbstractionVersion>2.0.1</MediatorBogardAbstractionVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpier.MsBuild" Version="0.16.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

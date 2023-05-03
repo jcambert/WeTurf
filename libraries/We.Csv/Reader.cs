@@ -6,16 +6,16 @@ using System.Text.RegularExpressions;
 using We.Results;
 
 namespace We.Csv;
+
 public class ReaderColumnSetException : Exception
 {
-    public ReaderColumnSetException(string? message, Exception? innerException) : base(message, innerException)
-    {
-    }
+    public ReaderColumnSetException(string? message, Exception? innerException)
+        : base(message, innerException) { }
 }
-public record ReaderResponse<T>(int Index, T Value, Reader<T> Reader)
-    where T : class, new();
-public class Reader<T>
-    where T : class, new()
+
+public record ReaderResponse<T>(int Index, T Value, Reader<T> Reader) where T : class, new();
+
+public class Reader<T> where T : class, new()
 {
     private readonly ISubject<ReaderResponse<T>> _onReadLine = new Subject<ReaderResponse<T>>();
     public IObservable<ReaderResponse<T>> OnReadLine => _onReadLine.AsObservable();
@@ -39,7 +39,9 @@ public class Reader<T>
 
     private void MapColumns()
     {
-        var properties = typeof(T).GetProperties().Where(p => p.CustomAttributes.Any(x => x.AttributeType == typeof(CsvFieldAttribute)));
+        var properties = typeof(T)
+            .GetProperties()
+            .Where(p => p.CustomAttributes.Any(x => x.AttributeType == typeof(CsvFieldAttribute)));
         foreach (var property in properties)
         {
             var attr = property.GetCustomAttribute<CsvFieldAttribute>();
@@ -57,28 +59,40 @@ public class Reader<T>
             {
                 try
                 {
-
                     var v = values[col.Index];
-                    var vv = To(v, col?.Property?.GetSetMethod()?.GetParameters()?.First().ParameterType);
+                    var vv = To(
+                        v,
+                        col?.Property?.GetSetMethod()?.GetParameters()?.First().ParameterType
+                    );
                     col?.Property?.GetSetMethod()?.Invoke(result, new object?[] { vv });
                 }
-                catch (Exception ex) {
-                    throw new ReaderColumnSetException($"Column:{col.InternalName} -> {ex.Message}", ex);
+                catch (Exception ex)
+                {
+                    throw new ReaderColumnSetException(
+                        $"Column:{col.InternalName} -> {ex.Message}",
+                        ex
+                    );
                 }
             }
         }
 
-
         return result;
     }
+
     protected object To(string? from, Type? to)
     {
         return to?.Name switch
         {
             nameof(DateOnly) => ToDateOnly(from),
             nameof(String) => from ?? string.Empty,
-            nameof(Int32) => Int32.Parse(string.IsNullOrEmpty(from)?"0": (from?.Split(".")[0] ?? "0")),
-            nameof(Double) => Double.Parse(string.IsNullOrEmpty(from)?"0" :(from ?? "0"), NumberStyles.Any, CultureInfo.InvariantCulture),
+            nameof(Int32)
+              => Int32.Parse(string.IsNullOrEmpty(from) ? "0" : (from?.Split(".")[0] ?? "0")),
+            nameof(Double)
+              => Double.Parse(
+                  string.IsNullOrEmpty(from) ? "0" : (from ?? "0"),
+                  NumberStyles.Any,
+                  CultureInfo.InvariantCulture
+              ),
             _ => throw new NotSupportedException($"{to?.Name} is not supported for conversion")
         };
     }
@@ -105,6 +119,7 @@ public class Reader<T>
             throw new FormatException($"Malformed Date for day {from} :{string.Join("", v[2])}");
         return new DateOnly(year, month, day);
     }
+
     public async Task<Result> Start(CancellationToken cancellationToken = default)
     {
         List<Error> exceptions = new List<Error>();
@@ -125,11 +140,10 @@ public class Reader<T>
                     LineRead++;
 
                     _onReadLine.OnNext(new ReaderResponse<T>(LineRead, v, this));
-
                 }
-                catch(ReaderColumnSetException ex)
+                catch (ReaderColumnSetException ex)
                 {
-                    var error=new Error($"Line {LineRead}-{ex.Message}", ex);
+                    var error = new Error($"Line {LineRead}-{ex.Message}", ex);
                     exceptions.Add(error);
                 }
                 catch (Exception ex)
@@ -137,16 +151,13 @@ public class Reader<T>
                     _onReadLine.OnError(ex);
                 }
             }
-
         }
         _onReadLine.OnCompleted();
         if (exceptions.Any())
         {
-            var res= Result.ValidWithFailure(exceptions.ToArray());
+            var res = Result.ValidWithFailure(exceptions.ToArray());
             return res;
         }
         return Result.Success();
-
     }
-
 }

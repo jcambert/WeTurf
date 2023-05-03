@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace We.Processes
 {
-    internal class PowershellExecutor
-    {
-    }
+    internal class PowershellExecutor { }
 }

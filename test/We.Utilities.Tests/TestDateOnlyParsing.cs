@@ -10,7 +10,7 @@ namespace We.Utilities.Tests
         [InlineData("17/02/23")]
         public void Test1(string v)
         {
-            Assert.True(v.TryParseToDateOnly( out var res));
+            Assert.True(v.TryParseToDateOnly(out var res));
             Assert.True(res == new DateOnly(2023, 2, 17));
         }
     }

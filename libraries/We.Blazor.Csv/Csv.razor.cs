@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -14,9 +13,9 @@ public partial class Csv : INotifyPropertyChanged, IDisposable
     public Csv()
     {
         _whenContentChanged = this.WhenPropertyChanged()
-        .Where(e => e.EventArgs.PropertyName == nameof(Content))
-        .Select(e => Content)
-        .Subscribe(content => ContentUpdated());
+            .Where(e => e.EventArgs.PropertyName == nameof(Content))
+            .Select(e => Content)
+            .Subscribe(content => ContentUpdated());
     }
     #endregion
 
@@ -56,12 +55,16 @@ public partial class Csv : INotifyPropertyChanged, IDisposable
         string[] lines = new string[0];
         if (!string.IsNullOrEmpty(Content))
             lines = Content.Split("\n");
-        
+
         if (lines.Length > 0)
             Rows = lines.Select(line => new Row(line, Separator)).ToList();
         if (HasHeader && ColumnNames is not null)
         {
-            ColumnIndexes = Header?.Columns.Select((value, index) => new { Index = index, Value = value }).Where(x => ColumnNames.Contains(x.Value)).Select(x => x.Index).ToArray();
+            ColumnIndexes = Header
+                ?.Columns.Select((value, index) => new { Index = index, Value = value })
+                .Where(x => ColumnNames.Contains(x.Value))
+                .Select(x => x.Index)
+                .ToArray();
         }
     }
 
@@ -74,7 +77,6 @@ public partial class Csv : INotifyPropertyChanged, IDisposable
         if (HasHeader && ColumnNames is not null)
             return row.Columns.TakeOnly(ColumnIndexes);
         return row.Columns;
-
     }
     #endregion
 
@@ -85,23 +87,23 @@ public partial class Csv : INotifyPropertyChanged, IDisposable
     public string Content
     {
         get => _internalContent;
-        set
-        {
-            SetAndRaise(ref _internalContent, value);
-        }
+        set { SetAndRaise(ref _internalContent, value); }
     }
 
-    
 #pragma warning restore BL0007
-   
+
     [Parameter]
     public bool HasHeader { get; set; }
+
     [Parameter]
     public string Separator { get; set; } = ";";
+
     [Parameter]
     public int? LimitColumn { get; set; } = null;
+
     [Parameter]
     public int? LimitRow { get; set; } = null;
+
     [Parameter]
     public List<string> ColumnNames { get; set; }
     #endregion
@@ -129,11 +131,11 @@ public partial class Csv : INotifyPropertyChanged, IDisposable
 
     public void Dispose()
     {
-       _whenContentChanged?.Dispose();
+        _whenContentChanged?.Dispose();
     }
 
     #endregion
-   
+
     internal class Row : IEnumerable
     {
         internal Row(string line, string sep)
@@ -155,7 +157,5 @@ public partial class Csv : INotifyPropertyChanged, IDisposable
                 yield return this[index];
             }
         }
-
-
     }
 }

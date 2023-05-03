@@ -3,6 +3,4 @@
 namespace We.Mediatr;
 
 [ApiController]
-public class ControllerBaseHandler:ControllerBase
-{
-}
+public class ControllerBaseHandler : ControllerBase { }

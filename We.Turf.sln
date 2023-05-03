@@ -69,6 +69,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Processes.Tests", "test\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Blazor.Csv", "libraries\We.Blazor.Csv\We.Blazor.Csv.csproj", "{76F259F0-C724-4F4E-9058-614F29BF68C9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_files", "_files", "{FDAEEFFB-30BC-4BC2-9E76-2F98D801FC34}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

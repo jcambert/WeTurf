@@ -8,8 +8,5 @@ namespace We.Turf.DbMigrator;
     typeof(AbpAutofacModule),
     typeof(TurfEntityFrameworkCoreModule),
     typeof(TurfApplicationContractsModule)
-    )]
-public class TurfDbMigratorModule : AbpModule
-{
-
-}
+)]
+public class TurfDbMigratorModule : AbpModule { }

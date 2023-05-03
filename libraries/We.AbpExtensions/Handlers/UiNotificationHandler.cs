@@ -5,18 +5,17 @@ using We.Results;
 
 namespace We.AbpExtensions.Handlers;
 
-public class UiNotificationHandler :AbpHandler.With<UiNotificationQuery>
+public class UiNotificationHandler : AbpHandler.With<UiNotificationQuery>
 {
-
     public UiNotificationHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
+    { }
 
-    public override async  Task Handle(UiNotificationQuery request, CancellationToken cancellationToken)
+    public override async Task Handle(
+        UiNotificationQuery request,
+        CancellationToken cancellationToken
+    )
     {
-      
-
-        var(type, message, title, actions) = request;
+        var (type, message, title, actions) = request;
         Func<string, string, Action<UiNotificationOptions>, Task> fn = type switch
         {
             UiNotificationMessageType.Warning => UiNotification.Warn,
@@ -26,6 +25,5 @@ public class UiNotificationHandler :AbpHandler.With<UiNotificationQuery>
         };
 
         await fn(message, title, actions);
-        
     }
 }

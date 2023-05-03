@@ -2,13 +2,9 @@
 
 public class AnacondaActivationCommand : AnacondaCommand, IAnacondaActivationCommand
 {
-    public AnacondaActivationCommand(IAnaconda conda) : base(conda)
-    {
-    }
+    public AnacondaActivationCommand(IAnaconda conda) : base(conda) { }
 
-    public AnacondaActivationCommand(IServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
+    public AnacondaActivationCommand(IServiceProvider serviceProvider) : base(serviceProvider) { }
 
     public override string GetCommand()
     {
@@ -17,7 +13,6 @@ public class AnacondaActivationCommand : AnacondaCommand, IAnacondaActivationCom
 
     public override void Send(TextWriter writer)
     {
-        
         // Vital to activate Anaconda
         writer.WriteLine($@"{Conda.BasePath}\Scripts\activate.bat");
 
@@ -34,16 +29,12 @@ public class AnacondaActivationCommand : AnacondaCommand, IAnacondaActivationCom
         await writer.WriteLineAsync($"activate {Conda.EnvironmentName}");
     }
 }
+
 public class AnacondaDeactivationCommand : AnacondaCommand, IAnacondaDeactivationCommand
 {
-    public AnacondaDeactivationCommand(IAnaconda conda) : base(conda)
-    {
-    }
+    public AnacondaDeactivationCommand(IAnaconda conda) : base(conda) { }
 
-    public AnacondaDeactivationCommand(IServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
+    public AnacondaDeactivationCommand(IServiceProvider serviceProvider) : base(serviceProvider) { }
 
-    public override string GetCommand()
-    => "conda deactivate";
+    public override string GetCommand() => "conda deactivate";
 }

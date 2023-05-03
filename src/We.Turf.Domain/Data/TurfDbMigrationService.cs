@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -85,7 +85,7 @@ public class TurfDbMigrationService : ITransientDependency
         Logger.LogInformation("You can safely end this process...");
     }
 
-    private async Task MigrateDatabaseSchemaAsync(Tenant tenant = null)
+    private async Task MigrateDatabaseSchemaAsync(Tenant? tenant = null)
     {
         Logger.LogInformation(
             $"Migrating schema for {(tenant == null ? "host" : tenant.Name + " tenant")} database...");
@@ -96,7 +96,7 @@ public class TurfDbMigrationService : ITransientDependency
         }
     }
 
-    private async Task SeedDataAsync(Tenant tenant = null)
+    private async Task SeedDataAsync(Tenant? tenant = null)
     {
         Logger.LogInformation($"Executing {(tenant == null ? "host" : tenant.Name + " tenant")} database seed...");
 

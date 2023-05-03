@@ -12,19 +12,27 @@ namespace We.Turf.HttpApi.Client.ConsoleTestApp;
     typeof(AbpAutofacModule),
     typeof(TurfHttpApiClientModule),
     typeof(AbpHttpClientIdentityModelModule)
-    )]
+)]
 public class TurfConsoleApiClientModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        PreConfigure<AbpHttpClientBuilderOptions>(options =>
-        {
-            options.ProxyClientBuildActions.Add((remoteServiceName, clientBuilder) =>
+        PreConfigure<AbpHttpClientBuilderOptions>(
+            options =>
             {
-                clientBuilder.AddTransientHttpErrorPolicy(
-                    policyBuilder => policyBuilder.WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(Math.Pow(2, i)))
+                options.ProxyClientBuildActions.Add(
+                    (remoteServiceName, clientBuilder) =>
+                    {
+                        clientBuilder.AddTransientHttpErrorPolicy(
+                            policyBuilder =>
+                                policyBuilder.WaitAndRetryAsync(
+                                    3,
+                                    i => TimeSpan.FromSeconds(Math.Pow(2, i))
+                                )
+                        );
+                    }
                 );
-            });
-        });
+            }
+        );
     }
 }

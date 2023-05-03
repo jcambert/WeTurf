@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Reactive.Linq;
@@ -29,18 +29,18 @@ public class LoadToPredictIntoDbHandler : AbpHandler.With<LoadToPredictIntoDbQue
                 var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
 
                 var reader = new Reader<ToPredict>($"{request.Filename}", true, ';');
-                List<ToPredict> courses = new List<ToPredict>();
-                reader
+                List<ToPredict> courses = new();
+                _ = reader
                     .OnReadLine
                     .Where(x => !existings.Any(y => y.Date == x.Value.Date && y.Reunion == x.Value.Reunion && y.Course == x.Value.Course))
                     .Subscribe(o =>
                     {
-                        Logger.LogInformation($"{o.Index} / {o.ToString()}");
+                        Logger.LogInformation("{Index} / {Response}",o.Index,o) ;
                         courses.Add(o.Value);
                     },
                     ex =>
                     {
-                        Logger.LogWarning(ex.Message);
+                        Logger.LogWarning("{Message}",ex.Message);
                     },
                     () =>
                     {

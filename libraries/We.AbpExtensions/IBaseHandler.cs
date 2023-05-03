@@ -14,17 +14,17 @@ namespace We.AbpExtensions;
 
 public interface IBaseHandler
 {
-     IAbpLazyServiceProvider LazyServiceProvider { get;  }
-     IAsyncQueryableExecuter AsyncExecuter { get; }
+    IAbpLazyServiceProvider LazyServiceProvider { get; }
+    IAsyncQueryableExecuter AsyncExecuter { get; }
 
-     Type ObjectMapperContext { get; set; }
-     IObjectMapper ObjectMapper { get; }
+    Type ObjectMapperContext { get; set; }
+    IObjectMapper ObjectMapper { get; }
 
     IMediator Mediator { get; }
 
     T GetRequiredService<T>();
 
-     ICachedServiceProvider Cache { get; }
+    ICachedServiceProvider Cache { get; }
 
     IUiNotificationService UiNotification { get; }
 
@@ -32,14 +32,14 @@ public interface IBaseHandler
     ILoggerFactory LoggerFactory { get; }
     ILogger Logger { get; }
 
-     void LogTrace(string message, params object[] args) ;
-     void LogCritical(string message, params object[] args) ;
-     void LogDebug(string message, params object[] args) ;
-     void LogError(string message, params object[] args) ;
-     void LogException(Exception ex, LogLevel? logLevel = null) ;
-     void LogInformation(string message, params object[] args) ;
-     void LogWarning(string message, params object[] args);
-     void LogWithLevel(LogLevel logLevel, string message) ;
+    void LogTrace(string message, params object[] args);
+    void LogCritical(string message, params object[] args);
+    void LogDebug(string message, params object[] args);
+    void LogError(string message, params object[] args);
+    void LogException(Exception ex, LogLevel? logLevel = null);
+    void LogInformation(string message, params object[] args);
+    void LogWarning(string message, params object[] args);
+    void LogWithLevel(LogLevel logLevel, string message);
 
     #endregion
 
@@ -48,10 +48,10 @@ public interface IBaseHandler
 
 public static class AbpHandler
 {
-    public abstract class With<TQuery> : Handler.With<TQuery>, IBaseHandler
-        where TQuery : IQuery
+    public abstract class With<TQuery> : Handler.With<TQuery>, IBaseHandler where TQuery : IQuery
     {
-        public With(IAbpLazyServiceProvider serviceProvider) => (LazyServiceProvider) = (serviceProvider);
+        public With(IAbpLazyServiceProvider serviceProvider) =>
+            (LazyServiceProvider) = (serviceProvider);
 
         public IAbpLazyServiceProvider LazyServiceProvider { get; init; }
         public IAsyncQueryableExecuter AsyncExecuter => LazyServiceProvider.AsyncExecuter();
@@ -66,14 +66,30 @@ public static class AbpHandler
 
         #region logging
         public ILogger Logger => LazyServiceProvider.Logger<AbpHandler.With<TQuery>>();
-        public void LogTrace(string message, params object[] args) => Logger.LogTrace(message, args);
-        public void LogCritical(string message, params object[] args) => Logger.LogCritical(message, args);
-        public void LogDebug(string message, params object[] args) => Logger.LogDebug(message, args);
-        public void LogError(string message, params object[] args) => Logger.LogError(message, args);
-        public void LogException(Exception ex, LogLevel? logLevel = null) => Logger.LogException(ex, logLevel);
-        public void LogInformation(string message, params object[] args) => Logger.LogInformation(message, args);
-        public void LogWarning(string message, params object[] args) => Logger.LogWarning(message, args);
-        public void LogWithLevel(LogLevel logLevel, string message) => Logger.LogWithLevel(logLevel, message);
+
+        public void LogTrace(string message, params object[] args) =>
+            Logger.LogTrace(message, args);
+
+        public void LogCritical(string message, params object[] args) =>
+            Logger.LogCritical(message, args);
+
+        public void LogDebug(string message, params object[] args) =>
+            Logger.LogDebug(message, args);
+
+        public void LogError(string message, params object[] args) =>
+            Logger.LogError(message, args);
+
+        public void LogException(Exception ex, LogLevel? logLevel = null) =>
+            Logger.LogException(ex, logLevel);
+
+        public void LogInformation(string message, params object[] args) =>
+            Logger.LogInformation(message, args);
+
+        public void LogWarning(string message, params object[] args) =>
+            Logger.LogWarning(message, args);
+
+        public void LogWithLevel(LogLevel logLevel, string message) =>
+            Logger.LogWithLevel(logLevel, message);
 
         #endregion
 
@@ -81,6 +97,7 @@ public static class AbpHandler
 
         #endregion
     }
+
     public abstract class With<TQuery, TResponse> : Handler.With<TQuery, TResponse>, IBaseHandler
         where TQuery : IQuery<TResponse>
         where TResponse : Response
@@ -89,6 +106,7 @@ public static class AbpHandler
         {
             LazyServiceProvider = serviceProvider;
         }
+
         public IAbpLazyServiceProvider LazyServiceProvider { get; init; }
         public IAsyncQueryableExecuter AsyncExecuter => LazyServiceProvider.AsyncExecuter();
 
@@ -108,45 +126,61 @@ public static class AbpHandler
 
         public ILogger Logger => LazyServiceProvider.Logger<AbpHandler.With<TQuery, TResponse>>();
 
-        public void LogTrace(string message, params object[] args) => Logger.LogTrace(message, args);
-        public void LogCritical(string message, params object[] args) => Logger.LogCritical(message, args);
-        public void LogDebug(string message, params object[] args) => Logger.LogDebug(message, args);
-        public void LogError(string message, params object[] args) => Logger.LogError(message, args);
-        public void LogException(Exception ex, LogLevel? logLevel = null) => Logger.LogException(ex, logLevel);
-        public void LogInformation(string message, params object[] args) => Logger.LogInformation(message, args);
-        public void LogWarning(string message, params object[] args) => Logger.LogWarning(message, args);
-        public void LogWithLevel(LogLevel logLevel, string message) => Logger.LogWithLevel(logLevel, message);
+        public void LogTrace(string message, params object[] args) =>
+            Logger.LogTrace(message, args);
+
+        public void LogCritical(string message, params object[] args) =>
+            Logger.LogCritical(message, args);
+
+        public void LogDebug(string message, params object[] args) =>
+            Logger.LogDebug(message, args);
+
+        public void LogError(string message, params object[] args) =>
+            Logger.LogError(message, args);
+
+        public void LogException(Exception ex, LogLevel? logLevel = null) =>
+            Logger.LogException(ex, logLevel);
+
+        public void LogInformation(string message, params object[] args) =>
+            Logger.LogInformation(message, args);
+
+        public void LogWarning(string message, params object[] args) =>
+            Logger.LogWarning(message, args);
+
+        public void LogWithLevel(LogLevel logLevel, string message) =>
+            Logger.LogWithLevel(logLevel, message);
         #endregion
 
         #region Result
-        protected Result<TResponse> NotFound(string failure,string message=null)
-            => Result.Failure<TResponse>(HttpStatusCode.NOT_FOUND,failure,message);
+        protected Result<TResponse> NotFound(string failure, string message = null) =>
+            Result.Failure<TResponse>(HttpStatusCode.NOT_FOUND, failure, message);
         #endregion
     }
 
-    public abstract class With<TQuery, TResponse, TEntity,TEntityDto> : With<TQuery, TResponse>
+    public abstract class With<TQuery, TResponse, TEntity, TEntityDto> : With<TQuery, TResponse>
         where TQuery : IQuery<TResponse>
         where TResponse : Response
         where TEntity : Entity
-        where TEntityDto:EntityDto
+        where TEntityDto : EntityDto
     {
         protected IRepository<TEntity> Repository => GetRequiredService<IRepository<TEntity>>();
-        protected With(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
-        {
-        }
 
-        protected List<TEntityDto> MapToDtoList(List<TEntity> entities) => ObjectMapper.Map<List<TEntity>, List<TEntityDto>>(entities);
-        protected TEntityDto MapToDto(TEntity entity) => ObjectMapper.Map<TEntity, TEntityDto>(entity);
+        protected With(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider) { }
+
+        protected List<TEntityDto> MapToDtoList(List<TEntity> entities) =>
+            ObjectMapper.Map<List<TEntity>, List<TEntityDto>>(entities);
+
+        protected TEntityDto MapToDto(TEntity entity) =>
+            ObjectMapper.Map<TEntity, TEntityDto>(entity);
     }
 
-    public abstract class With<TQuery, TResponse, TEntity, TEntityDto, TKey> : With<TQuery, TResponse, TEntity, TEntityDto>
+    public abstract class With<TQuery, TResponse, TEntity, TEntityDto, TKey>
+        : With<TQuery, TResponse, TEntity, TEntityDto>
         where TQuery : IQuery<TResponse>
         where TResponse : Response
         where TEntity : Entity<TKey>
         where TEntityDto : EntityDto<TKey>
     {
-        protected With(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
-        {
-        }
+        protected With(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider) { }
     }
 }

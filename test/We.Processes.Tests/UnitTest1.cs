@@ -25,12 +25,9 @@ namespace We.Processes.Tests
             {
                 o.UseAnaconda = useAnaconda;
             });
-            using (ServiceProvider sp = services.BuildServiceProvider())
-            {
-                var pyexe = sp.GetService<IPythonExecutor>();
-                Assert.NotNull(pyexe);
-
-            }
+            using ServiceProvider sp = services.BuildServiceProvider();
+            var pyexe = sp.GetService<IPythonExecutor>();
+            Assert.NotNull(pyexe);
         }
         [Theory]
         [InlineData(true, false, "print('Hi')")]
@@ -51,31 +48,28 @@ namespace We.Processes.Tests
                 o.UseReactiveOutput = useReactiveOutput;
                 o.PythonPath = "E:\\anaconda\\";
             });
-            using (ServiceProvider sp = services.BuildServiceProvider())
+            using ServiceProvider sp = services.BuildServiceProvider();
+            var pyexe = sp.GetRequiredService<IPythonExecutor>();
+            if (useReactiveOutput)
+                pyexe.OnOutput.Subscribe(x =>
+                {
+                    output.WriteLine(x);
+                });
+            Assert.NotNull(pyexe);
+            var result = await pyexe.SendAsync(msg);
+            Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            if (useReactiveOutput)
             {
-                var pyexe = sp.GetService<IPythonExecutor>();
-                if (useReactiveOutput)
-                    pyexe.OnOutput.Subscribe(x =>
-                    {
-                        output.WriteLine(x);
-                    });
-                Assert.NotNull(pyexe);
-                var result = await pyexe.SendAsync(msg);
-                Assert.NotNull(result);
-                Assert.True(result.IsSuccess);
-                if (useReactiveOutput)
-                {
-                    Assert.True(result.GetType().Equals(typeof(Valid)));
-                }
-                else
-                {
-                    Assert.True(result.GetType().Equals(typeof(Valid<string>)));
+                Assert.True(result.GetType().Equals(typeof(Valid)));
+            }
+            else
+            {
+                Assert.True(result.GetType().Equals(typeof(Valid<string>)));
 
-                    var value = (result as Valid<string>).Value;
-                    Assert.NotNull(value);
-                    output.WriteLine(value);
-                }
-
+                var value = (result as Valid<string>).Value;
+                Assert.NotNull(value);
+                output.WriteLine(value);
             }
         }
 
@@ -103,25 +97,23 @@ namespace We.Processes.Tests
                 o.EnvironmentName = "base";
 
             });
-            using (ServiceProvider sp = services.BuildServiceProvider())
+            using ServiceProvider sp = services.BuildServiceProvider();
+            var exe = sp.GetService<IPythonExecutor>();
+            Assert.NotNull(exe);
+            var result = await exe.SendAsync(msg);
+            Assert.NotNull(result);
+            Assert.True(result.IsSuccess);
+            if (useReactiveOutput)
             {
-                var exe = sp.GetService<IPythonExecutor>();
-                Assert.NotNull(exe);
-                var result = await exe.SendAsync(msg);
-                Assert.NotNull(result);
-                Assert.True(result.IsSuccess);
-                if (useReactiveOutput)
-                {
-                    Assert.True(result.GetType().Equals(typeof(Valid)));
-                }
-                else
-                {
-                    Assert.True(result.GetType().Equals(typeof(Valid<string>)));
+                Assert.True(result.GetType().Equals(typeof(Valid)));
+            }
+            else
+            {
+                Assert.True(result.GetType().Equals(typeof(Valid<string>)));
 
-                    var value = (result as Valid<string>).Value;
-                    Assert.NotNull(value);
-                    output.WriteLine(value);
-                }
+                var value = (result as Valid<string>).Value;
+                Assert.NotNull(value);
+                output.WriteLine(value);
             }
         }
         private class ClearCommand : BaseCommand
@@ -205,11 +197,13 @@ namespace We.Processes.Tests
         [InlineData("-c", "print('Hi')")]
         public string RunPythonScript(string cmd, string args)
         {
-            ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = "E:\\anaconda\\python.exe";
-            start.Arguments = string.Format("\"{0}\" \"{1}\"", cmd, args);
-            start.UseShellExecute = false;
-            start.RedirectStandardOutput = true;
+            ProcessStartInfo start = new()
+            {
+                FileName = "E:\\anaconda\\python.exe",
+                Arguments = string.Format("\"{0}\" \"{1}\"", cmd, args),
+                UseShellExecute = false,
+                RedirectStandardOutput = true
+            };
             using (Process process = Process.Start(start))
             {
                 using (StreamReader reader = process.StandardOutput)

@@ -26,13 +26,13 @@ public class LoadResultatIntoDbHandler : AbpHandler.With<LoadResultatIntoDbQuery
                 var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
 
                 var reader = new Reader<Resultat>($"{request.Filename}", true, ';');
-                List<Resultat> resultats = new List<Resultat>();
+                List<Resultat> resultats = new();
                 reader
                     .OnReadLine
                     .Where(x => !existings.Any(y => y.Date == x.Value.Date && y.Reunion == x.Value.Reunion && y.Course == x.Value.Course))
                     .Subscribe(o =>
                         {
-                            Logger.LogInformation($"{o.Index} / {o.ToString()}");
+                            Logger.LogInformation($"{o.Index} / {o}");
                             resultats.Add(o.Value);
                         }, () =>
                         {

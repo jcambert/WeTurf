@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Volo.Abp.Domain.Entities;
+
 namespace We.EntitySpecification;
+
 public static class SpecificationExtensions
 {
     /// <summary>
@@ -10,8 +12,10 @@ public static class SpecificationExtensions
     /// <param name="inputQuery"></param>
     /// <param name="specification"></param>
     /// <returns></returns>
-    public static IQueryable<TEntity> GetQuery<TEntity>(this IQueryable<TEntity> inputQuery, ISpecification<TEntity> specification)
-        where TEntity :class,IEntity
+    public static IQueryable<TEntity> GetQuery<TEntity>(
+        this IQueryable<TEntity> inputQuery,
+        ISpecification<TEntity> specification
+    ) where TEntity : class, IEntity
     {
         var query = inputQuery;
 
@@ -22,15 +26,24 @@ public static class SpecificationExtensions
         }
 
         // Includes all expression-based includes
-        query = specification.Includes.Aggregate(query,(current, include) => current.Include(include));
+        query = specification.Includes.Aggregate(
+            query,
+            (current, include) => current.Include(include)
+        );
 
         // Include any string-based include statements
-        query = specification.IncludeStrings.Aggregate(query,(current, include) => current.Include(include));
+        query = specification.IncludeStrings.Aggregate(
+            query,
+            (current, include) => current.Include(include)
+        );
 
         // Apply ordering if expressions are set
         if (specification.OrderByIf is not null)
         {
-            query = query.OrderByIf<TEntity,IQueryable<TEntity>>(specification.OrderByIf.Condition, specification.OrderByIf.Sorting);
+            query = query.OrderByIf<TEntity, IQueryable<TEntity>>(
+                specification.OrderByIf.Condition,
+                specification.OrderByIf.Sorting
+            );
         }
         else if (specification.OrderBy is not null)
         {
@@ -51,9 +64,7 @@ public static class SpecificationExtensions
         {
             query = query.PageBy(specification.PagedBy.Skip, specification.PagedBy.Take);
         }
-        
 
-        
         return query;
     }
 }

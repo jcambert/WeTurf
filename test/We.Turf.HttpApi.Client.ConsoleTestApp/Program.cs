@@ -15,8 +15,10 @@ class Program
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
             .AddAppSettingsSecretsJson()
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddHostedService<ConsoleTestAppHostedService>();
-            });
+            .ConfigureServices(
+                (hostContext, services) =>
+                {
+                    services.AddHostedService<ConsoleTestAppHostedService>();
+                }
+            );
 }
