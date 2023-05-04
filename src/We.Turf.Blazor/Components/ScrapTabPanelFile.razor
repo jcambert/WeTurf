@@ -1,4 +1,4 @@
-﻿@using We.Blazor.Csv
+@using We.Blazor.Csv
 <TabPanel Name="@Name">
     <Button Color="Color.Primary" Clicked="e=>RefreshFileContent()" Visibility="RefreshButtonVisibility" Loading="RefreshButtonLoading" Disabled="RefreshButtonLoading">Raffraichir Tout</Button>
     <Fields>
@@ -29,8 +29,8 @@
 </TabPanel>
 
 @code {
-    [Parameter,EditorRequired]
-    public string Name { get; set; }
+    [Parameter, EditorRequired]
+    public string Name { get; set; } = string.Empty;
     [Parameter]
     public int? CsvLimitRow { get; set; } = 3;
     [Parameter]
@@ -38,24 +38,13 @@
     [Parameter]
     public string CsvSeparator { get; set; } = ";";
     [Parameter]
-    public List<string> ColumnNames
-    {
-        get; set;
-    }
-    [Parameter,EditorRequired]
-    public IEnumerable<FileWithContent> Files
-    {
-        get; set;
-    }
+    public List<string> ColumnNames{get; set;}=new();
+    [Parameter, EditorRequired]
+    public IEnumerable<FileWithContent> Files { get; set; } = new List<FileWithContent>();
     [Parameter,EditorRequired]
     public PmuFileType Type { get; set; }
 
-    // List<string> ColumnNames = new List<string>() { "date", "reunion", "course", "nom", "numPmu" };
-    /* private async Task RefreshFileContent(PmuFileType type)
-         {
-         foreach (var f in Files.Where(x => x.Type == type))
-             await RefreshFileContent(f);
-     }*/
+ 
     Visibility RefreshButtonVisibility => Files.Any() ? Visibility.Visible : Visibility.Invisible;
 
     bool RefreshButtonLoading => Files.Any(f => f.IsLoading);
@@ -65,7 +54,7 @@
         file.IsVisible = !file.IsVisible;
         await RefreshFileContent(file);
     }
-    private async Task RefreshFileContent(FileWithContent file = null)
+    private async Task RefreshFileContent(FileWithContent? file = null)
     {
         if (file is null)
             foreach (var f in Files)

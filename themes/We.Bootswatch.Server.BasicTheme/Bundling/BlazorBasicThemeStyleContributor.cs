@@ -7,6 +7,8 @@ public class BlazorBasicThemeStyleContributor : BundleContributor
 {
     public override void ConfigureBundle(BundleConfigurationContext context)
     {
-        context.Files.AddIfNotContains("/_content/We.Bootswatch.Components.Web.BasicTheme/css/we/theme.css");
+        context.Files.AddIfNotContains(
+            "/_content/We.Bootswatch.Components.Web.BasicTheme/css/we/theme.css"
+        );
     }
 }

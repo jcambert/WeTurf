@@ -136,7 +136,7 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
         var blazorClientId = configurationSection["Turf_Blazor:ClientId"];
         if (!blazorClientId.IsNullOrWhiteSpace())
         {
-            var blazorRootUrl = configurationSection["Turf_Blazor:RootUrl"].TrimEnd('/');
+            var blazorRootUrl = configurationSection["Turf_Blazor:RootUrl"]?.TrimEnd('/');
 
             await CreateApplicationAsync(
                 name: blazorClientId,
@@ -182,7 +182,7 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
         var swaggerClientId = configurationSection["Turf_Swagger:ClientId"];
         if (!swaggerClientId.IsNullOrWhiteSpace())
         {
-            var swaggerRootUrl = configurationSection["Turf_Swagger:RootUrl"].TrimEnd('/');
+            var swaggerRootUrl = configurationSection["Turf_Swagger:RootUrl"]?.TrimEnd('/');
 
             await CreateApplicationAsync(
                 name: swaggerClientId,

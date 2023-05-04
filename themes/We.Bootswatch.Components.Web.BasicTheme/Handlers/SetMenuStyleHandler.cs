@@ -11,7 +11,10 @@ namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
 public class SetMenuStyleHandler : AbpHandler.With<SetMenuStyleCommand, SetMenuStyleResult>
 {
-    public SetMenuStyleHandler(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context) : base(serviceProvider)
+    public SetMenuStyleHandler(
+        IAbpLazyServiceProvider serviceProvider,
+        IHttpContextAccessor context
+    ) : base(serviceProvider)
     {
         Context = context;
     }
@@ -19,21 +22,23 @@ public class SetMenuStyleHandler : AbpHandler.With<SetMenuStyleCommand, SetMenuS
     private IHttpContextAccessor Context { get; }
     private string CookieName => BootswatchConsts.MenuStyleCookie;
 #if MEDIATOR
-    public override ValueTask<Result<SetMenuStyleResult>> Handle(SetMenuStyleCommand request, CancellationToken cancellationToken)
+    public override ValueTask<Result<SetMenuStyleResult>> Handle(
+        SetMenuStyleCommand request,
+        CancellationToken cancellationToken
+    )
 #else
-    public override Task<Result<SetMenuStyleResult>> Handle(SetMenuStyleCommand request, CancellationToken cancellationToken)
+    public override Task<Result<SetMenuStyleResult>> Handle(
+        SetMenuStyleCommand request,
+        CancellationToken cancellationToken
+    )
 #endif
     {
         try
         {
-            var options = new CookieOptions()
-            {
-                Expires = DateTime.UtcNow.AddYears(10)
-            };
+            var options = new CookieOptions() { Expires = DateTime.UtcNow.AddYears(10) };
             var httpContext = Context.HttpContext;
             httpContext?.Response.Cookies.Append(CookieName, request.Style, options);
             return Result.Success<SetMenuStyleResult>();
-
         }
         catch (Exception ex)
         {

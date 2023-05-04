@@ -1,10 +1,8 @@
-﻿using We.Mediatr;
-
 namespace We.Turf.Queries;
 
-public interface ILoadOutputFolderIntoDbQuery : IQuery<LoadOutputFolderIntoDbResponse>
+public interface ILoadOutputFolderIntoDbQuery : WeM.IQuery<LoadOutputFolderIntoDbResponse>
 {
     string Folder { get; set; }
 }
 
-public sealed record LoadOutputFolderIntoDbResponse() : Response;
+public sealed record LoadOutputFolderIntoDbResponse() : WeM.Response;

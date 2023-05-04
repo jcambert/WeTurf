@@ -9,25 +9,38 @@ using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-public class ApplyMainLayoutFluidifyHandler : AbpHandler.With<ApplyMainLayoutFluidifyCommand, ApplyMainLayoutFluidifyResult>
+public class ApplyMainLayoutFluidifyHandler
+    : AbpHandler.With<ApplyMainLayoutFluidifyCommand, ApplyMainLayoutFluidifyResult>
 {
-    public ApplyMainLayoutFluidifyHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
+    public ApplyMainLayoutFluidifyHandler(IAbpLazyServiceProvider serviceProvider)
+        : base(serviceProvider) { }
 
-    private NavigationManager NavigationManager=>GetRequiredService<NavigationManager>();
+    private NavigationManager NavigationManager => GetRequiredService<NavigationManager>();
 
 #if MEDIATOR
-    public override ValueTask<Result<ApplyMainLayoutFluidifyResult>> Handle(ApplyMainLayoutFluidifyCommand request, CancellationToken cancellationToken)
-        #else
-    public override Task<Result<ApplyMainLayoutFluidifyResult>> Handle(ApplyMainLayoutFluidifyCommand request, CancellationToken cancellationToken)
+    public override ValueTask<Result<ApplyMainLayoutFluidifyResult>> Handle(
+        ApplyMainLayoutFluidifyCommand request,
+        CancellationToken cancellationToken
+    )
+#else
+    public override Task<Result<ApplyMainLayoutFluidifyResult>> Handle(
+        ApplyMainLayoutFluidifyCommand request,
+        CancellationToken cancellationToken
+    )
 #endif
     {
         try
         {
-            string relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/').EnsureStartsWith('~');
+            string relativeUrl = NavigationManager.Uri
+                .RemovePreFix(NavigationManager.BaseUri)
+                .EnsureStartsWith('/')
+                .EnsureStartsWith('~');
             //string name = request.Value;//DOT NOT CHANGE THIS
-            var uri = string.Format(BootswatchConsts.APPLY_MAINLAYOUT_FLUID_URL, relativeUrl, request.Value.Name);
+            var uri = string.Format(
+                BootswatchConsts.APPLY_MAINLAYOUT_FLUID_URL,
+                relativeUrl,
+                request.Value.Name
+            );
             NavigationManager.NavigateTo(uri, forceLoad: true);
             return Result.Success<ApplyMainLayoutFluidifyResult>();
         }
@@ -37,4 +50,3 @@ public class ApplyMainLayoutFluidifyHandler : AbpHandler.With<ApplyMainLayoutFlu
         }
     }
 }
-

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using Volo.Abp.UI.Navigation;
@@ -7,16 +7,19 @@ namespace We.Bootswatch.Components.Web.BasicTheme.Themes.Basic;
 
 public partial class SecondLevelNavMenuItem : IDisposable
 {
-    [Inject] private NavigationManager NavigationManager { get; set; }
+    [Inject]
+    private NavigationManager? NavigationManager { get; set; }
 
     [Parameter]
-    public ApplicationMenuItem MenuItem { get; set; }
+    public ApplicationMenuItem? MenuItem { get; set; }
 
     public bool IsSubMenuOpen { get; set; }
 
     protected override void OnInitialized()
     {
-        NavigationManager.LocationChanged += OnLocationChanged;
+        if (NavigationManager is not null)
+
+            NavigationManager.LocationChanged += OnLocationChanged;
     }
 
     private void ToggleSubMenu()
@@ -26,10 +29,12 @@ public partial class SecondLevelNavMenuItem : IDisposable
 
     public void Dispose()
     {
-        NavigationManager.LocationChanged -= OnLocationChanged;
+        if (NavigationManager is not null)
+
+            NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
-    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         IsSubMenuOpen = false;
         InvokeAsync(StateHasChanged);

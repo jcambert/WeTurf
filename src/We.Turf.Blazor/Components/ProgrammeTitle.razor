@@ -1,6 +1,6 @@
-﻿<Column ColumnSize="ColumnSize.Is1">
+<Column ColumnSize="ColumnSize.Is1">
     <Field>
-        <Button Class="btn-outline-success" Clicked="@(()=>dateEditRef.ShowPicker())">
+        <Button Class="btn-outline-success" Clicked="ShowPicker">
             <i class="fa fa-calendar" aria-hidden="true"></i>
         </Button>
     </Field>
@@ -29,7 +29,7 @@
 
     @code {
     public DateOnly _internalDate;
-    DateEdit<DateOnly> dateEditRef;
+    DateEdit<DateOnly>? dateEditRef;
     [Parameter]
     public DateOnly? Date {
         get; 
@@ -57,12 +57,17 @@
     {
         SetDate(d);
         await OnDateChanged.InvokeAsync(d);
-        
+
     }
     protected override Task OnInitializedAsync()
     {
         SetDate(InitialDate);
 
         return base.OnInitializedAsync();
+    }
+
+    protected void ShowPicker()
+    {
+        dateEditRef?.ShowPicker();
     }
 }

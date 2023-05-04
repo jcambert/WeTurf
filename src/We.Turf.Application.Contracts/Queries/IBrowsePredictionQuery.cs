@@ -1,11 +1,10 @@
-﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IBrowsePredictionQuery : IQuery<BrowsePredictionResponse>
+public interface IBrowsePredictionQuery : WeM.IQuery<BrowsePredictionResponse>
 {
     DateOnly? Date { get; set; }
 }
 
-public sealed record BrowsePredictionResponse(List<PredictedDto> Predicteds) : Response;
+public sealed record BrowsePredictionResponse(List<PredictedDto> Predicteds) : WeM.Response;

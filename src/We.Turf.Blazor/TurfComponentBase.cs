@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Volo.Abp.AspNetCore.Components;
 using We.Turf.Localization;
@@ -12,12 +12,10 @@ public abstract class TurfComponentBase : AbpComponentBase, INotifyPropertyChang
         LocalizationResource = typeof(TurfResource);
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
-   
 }

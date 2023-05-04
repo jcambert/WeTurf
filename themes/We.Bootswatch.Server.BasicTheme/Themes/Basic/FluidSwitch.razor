@@ -1,49 +1,8 @@
-﻿@using MediatR;
 @using Volo.Abp.AspNetCore.Components.Notifications;
 @using Volo.Abp.DependencyInjection;
 @using We.Bootswatch.Components.Web.BasicTheme.Commands;
 @using We.Bootswatch.Components.Web.BasicTheme.Services;
 @using We.Bootswatch.Components.Web.BasicTheme.Themes.Basic;
-@inject IAbpLazyServiceProvider ServiceProvider
-@inject IMediator Mediator
-@inject IFluidProvider fluidProvider
-@inject IUiNotificationService notify
+
 <Switch TValue="bool" Checked="@IsFluid" CheckedChanged="OnCheckedChange">@GetText()</Switch>
 
-@code{
-
-    public bool IsFluid => MainLayout.IsFluid;
-    public IFluidable Fluidable => MainLayout.Fluidable;
-
-    [Parameter]
-    public bool ShowText { get; set; }
-
-    [CascadingParameter]
-    public MainLayout MainLayout{ get; set; }
-
-    protected string GetText() => ShowText?( Fluidable.Name):string.Empty;
-
-
-    private async Task OnCheckedChange(bool value)
-    {
-        var fluidable = fluidProvider.GetAll().Where(x => x.IsFluid == value).FirstOrDefault() ?? fluidProvider.GetDefault();
-        await Result
-        .Create(new ApplyMainLayoutFluidifyCommand(fluidable))
-    .Bind(c => Mediator.Send(c))
-        .Match(
-            r =>
-            {
-                MainLayout.ChangeFluid(fluidable);
-                //notify.Success("Now it's " + (value ? "Fluid" : "Not Fluid"));
-                return new NoContentResult();
-            },
-            r =>
-            {
-                notify.Error(r.Errors.JoinAsString("\n"));
-                return new BadRequestResult();
-            }
-        );
-
-        
-    }
-}

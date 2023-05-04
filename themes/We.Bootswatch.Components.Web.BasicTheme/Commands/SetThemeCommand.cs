@@ -10,8 +10,8 @@ public interface ISetThemeCommand : IQuery<SetThemeCommandResult>
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(ISetThemeCommand),IncludeSelf =true)]
-public class SetThemeCommand: ISetThemeCommand
+[ExposeServices(typeof(ISetThemeCommand), IncludeSelf = true)]
+public class SetThemeCommand : ISetThemeCommand
 {
     public SetThemeCommand(string name)
     {
@@ -21,4 +21,4 @@ public class SetThemeCommand: ISetThemeCommand
     public string Name { get; init; }
 }
 
-public sealed record SetThemeCommandResult(): Response;
+public sealed record SetThemeCommandResult() : Response;

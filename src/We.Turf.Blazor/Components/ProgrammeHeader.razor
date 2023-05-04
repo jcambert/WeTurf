@@ -1,4 +1,4 @@
-﻿<Row Class="programme-header">
+<Row Class="programme-header">
     <Column ColumnSize="ColumnSize.IsFull">
         <Row Class="ps-2 pe-4 pb-2 pt-2">
 
@@ -20,22 +20,12 @@
 
 @code {
     [CascadingParameter(Name ="Date")]
-    public DateOnly Date { 
+    public DateOnly? Date { 
         get; 
         set; }
     [Parameter]
     public EventCallback<DateOnly> DateChanged { get; set; }
     [Parameter]
     public EventCallback<SelectMode> OnSelectMode{ get; set; }
-    /*private void DateChanged(DateOnly d)
-    {
-        Date = d;
-      //  StateHasChanged();
-    }*/
-    protected override Task OnInitializedAsync()
-    {
-        /*if (Date == null)
-            Date = DateOnly.FromDateTime(DateTime.Now);*/
-        return base.OnInitializedAsync();
-    }
+  
 }

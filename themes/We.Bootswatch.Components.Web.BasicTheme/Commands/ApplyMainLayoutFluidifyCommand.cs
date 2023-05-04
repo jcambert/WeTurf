@@ -7,7 +7,7 @@ namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
 public interface IApplyMainLayoutFluidifyCommand : IQuery<ApplyMainLayoutFluidifyResult>
 {
-    IFluidable Value { get;init; }
+    IFluidable Value { get; init; }
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
@@ -18,7 +18,8 @@ public class ApplyMainLayoutFluidifyCommand : IApplyMainLayoutFluidifyCommand
     {
         Value = isFluid;
     }
+
     public IFluidable Value { get; init; }
 }
 
-public sealed record ApplyMainLayoutFluidifyResult():Response;
+public sealed record ApplyMainLayoutFluidifyResult() : Response;

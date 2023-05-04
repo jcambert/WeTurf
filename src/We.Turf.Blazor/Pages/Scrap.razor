@@ -1,4 +1,4 @@
-﻿@page "/scrap"
+@page "/scrap"
 @page "/scrap/{start}"
 @page "/scrap/{start}/{end}"
 @using System.IO;
@@ -76,13 +76,13 @@
 @code {
     bool scrap, predict, resultat,setInFolder;
     [Parameter]
-    public string Start { get; set; }
+    public string Start { get; set; } = string.Empty;
 
     [Parameter]
-    public string End { get; set; }
+    public string End { get; set; } = string.Empty;
 
-    public string InnerStart { get; set; }
-    public string InnerEnd { get; set; }
+    public string InnerStart { get; set; } = string.Empty;
+    public string InnerEnd { get; set; } = string.Empty;
     bool isExtractRunning = false;
     bool isInsertDatasRunning = false;
     bool CanInsertdatas => ToPredictFiles.Any() && PredictedFiles.Any() && CoursesFiles.Any() && ResultatsFiles.Any();
@@ -91,7 +91,7 @@
 
     List<FileWithContent> files = new();
     List<string> ColumnNames = new List<string>() { "date", "reunion", "course", "nom", "numPmu" };
-    public string ConsoleOutput { get; set; }
+    public string ConsoleOutput { get; set; } = string.Empty;
     IEnumerable<FileWithContent> ToPredictFiles => files.Where(x => x.Type == PmuFileType.ToPredict);
     IEnumerable<FileWithContent> PredictedFiles => files.Where(x => x.Type == PmuFileType.Predicted);
     IEnumerable<FileWithContent> CoursesFiles => files.Where(x => x.Type == PmuFileType.Course);

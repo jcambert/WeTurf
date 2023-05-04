@@ -4,14 +4,13 @@ using We.Mediatr;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
-
 public interface ISetMenuStyleCommand : IQuery<SetMenuStyleResult>
 {
     string Style { get; init; }
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(ISetMenuStyleCommand),IncludeSelf =true)]
+[ExposeServices(typeof(ISetMenuStyleCommand), IncludeSelf = true)]
 public class SetMenuStyleCommand : ISetMenuStyleCommand
 {
     public SetMenuStyleCommand(string style)
@@ -22,4 +21,4 @@ public class SetMenuStyleCommand : ISetMenuStyleCommand
     public string Style { get; init; }
 }
 
-public sealed record SetMenuStyleResult():Response;
+public sealed record SetMenuStyleResult() : Response;

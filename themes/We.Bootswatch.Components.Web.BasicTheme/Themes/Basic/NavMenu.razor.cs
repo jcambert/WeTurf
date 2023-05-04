@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -11,27 +11,31 @@ namespace We.Bootswatch.Components.Web.BasicTheme.Themes.Basic;
 public partial class NavMenu : IDisposable
 {
     [Inject]
-    protected IMenuManager MenuManager { get; set; }
+    protected IMenuManager? MenuManager { get; set; }
 
     [Inject]
-    protected ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
+    protected ApplicationConfigurationChangedService? ApplicationConfigurationChangedService { get; set; }
 
-    protected ApplicationMenu Menu { get; set; }
+    protected ApplicationMenu? Menu { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
-        Menu = await MenuManager.GetMainMenuAsync();
-        ApplicationConfigurationChangedService.Changed += ApplicationConfigurationChanged;
+        if (MenuManager is not null)
+            Menu = await MenuManager.GetMainMenuAsync();
+        if (ApplicationConfigurationChangedService is not null)
+            ApplicationConfigurationChangedService.Changed += ApplicationConfigurationChanged;
     }
 
     private async void ApplicationConfigurationChanged()
     {
-        Menu = await MenuManager.GetMainMenuAsync();
+        if (MenuManager is not null)
+            Menu = await MenuManager.GetMainMenuAsync();
         await InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        ApplicationConfigurationChangedService.Changed -= ApplicationConfigurationChanged;
+        if (ApplicationConfigurationChangedService is not null)
+            ApplicationConfigurationChangedService.Changed -= ApplicationConfigurationChanged;
     }
 }

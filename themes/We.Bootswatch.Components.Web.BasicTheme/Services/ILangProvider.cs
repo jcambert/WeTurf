@@ -12,22 +12,24 @@ using Volo.Abp.Localization;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Services;
 
-public interface ILangProvider : ISelectorProvider<ILang>
-{
+public interface ILangProvider : ISelectorProvider<ILang> { }
 
-
-}
 public class LangProvider : SelectorProvider<ILang>, ILangProvider
 {
-    private IReadOnlyList<Lang>? _values=null;
-    private Lang? _currentLanguage=null;
+    private IReadOnlyList<Lang>? _values = null;
+    private Lang? _currentLanguage = null;
 
-    ILanguageProvider LanguageProvider=>ServiceProvider.LazyGetRequiredService<ILanguageProvider>();
-    IAbpRequestLocalizationOptionsProvider RequestLocalizationOptionsProvider => ServiceProvider.LazyGetRequiredService<IAbpRequestLocalizationOptionsProvider>();
-    public LangProvider(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context, NavigationManager navigationManager) : base(serviceProvider, context, navigationManager)
-    {
-        
-    }
+    ILanguageProvider LanguageProvider =>
+        ServiceProvider.LazyGetRequiredService<ILanguageProvider>();
+    IAbpRequestLocalizationOptionsProvider RequestLocalizationOptionsProvider =>
+        ServiceProvider.LazyGetRequiredService<IAbpRequestLocalizationOptionsProvider>();
+
+    public LangProvider(
+        IAbpLazyServiceProvider serviceProvider,
+        IHttpContextAccessor context,
+        NavigationManager navigationManager
+    ) : base(serviceProvider, context, navigationManager) { }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -38,45 +40,46 @@ public class LangProvider : SelectorProvider<ILang>, ILangProvider
 
     private async Task SetCurrentAsync()
     {
-        var currentLanguage = _values?.Select(x=>x.Language).FindByCulture(
-             CultureInfo.CurrentCulture.Name,
-             CultureInfo.CurrentUICulture.Name
-             );
+        var currentLanguage = _values
+            ?.Select(x => x.Language)
+            .FindByCulture(CultureInfo.CurrentCulture.Name, CultureInfo.CurrentUICulture.Name);
 
         if (currentLanguage == null)
         {
-            var localizationOptions = await RequestLocalizationOptionsProvider.GetLocalizationOptionsAsync();
+            var localizationOptions =
+                await RequestLocalizationOptionsProvider.GetLocalizationOptionsAsync();
             if (localizationOptions.DefaultRequestCulture != null)
             {
                 currentLanguage = new LanguageInfo(
                     localizationOptions.DefaultRequestCulture.Culture.Name,
                     localizationOptions.DefaultRequestCulture.UICulture.Name,
-                    localizationOptions.DefaultRequestCulture.UICulture.DisplayName);
+                    localizationOptions.DefaultRequestCulture.UICulture.DisplayName
+                );
             }
             else
             {
                 currentLanguage = new LanguageInfo(
                     CultureInfo.CurrentCulture.Name,
                     CultureInfo.CurrentUICulture.Name,
-                    CultureInfo.CurrentUICulture.DisplayName);
+                    CultureInfo.CurrentUICulture.DisplayName
+                );
             }
         }
 
-        _currentLanguage = new Lang( currentLanguage);
+        _currentLanguage = new Lang(currentLanguage);
     }
 
     protected override ILang? Default { get; } = null;
     protected override List<ILang> Values => _values?.ToList<ILang>() ?? new();
     protected override string CookieName { get; } = string.Empty;
-    
 
-
-    public override ILang GetCurrent() => _currentLanguage ?? base.GetCurrent();
+    public override ILang? GetCurrent() => _currentLanguage ?? base.GetCurrent();
 }
+
 public interface ILang : INameable, IEquatable<ILang>, IEqualityComparer<ILang>
 {
     string CultureName { get; }
-    string UiCultureName { get;  }
+    string UiCultureName { get; }
 
     LanguageInfo Language { get; }
 }
@@ -86,23 +89,25 @@ public class Lang : ILang
     public string Name => this.Language.DisplayName;
     public LanguageInfo Language { get; init; }
     public string CultureName => Language.CultureName;
-    public string UiCultureName =>Language.UiCultureName;
-   //public LanguageInfo LanguageInfo { get; } 
+    public string UiCultureName => Language.UiCultureName;
+
+    //public LanguageInfo LanguageInfo { get; }
 
     public Lang(LanguageInfo li)
     {
-        if(li is null) throw new ArgumentNullException(nameof(li));
+        if (li is null)
+            throw new ArgumentNullException(nameof(li));
         this.Language = li;
     }
+
     public bool Equals(ILang? other)
     {
-        if (other == null) return false;
+        if (other == null)
+            return false;
         return GetType() == other.GetType() && Name == other.Name;
     }
 
-    public bool Equals(ILang? x, ILang? y)
-     => x?.Name == y?.Name;
+    public bool Equals(ILang? x, ILang? y) => x?.Name == y?.Name;
 
-    public int GetHashCode([DisallowNull] ILang obj)
-    => obj.Name.GetHashCode();
+    public int GetHashCode([DisallowNull] ILang obj) => obj.Name.GetHashCode();
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Security.Claims;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Security.Claims;
@@ -13,7 +13,7 @@ public class FakeCurrentPrincipalAccessor : ThreadCurrentPrincipalAccessor
         return GetPrincipal();
     }
 
-    private ClaimsPrincipal _principal;
+    private ClaimsPrincipal? _principal;
 
     private ClaimsPrincipal GetPrincipal()
     {

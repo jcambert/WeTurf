@@ -1,4 +1,4 @@
-﻿@using We.Turf.Entities;
+@using We.Turf.Entities;
 @if (Courses != null)
 {
     @foreach (var course in Courses.OrderBy(x => x.Reunion).ThenBy(x => x.Course))
@@ -32,7 +32,7 @@
 
 
 @code {
-    [CascadingParameter(Name = "ProgrammeCourses")] public List<ProgrammeCourseDto> Courses { get; set; }
-    
+    [CascadingParameter(Name = "ProgrammeCourses")] public List<ProgrammeCourseDto> Courses { get; set; } = new();
+
 
 }

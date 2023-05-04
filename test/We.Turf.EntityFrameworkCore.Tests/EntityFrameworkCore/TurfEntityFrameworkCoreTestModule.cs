@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -17,7 +17,7 @@ namespace We.Turf.EntityFrameworkCore;
 )]
 public class TurfEntityFrameworkCoreTestModule : AbpModule
 {
-    private SqliteConnection _sqliteConnection;
+    private SqliteConnection? _sqliteConnection;
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
@@ -43,7 +43,7 @@ public class TurfEntityFrameworkCoreTestModule : AbpModule
 
     public override void OnApplicationShutdown(ApplicationShutdownContext context)
     {
-        _sqliteConnection.Dispose();
+        _sqliteConnection?.Dispose();
     }
 
     private static SqliteConnection CreateDatabaseAndGetConnection()

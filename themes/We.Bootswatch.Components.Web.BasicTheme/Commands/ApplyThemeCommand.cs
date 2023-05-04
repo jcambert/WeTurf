@@ -10,13 +10,15 @@ public interface IApplyThemeCommand : IQuery<ApplyThemeResult>
 }
 
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
-[ExposeServices(typeof(IApplyThemeCommand),IncludeSelf =true)]
+[ExposeServices(typeof(IApplyThemeCommand), IncludeSelf = true)]
 public class ApplyThemeCommand : IApplyThemeCommand
 {
     public ApplyThemeCommand(string name)
     {
         this.Name = name;
     }
+
     public string Name { get; init; }
 }
-public sealed record ApplyThemeResult(): Response;
+
+public sealed record ApplyThemeResult() : Response;

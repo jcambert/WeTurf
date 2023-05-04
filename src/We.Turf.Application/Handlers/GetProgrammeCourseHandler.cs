@@ -4,16 +4,28 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-public class GetProgrammeCourseHandler : AbpHandler.With<GetProgrammeCourseQuery, GetProgrammeCourseResponse, ProgrammeCourse, ProgrammeCourseDto, Guid>
+public class GetProgrammeCourseHandler
+    : AbpHandler.With<
+          GetProgrammeCourseQuery,
+          GetProgrammeCourseResponse,
+          ProgrammeCourse,
+          ProgrammeCourseDto,
+          Guid
+      >
 {
-     public GetProgrammeCourseHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
+    public GetProgrammeCourseHandler(IAbpLazyServiceProvider serviceProvider)
+        : base(serviceProvider) { }
 
 #if MEDIATOR
-    public override async ValueTask<Result<GetProgrammeCourseResponse>> Handle(GetProgrammeCourseQuery request, CancellationToken cancellationToken)
+    public override async ValueTask<Result<GetProgrammeCourseResponse>> Handle(
+        GetProgrammeCourseQuery request,
+        CancellationToken cancellationToken
+    )
 #else
-    public override async Task<Result<GetProgrammeCourseResponse>> Handle(GetProgrammeCourseQuery request, CancellationToken cancellationToken)
+    public override async Task<Result<GetProgrammeCourseResponse>> Handle(
+        GetProgrammeCourseQuery request,
+        CancellationToken cancellationToken
+    )
 #endif
     {
         var query = await Repository.GetQueryableAsync();

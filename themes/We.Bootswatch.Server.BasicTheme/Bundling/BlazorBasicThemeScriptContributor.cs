@@ -2,7 +2,4 @@
 
 namespace We.Bootswatch.Server.BasicTheme;
 
-public class BlazorBasicThemeScriptContributor : BundleContributor
-{
-
-}
+public class BlazorBasicThemeScriptContributor : BundleContributor { }

@@ -19,24 +19,27 @@ namespace We.Turf;
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule)
-    )]
+)]
 public class TurfApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<TurfApplicationModule>();
-        });
-        context.Services.UsePythonExecutor(opt =>
-        {
-            opt.UseAnaconda = true;
-            opt.AnacondBasePath = @"E:\anaconda\";
-            opt.UseReactiveOutput=true;
-            opt.PythonPath = @"e:\anaconda\";
-            opt.ExecuteInConsole=true;
-            opt.WorkingDirectory = @"E:\projets\pmu_scrapper\";
-        });
+        Configure<AbpAutoMapperOptions>(
+            options =>
+            {
+                options.AddMaps<TurfApplicationModule>();
+            }
+        );
+        context.Services.UsePythonExecutor(
+            opt =>
+            {
+                opt.UseAnaconda = true;
+                opt.AnacondBasePath = @"E:\anaconda\";
+                opt.UseReactiveOutput = true;
+                opt.PythonPath = @"e:\anaconda\";
+                opt.ExecuteInConsole = true;
+                opt.WorkingDirectory = @"E:\projets\pmu_scrapper\";
+            }
+        );
     }
 }

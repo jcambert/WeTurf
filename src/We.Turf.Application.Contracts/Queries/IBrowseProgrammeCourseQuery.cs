@@ -1,11 +1,11 @@
-﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IBrowseProgrammeCourseQuery : IQuery<BrowseProgrammeCourseResponse>
+public interface IBrowseProgrammeCourseQuery : WeM.IQuery<BrowseProgrammeCourseResponse>
 {
     DateOnly Date { get; set; }
 }
 
-public sealed record BrowseProgrammeCourseResponse(List<ProgrammeCourseDto> Programmes) : Response;
+public sealed record BrowseProgrammeCourseResponse(List<ProgrammeCourseDto> Programmes)
+    : WeM.Response;

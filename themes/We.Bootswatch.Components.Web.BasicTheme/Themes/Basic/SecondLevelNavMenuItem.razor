@@ -1,45 +1,47 @@
-﻿@using Volo.Abp.UI.Navigation
+@using Volo.Abp.UI.Navigation
 @{
-    var elementId = MenuItem.ElementId ?? "MenuItem_" + MenuItem.Name.Replace(".", "_");
-    var cssClass = string.IsNullOrEmpty(MenuItem.CssClass) ? string.Empty : MenuItem.CssClass;
-    var disabled = MenuItem.IsDisabled ? "disabled" : string.Empty;
-    var url = MenuItem.Url == null ? "#" : MenuItem.Url.TrimStart('/', '~');
+    var elementId = MenuItem?.ElementId ?? "MenuItem_" + MenuItem?.Name.Replace(".", "_");
+    var cssClass = string.IsNullOrEmpty(MenuItem?.CssClass) ? string.Empty : MenuItem.CssClass;
+    var disabled = (MenuItem?.IsDisabled ?? false) ? "disabled" : string.Empty;
+    var url = MenuItem?.Url == null ? "#" : MenuItem.Url.TrimStart('/', '~');
 }
-@if (MenuItem.IsLeaf)
+@if (MenuItem is not null)
 {
-    if (MenuItem.Url != null)
+    @if (MenuItem?.IsLeaf ?? false)
     {
-        <a class="dropdown-item @cssClass @disabled" href="@url" target="@MenuItem.Target" id="@elementId">
-            @if (MenuItem.Icon != null)
-            {
-                <i class="@MenuItem.Icon me-1"></i>
-            }
-            <span>
-                @MenuItem.DisplayName
-            </span>
-        </a>
+        if (MenuItem.Url != null)
+        {
+            <a class="dropdown-item @cssClass @disabled" href="@url" target="@MenuItem.Target" id="@elementId">
+                @if (MenuItem.Icon != null)
+                {
+                    <i class="@MenuItem.Icon me-1"></i>
+                }
+                <span>
+                    @MenuItem.DisplayName
+                </span>
+            </a>
+        }
     }
-}
-else
-{
-    <div class="dropdown-submenu">
-        <a role="button" @onclick="ToggleSubMenu" class="btn dropdown-toggle" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-            @if (MenuItem.Icon != null)
-            {
-                <i class="@MenuItem.Icon me-1"></i>
-            }
-            <span>
-                @MenuItem.DisplayName
-            </span>
-        </a>
-        <div class="dropdown-menu border-0 shadow-sm @(IsSubMenuOpen ? "show" : "")">
-            @foreach (var childMenuItem in MenuItem.Items)
-            {
-                <SecondLevelNavMenuItem MenuItem="@childMenuItem"/>
-            }
+    else
+    {
+        <div class="dropdown-submenu">
+            <a role="button" @onclick="ToggleSubMenu" class="btn dropdown-toggle" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+                @if (MenuItem?.Icon != null)
+                {
+                    <i class="@MenuItem.Icon me-1"></i>
+                }
+                <span>
+                    @MenuItem?.DisplayName
+                </span>
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm @(IsSubMenuOpen ? "show" : "")">
+                @if (MenuItem is not null)
+                    @foreach (var childMenuItem in MenuItem.Items)
+                    {
+                        <SecondLevelNavMenuItem MenuItem="@childMenuItem" />
+                    }
+            </div>
         </div>
-    </div>
-}
-@code {
+    }
 }

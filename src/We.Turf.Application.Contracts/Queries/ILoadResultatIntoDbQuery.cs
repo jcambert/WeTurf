@@ -1,12 +1,11 @@
-﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface ILoadResultatIntoDbQuery : IQuery<LoadResultatIntoDbResponse>
+public interface ILoadResultatIntoDbQuery : WeM.IQuery<LoadResultatIntoDbResponse>
 {
     string Filename { get; set; }
     bool Rename { get; set; }
 }
 
-public sealed record LoadResultatIntoDbResponse(List<ResultatDto> Resultats) : Response;
+public sealed record LoadResultatIntoDbResponse(List<ResultatDto> Resultats) : WeM.Response;

@@ -32,10 +32,10 @@
     <MediatorBogardAbstractionVersion>2.0.1</MediatorBogardAbstractionVersion>
   </PropertyGroup>
 
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(MediatorName)'=='bogard'">
+   <PropertyGroup Condition="'$(Platform)'=='AnyCPU' and '$(MediatorName)'=='bogard'">
         <DefineConstants>$(DefineConstants);MEDIATR</DefineConstants>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' and '$(MediatorName)'=='othamar'">
+    <PropertyGroup Condition="'$(Platform)'=='AnyCPU' and '$(MediatorName)'=='othamar'">
         <DefineConstants>$(DefineConstants);MEDIATOR</DefineConstants>
     </PropertyGroup>
 

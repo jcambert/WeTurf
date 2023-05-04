@@ -1,7 +1,7 @@
-﻿@using We.Turf.Entities;
+@using We.Turf.Entities;
 @if (Predicteds != null)
 {
-    @foreach (var course in Predicteds?.OrderBy(x => x.Reunion).ThenBy(x => x.Course))
+    @foreach (var course in Predicteds.OrderBy(x => x.Reunion).ThenBy(x => x.Course))
     {
         <CourseCard>
             <Column ColumnSize="ColumnSize.IsFull">
@@ -32,6 +32,6 @@
 
 
 @code {
-    [CascadingParameter(Name = "Predicteds")] public List<PredictedDto> Predicteds { get; set; }
+    [CascadingParameter(Name = "Predicteds")] public List<PredictedDto> Predicteds { get; set; } = new();
 
 }

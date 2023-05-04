@@ -1,5 +1,3 @@
 ﻿namespace We.Bootswatch.Server.BasicTheme;
 
-internal class ThemeResource
-{
-}
+internal class ThemeResource { }

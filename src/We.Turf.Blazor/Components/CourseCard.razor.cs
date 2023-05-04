@@ -1,15 +1,16 @@
-﻿using Blazorise;
+using Blazorise;
 using Blazorise.Utilities;
 using Microsoft.AspNetCore.Components;
 
 namespace We.Turf.Blazor.Components;
 
-public partial class CourseCard:BaseComponent
+public partial class CourseCard : BaseComponent
 {
     /// <summary>
     /// Specifies the content to be rendered inside this <see cref="Card"/>.
     /// </summary>
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     protected override void BuildClasses(ClassBuilder builder)
     {

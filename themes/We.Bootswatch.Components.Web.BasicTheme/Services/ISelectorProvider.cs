@@ -10,32 +10,31 @@ using Volo.Abp.DependencyInjection;
 
 namespace We.Bootswatch.Components.Web.BasicTheme;
 
-public interface ISelectorProvider<T>
-    where T:INameable
+public interface ISelectorProvider<T> where T : INameable
 {
     IReadOnlyList<T> GetAll();
-    IReadOnlyList<T> GetOthers(T item);
+    IReadOnlyList<T> GetOthers(T? item);
     T? GetByName(string name);
     T? GetCurrent();
 
     T? GetDefault();
-    //void SetCurrent(T item);
-
-    //void SetCurrent(string name);
 
     void Apply(T item, string uriPath);
 }
 
-public abstract class SelectorProvider<T> : ISelectorProvider<T>
-    where T : class,INameable
+public abstract class SelectorProvider<T> : ISelectorProvider<T> where T : class, INameable
 {
-    public SelectorProvider(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context, NavigationManager navigationManager)
+    public SelectorProvider(
+        IAbpLazyServiceProvider serviceProvider,
+        IHttpContextAccessor context,
+        NavigationManager navigationManager
+    )
     {
-        this.ServiceProvider=serviceProvider;
-        this.Context=context;   
-        this.NavigationManager=navigationManager;
+        this.ServiceProvider = serviceProvider;
+        this.Context = context;
+        this.NavigationManager = navigationManager;
 
-        Task.Run( InternalInitialization);
+        Task.Run(InternalInitialization);
     }
 
     private async Task InternalInitialization()
@@ -44,7 +43,8 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
         await OnInitializedAsync();
     }
 
-    protected IOptions<LayoutOptions> Options => ServiceProvider.LazyGetRequiredService<IOptions<LayoutOptions>>();
+    protected IOptions<LayoutOptions> Options =>
+        ServiceProvider.LazyGetRequiredService<IOptions<LayoutOptions>>();
     protected IHttpContextAccessor Context { get; }
     protected NavigationManager NavigationManager { get; }
     protected abstract T? Default { get; }
@@ -56,23 +56,24 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
 
     protected virtual void OnInitialized() { }
 
-    public void Apply(T item,string uriPath)
+    public void Apply(T item, string uriPath)
     {
-        var relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/').EnsureStartsWith('~');
+        var relativeUrl = NavigationManager.Uri
+            .RemovePreFix(NavigationManager.BaseUri)
+            .EnsureStartsWith('/')
+            .EnsureStartsWith('~');
 
         NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
     }
 
-    public virtual IReadOnlyList<T> GetAll()
-        => Values.OrderBy(x => x.Name).DistinctBy(x => x.Name).ToImmutableList();
+    public virtual IReadOnlyList<T> GetAll() =>
+        Values.OrderBy(x => x.Name).DistinctBy(x => x.Name).ToImmutableList();
 
-
-    public virtual T? GetByName(string name)
-        => Values.FirstOrDefault(t => t.Name == name) ?? Default ?? default;
+    public virtual T? GetByName(string name) =>
+        Values.FirstOrDefault(t => t.Name == name) ?? Default ?? default;
 
     public virtual T? GetCurrent()
     {
-
         var httpContext = Context.HttpContext;
         if (!(httpContext?.Request.Cookies.TryGetValue(CookieName, out var _name) ?? false))
         {
@@ -81,9 +82,12 @@ public abstract class SelectorProvider<T> : ISelectorProvider<T>
         return GetByName(_name);
     }
 
-
-    public  IReadOnlyList<T> GetOthers(T item)
-     => Values?.Where(t => t.Name != item?.Name).OrderBy(t => t.Name).DistinctBy(t => t.Name).ToImmutableList() ??new List<T>().ToImmutableList();
+    public IReadOnlyList<T> GetOthers(T? item) =>
+        Values
+            ?.Where(t => t.Name != item?.Name)
+            .OrderBy(t => t.Name)
+            .DistinctBy(t => t.Name)
+            .ToImmutableList() ?? new List<T>().ToImmutableList();
 
     public T? GetDefault() => Default;
     /*public virtual void SetCurrent(T item)

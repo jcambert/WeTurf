@@ -14,7 +14,7 @@ namespace We.Bootswatch.Server.BasicTheme;
     typeof(WeAspNetCoreComponentsWebBasicThemeModule),
     typeof(AbpAspNetCoreComponentsServerThemingModule),
     typeof(AbpLocalizationModule)
-    )]
+)]
 public class WeAspNetCoreComponentsServerBasicThemeModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -27,53 +27,64 @@ public class WeAspNetCoreComponentsServerBasicThemeModule : AbpModule
 
     private void ConfigureToolbar()
     {
-        Configure<AbpToolbarOptions>(options =>
-        {
-            options.Contributors.Add(new BasicThemeToolbarContributor());
-        });
+        Configure<AbpToolbarOptions>(
+            options =>
+            {
+                options.Contributors.Add(new BasicThemeToolbarContributor());
+            }
+        );
     }
 
     private void ConfigureBundles()
     {
-        Configure<AbpBundlingOptions>(options =>
-        {
-            options
-                .StyleBundles
-                .Add(BlazorBasicThemeBundles.Styles.Global, bundle =>
-                {
-                    bundle
-                        .AddBaseBundles(BlazorStandardBundles.Styles.Global)
-                        .AddContributors(typeof(BlazorBasicThemeStyleContributor));
-                });
+        Configure<AbpBundlingOptions>(
+            options =>
+            {
+                options.StyleBundles.Add(
+                    BlazorBasicThemeBundles.Styles.Global,
+                    bundle =>
+                    {
+                        bundle
+                            .AddBaseBundles(BlazorStandardBundles.Styles.Global)
+                            .AddContributors(typeof(BlazorBasicThemeStyleContributor));
+                    }
+                );
 
-            options
-                .ScriptBundles
-                .Add(BlazorBasicThemeBundles.Scripts.Global, bundle =>
-                {
-                    bundle
-                        .AddBaseBundles(BlazorStandardBundles.Scripts.Global)
-                        .AddContributors(typeof(BlazorBasicThemeScriptContributor));
-                });
-        });
+                options.ScriptBundles.Add(
+                    BlazorBasicThemeBundles.Scripts.Global,
+                    bundle =>
+                    {
+                        bundle
+                            .AddBaseBundles(BlazorStandardBundles.Scripts.Global)
+                            .AddContributors(typeof(BlazorBasicThemeScriptContributor));
+                    }
+                );
+            }
+        );
     }
 
     private void ConfigureLocalization()
     {
-        Configure<AbpLocalizationOptions>(options =>
-        {
-            //Define a new localization resource (TestResource)
-            options.Resources
-                .Add<ThemeResource>()
-                .AddVirtualJson("/Localization/Resources/Theme");
-        });
+        Configure<AbpLocalizationOptions>(
+            options =>
+            {
+                //Define a new localization resource (TestResource)
+                options.Resources
+                    .Add<ThemeResource>()
+                    .AddVirtualJson("/Localization/Resources/Theme");
+            }
+        );
     }
 
     private void ConfigureAutoApiControllers()
     {
-        Configure<AbpAspNetCoreMvcOptions>(options =>
-        {
-            options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
-
-        });
+        Configure<AbpAspNetCoreMvcOptions>(
+            options =>
+            {
+                options.ConventionalControllers.Create(
+                    typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly
+                );
+            }
+        );
     }
 }

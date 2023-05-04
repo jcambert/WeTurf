@@ -1,4 +1,4 @@
-﻿@using We.Turf.Entities;
+@using We.Turf.Entities;
 @if (Reunions != null)
 {
     @foreach (var reunion in Reunions.OrderBy(x => x.Reunion).ThenBy(x => x.Nombre))
@@ -11,5 +11,5 @@
 }
 
 @code {
-    [CascadingParameter(Name = "ProgrammeReunions")] public List<ProgrammeReunionDto> Reunions { get; set; }
+    [CascadingParameter(Name = "ProgrammeReunions")] public List<ProgrammeReunionDto> Reunions { get; set; } = new();
 }

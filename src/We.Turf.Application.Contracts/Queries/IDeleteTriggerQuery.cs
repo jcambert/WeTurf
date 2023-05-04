@@ -1,10 +1,8 @@
-﻿using We.Mediatr;
-
 namespace We.Turf.Queries;
 
-public interface IDeleteTriggerQuery : IQuery<DeleteTriggerResponse>
+public interface IDeleteTriggerQuery : WeM.IQuery<DeleteTriggerResponse>
 {
     Guid Id { get; set; }
 }
 
-public sealed record DeleteTriggerResponse() : Response;
+public sealed record DeleteTriggerResponse() : WeM.Response;

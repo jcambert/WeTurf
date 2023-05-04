@@ -6,6 +6,7 @@ public partial class TopNavbar
 {
     [Parameter]
     public bool IsCollapseShown { get; set; }
+
     private void ToggleCollapse()
     {
         IsCollapseShown = !IsCollapseShown;

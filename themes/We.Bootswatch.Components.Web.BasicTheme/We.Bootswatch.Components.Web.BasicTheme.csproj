@@ -3,6 +3,13 @@
     <Import Project="..\..\common.props" />
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+      <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>$(NoWarn);CS1591;CS8632</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>$(NoWarn);CS1591;CS8632</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +28,7 @@
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\We.AbpExtensions\We.AbpExtensions.csproj" />
+    <ProjectReference Include="..\..\libraries\We.Mediatr\We.Mediatr.csproj" />
     <ProjectReference Include="..\..\libraries\We.ResultsController\We.ResultsController.csproj" />
     <ProjectReference Include="..\..\libraries\We.Result\We.Results.csproj" />
   </ItemGroup>

@@ -8,6 +8,7 @@ namespace We.Turf;
 public abstract class TurfAppService : ApplicationService
 {
     protected IMediator Mediator => LazyServiceProvider.LazyGetRequiredService<IMediator>();
+
     protected TurfAppService()
     {
         LocalizationResource = typeof(TurfResource);

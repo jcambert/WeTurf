@@ -1,4 +1,4 @@
-﻿
+
 <Column ColumnSize="ColumnSize.IsHalf">
     <Button Class="btn-outline-success w-100 fw-bold fs-6" Active="Mode==SelectMode.Course" Clicked="_=>OnSelectClicked(SelectMode.Course)">Courses</Button>
 </Column>
@@ -8,9 +8,8 @@
 
 
 @code {
-    
-    [CascadingParameter(Name ="SelectMode")]
-    public SelectMode Mode { get; set; }
+    [CascadingParameter(Name = "SelectMode")]
+    public SelectMode Mode { get; set; } = SelectMode.Course;
     [Parameter]
     public EventCallback<SelectMode> OnSelectMode { get; set; }
 

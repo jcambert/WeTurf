@@ -1,12 +1,11 @@
-﻿using We.Mediatr;
 using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface ILoadPredictedIntoDbQuery : IQuery<LoadPredictedIntoDbResponse>
+public interface ILoadPredictedIntoDbQuery : WeM.IQuery<LoadPredictedIntoDbResponse>
 {
     string Filename { get; set; }
     bool Rename { get; set; }
 }
 
-public sealed record LoadPredictedIntoDbResponse(List<PredictedDto> Predicted) : Response;
+public sealed record LoadPredictedIntoDbResponse(List<PredictedDto> Predicted) : WeM.Response;

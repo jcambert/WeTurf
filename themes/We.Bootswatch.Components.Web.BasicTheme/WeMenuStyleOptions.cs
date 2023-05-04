@@ -4,6 +4,6 @@ public enum WeMenuStyle
 {
     LeftSide,
     TopSide,
-    RightSide, 
+    RightSide,
     BottomSide,
 }

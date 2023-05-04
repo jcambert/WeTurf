@@ -1,10 +1,14 @@
-﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Bootswatch.Server.BasicTheme.Controllers;
 using We.Results;
-
+using We.Mediatr;
+#if MEDIATOR
+using Mediator;
+#else
+using MediatR;
+#endif
 namespace We.Bootswatch.Server.BasicTheme;
 
 //[Area("Abp")]
@@ -16,25 +20,19 @@ namespace We.Bootswatch.Server.BasicTheme;
 [ControllerName("MenuStyle")]
 public class MenuStyleController : BaseController
 {
-    
+    public MenuStyleController(IMediator mediator) : base(mediator) { }
 
-    public MenuStyleController(IMediator mediator):base(mediator)
-    {
-    }
     [HttpGet]
     public virtual async Task<IActionResult> Change(string style, string returnUrl = "")
     {
         var res = await Result
             .Create(new SetMenuStyleCommand(style))
-            .Bind(cmd => Mediator.Send(cmd))
+            .Bind(cmd => Mediator.Send(cmd).AsTaskWrap())
             .Match(
-                 r => !string.IsNullOrWhiteSpace(returnUrl) ? Redirect(returnUrl) : Redirect("~/"),
+                r => !string.IsNullOrWhiteSpace(returnUrl) ? Redirect(returnUrl) : Redirect("~/"),
                 this.HandleFailure
-
             );
-        
-        return res;
 
-      
+        return res;
     }
 }

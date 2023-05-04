@@ -1,4 +1,4 @@
-﻿@page "/_"
+@page "/_"
 @page "/_/{Date}"
 @using System.Runtime.CompilerServices;
 @using System.ComponentModel;
@@ -13,7 +13,7 @@
 <Div>
 
     <p><DateEdit TValue="DateOnly" @bind-Date="CurrentDate"></DateEdit></p>
-    <Button Class="btn-dark" @onclick="()=>Layout.ToggleFluid()">Fluidify</Button>
+    <Button Class="btn-dark" @onclick="()=>Layout?.ToggleFluid()">Fluidify</Button>
     <p>@(IsFluid)</p>
     @if (_predicteds?.Count() > 0)
     {
@@ -74,7 +74,7 @@
 
 
 @code {
-#pragma warning disable BL0007
+    #pragma warning disable BL0007
     [Parameter]
     public string Date
     {
@@ -91,7 +91,7 @@
         }
     }
     [CascadingParameter]
-    public MainLayout Layout { get; set; }
+    public MainLayout? Layout { get; set; }
 
     public bool IsFluid => Layout is not null ? Layout.IsFluid : false;
 
@@ -110,15 +110,15 @@
 
     record Reunion(int Numero, string Hippodrome);
     record Course(int Numero, string Specialite);
-    record PredictedHorse(int NumeroPmu, string Nom, double Rapport, int Counter);
+    record PredictedHorse(int NumeroPmu, string? Nom, double Rapport, int Counter);
     private DateOnly _date;
     private DateOnly Today;
-    private bool[] _reunionsCollapsed;
+    private bool[] _reunionsCollapsed=Array.Empty<bool>();
     private IDisposable _whenDateChanged;
-    private List<PredictedDto> _predicteds;
-    private List<Reunion> Reunions => _predicteds?.Select(x => new Reunion(x.Reunion, x.Hippodrome)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
-    private List<Course> Courses(int reunion) => _predicteds?.Where(x => x.Reunion == reunion).Select(x => new Course(x.Course, x.Specialite)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
-    private List<PredictedHorse> Predicted(int reunion, int course) => _predicteds?.Where(x => x.Reunion == reunion && x.Course == course).OrderBy(x => x.NumeroPmu).GroupBy(x => x.NumeroPmu, (key, value) => new PredictedHorse(key, value.First().Nom, value.First().Rapport, value.Count())).ToList();
+    private List<PredictedDto> _predicteds = new();
+    private List<Reunion> Reunions => _predicteds?.Select(x => new Reunion(x.Reunion, x.Hippodrome ?? string.Empty)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
+    private List<Course> Courses(int reunion) => _predicteds?.Where(x => x.Reunion == reunion).Select(x => new Course(x.Course, x.Specialite ?? string.Empty)).Distinct().OrderBy(x => x.Numero).ToList() ?? new();
+    private List<PredictedHorse> Predicted(int reunion, int course) => _predicteds?.Where(x => x.Reunion == reunion && x.Course == course).OrderBy(x => x.NumeroPmu).GroupBy(x => x.NumeroPmu, (key, value) => new PredictedHorse(key, value.First().Nom , value.First().Rapport, value.Count())).ToList() ?? new();
     public Index_()
     {
         _whenDateChanged = this.WhenPropertyChanged()
@@ -141,12 +141,7 @@
         "trot attele" => Picto.Attele,
         _ => Picto.None
     };
-    /*
-    private void OnDateChanged(PropertyChangedEventArgs args)
-        {
-        Console.WriteLine(args.PropertyName);
-        LoadPredicted(_date);
-    }*/
+
     private async Task LoadPredictedAsync(DateOnly date)
     {
         var t = pmuService.BrowsePrediction(new() { Date = date });

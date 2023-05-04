@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -12,35 +12,41 @@ namespace We.Bootswatch.Components.Web.BasicTheme.Themes.Basic;
 public partial class NavToolbar : IDisposable
 {
     [Inject]
-    private IToolbarManager ToolbarManager { get; set; }
+    private IToolbarManager? ToolbarManager { get; set; }
 
     [Inject]
-    protected ApplicationConfigurationChangedService ApplicationConfigurationChangedService { get; set; }
+    protected ApplicationConfigurationChangedService? ApplicationConfigurationChangedService { get; set; }
 
-    private List<RenderFragment> ToolbarItemRenders { get; set; } = new List<RenderFragment>();
+    private List<RenderFragment> ToolbarItemRenders { get; set; } = new();
 
     protected async override Task OnInitializedAsync()
     {
         await GetToolbarItemRendersAsync();
-        ApplicationConfigurationChangedService.Changed += ApplicationConfigurationChanged;
+        if (ApplicationConfigurationChangedService is not null)
+
+            ApplicationConfigurationChangedService.Changed += ApplicationConfigurationChanged;
     }
 
     private async Task GetToolbarItemRendersAsync()
     {
-        var toolbar = await ToolbarManager.GetAsync(StandardToolbars.Main);
-
+        var t = ToolbarManager?.GetAsync(StandardToolbars.Main);
+        if (t is null)
+            return;
+        Toolbar toolbar = await t;
         ToolbarItemRenders.Clear();
 
         var sequence = 0;
 #pragma warning disable ASP0006
         foreach (var item in toolbar.Items)
         {
-            ToolbarItemRenders.Add(builder =>
-            {
-                builder.OpenComponent(sequence++, item.ComponentType);
-                
-                builder.CloseComponent();
-            });
+            ToolbarItemRenders.Add(
+                builder =>
+                {
+                    builder.OpenComponent(sequence++, item.ComponentType);
+
+                    builder.CloseComponent();
+                }
+            );
         }
     }
 #pragma warning restore ASP0006
@@ -52,6 +58,7 @@ public partial class NavToolbar : IDisposable
 
     public void Dispose()
     {
-        ApplicationConfigurationChangedService.Changed -= ApplicationConfigurationChanged;
+        if (ApplicationConfigurationChangedService is not null)
+            ApplicationConfigurationChangedService.Changed -= ApplicationConfigurationChanged;
     }
 }

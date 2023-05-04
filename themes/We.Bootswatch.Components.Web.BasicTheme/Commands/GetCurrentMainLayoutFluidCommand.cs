@@ -5,16 +5,13 @@ using We.Mediatr;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Commands;
 
-public interface IGetCurrentMainLayoutFluidCommand:IQuery<GetCurrentMainLayoutFluidResult>
-{
-}
+public interface IGetCurrentMainLayoutFluidCommand : IQuery<GetCurrentMainLayoutFluidResult> { }
+
 [Dependency(ServiceLifetime.Transient, ReplaceServices = true)]
 [ExposeServices(typeof(IGetCurrentMainLayoutFluidCommand), IncludeSelf = true)]
 public class GetCurrentMainLayoutFluidCommand : IGetCurrentMainLayoutFluidCommand
 {
-    public GetCurrentMainLayoutFluidCommand()
-    {
-    }
+    public GetCurrentMainLayoutFluidCommand() { }
 }
 
-public sealed record GetCurrentMainLayoutFluidResult(IFluidable Fluidable): Response;
+public sealed record GetCurrentMainLayoutFluidResult(IFluidable Fluidable) : Response;

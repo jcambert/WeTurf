@@ -11,7 +11,8 @@ namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
 public class SetThemeHandler : AbpHandler.With<SetThemeCommand, SetThemeCommandResult>
 {
-    public SetThemeHandler(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context) : base(serviceProvider)
+    public SetThemeHandler(IAbpLazyServiceProvider serviceProvider, IHttpContextAccessor context)
+        : base(serviceProvider)
     {
         Context = context;
     }
@@ -19,23 +20,24 @@ public class SetThemeHandler : AbpHandler.With<SetThemeCommand, SetThemeCommandR
     private IHttpContextAccessor Context { get; init; }
     private string CookieName => BootswatchConsts.ThemeCookie;
 
-
 #if MEDIATOR
-    public override ValueTask<Result<SetThemeCommandResult>> Handle(SetThemeCommand request, CancellationToken cancellationToken)
+    public override ValueTask<Result<SetThemeCommandResult>> Handle(
+        SetThemeCommand request,
+        CancellationToken cancellationToken
+    )
 #else
-    public override Task<Result<SetThemeCommandResult>> Handle(SetThemeCommand request, CancellationToken cancellationToken)
+    public override Task<Result<SetThemeCommandResult>> Handle(
+        SetThemeCommand request,
+        CancellationToken cancellationToken
+    )
 #endif
     {
         try
         {
-            var options = new CookieOptions()
-            {
-                Expires = DateTime.UtcNow.AddYears(10)
-            };
+            var options = new CookieOptions() { Expires = DateTime.UtcNow.AddYears(10) };
             var httpContext = Context.HttpContext;
             httpContext?.Response.Cookies.Append(CookieName, request.Name, options);
             return Result.Success<SetThemeCommandResult>();
-
         }
         catch (Exception ex)
         {

@@ -9,23 +9,30 @@ using We.Results;
 
 namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
-internal class ApplyThemeHandler : AbpHandler.With<ApplyThemeCommand, ApplyThemeResult>
+public class ApplyThemeHandler : AbpHandler.With<ApplyThemeCommand, ApplyThemeResult>
 {
-    public ApplyThemeHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
+    public ApplyThemeHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider) { }
 
     private NavigationManager NavigationManager => GetRequiredService<NavigationManager>();
 #if MEDIATOR
-    public override ValueTask<Result<ApplyThemeResult>> Handle(ApplyThemeCommand request, CancellationToken cancellationToken)
+    public override ValueTask<Result<ApplyThemeResult>> Handle(
+        ApplyThemeCommand request,
+        CancellationToken cancellationToken
+    )
 #else
-    public override Task<Result<ApplyThemeResult>> Handle(ApplyThemeCommand request, CancellationToken cancellationToken)
+    public override Task<Result<ApplyThemeResult>> Handle(
+        ApplyThemeCommand request,
+        CancellationToken cancellationToken
+    )
 #endif
     {
         try
         {
-            string relativeUrl = NavigationManager.Uri.RemovePreFix(NavigationManager.BaseUri).EnsureStartsWith('/').EnsureStartsWith('~');
-            string name = request.Name;//DOT NOT CHANGE THIS
+            string relativeUrl = NavigationManager.Uri
+                .RemovePreFix(NavigationManager.BaseUri)
+                .EnsureStartsWith('/')
+                .EnsureStartsWith('~');
+            string name = request.Name; //DOT NOT CHANGE THIS
             var uri = string.Format(BootswatchConsts.APPLY_THEME_URL, relativeUrl, name);
             //NavigationManager.NavigateTo($"{uriPath}&returnUrl={relativeUrl}", forceLoad: true);
             NavigationManager.NavigateTo(uri, forceLoad: true);
