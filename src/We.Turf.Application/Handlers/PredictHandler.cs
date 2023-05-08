@@ -23,9 +23,13 @@ public class PredictHandler : AbpHandler.With<PredictQuery, PredictResponse>
     {
         var exe = Python;
         string args = string.Empty;
+        if (!string.IsNullOrEmpty(request.UseFolder))
+        {
+            args = $"usefolder={request.UseFolder}";
+        }
         if (request.DeleteFilesIfExists)
         {
-            args = $"mode=w";
+            args = $"{args} mode=w";
         }
 
         var res = await exe.SendAsync($"predicter.py {args}", cancellationToken);

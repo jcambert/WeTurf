@@ -176,6 +176,9 @@ public static class AbpHandler
 
         protected TEntityDto MapToDto(TEntity entity) =>
             ObjectMapper.Map<TEntity, TEntityDto>(entity);
+
+        protected TEntity MapTo(TEntityDto entityDto) =>
+            ObjectMapper.Map<TEntityDto, TEntity>(entityDto);
     }
 
     public abstract class With<TQuery, TResponse, TEntity, TEntityDto, TKey>

@@ -1,4 +1,4 @@
-﻿using We.Results;
+using We.Results;
 
 namespace We.Turf;
 
@@ -25,4 +25,8 @@ public interface IPmuScrapAppService : IApplicationService
     Task<Result<BrowseResultatsFilesResponse>> BrowseResultatsFiles(
         BrowseResultatsFilesQuery query
     );
+
+    Task<Result<GetParameterResponse>> GetParameter(GetParameterQuery query);
+
+    Task<Result<UpdateParameterResponse>> UpdateParameter(UpdateParameterQuery query);
 }

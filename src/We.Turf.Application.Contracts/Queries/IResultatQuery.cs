@@ -4,6 +4,7 @@ public interface IResultatQuery : WeM.IQuery<ResultatResponse>
 {
     DateOnly Start { get; set; }
     DateOnly End { get; set; }
+    string? UseFolder { get; set; }
     bool DeleteFilesIfExists { get; set; }
 }
 

@@ -44,7 +44,7 @@
     [Parameter,EditorRequired]
     public PmuFileType Type { get; set; }
 
- 
+
     Visibility RefreshButtonVisibility => Files.Any() ? Visibility.Visible : Visibility.Invisible;
 
     bool RefreshButtonLoading => Files.Any(f => f.IsLoading);
@@ -61,5 +61,6 @@
                 await f.RefreshFileContent();
         else
             await file.RefreshFileContent();
+        await InvokeAsync(StateHasChanged);
     }
 }

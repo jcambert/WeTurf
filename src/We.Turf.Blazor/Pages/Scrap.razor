@@ -2,13 +2,21 @@
 @page "/scrap/{start}"
 @page "/scrap/{start}/{end}"
 @using System.IO;
+@using System.ComponentModel;
+@using System.Runtime.CompilerServices;
+@using RE=System.Text.RegularExpressions;
+@using Volo.Abp.AspNetCore.Components.Notifications;
+@using We.Results;
 @using We.Processes;
 @using We.Turf.Queries;
 @using We.Utilities;
 @using We.Blazor.Csv
+@using We.Turf.Entities;
 @inject IPmuScrapAppService Scrapper;
 @inject IPmuServiceAppService AppService;
 @inject IReactiveOutputExecutor Output;
+@inject IUiNotificationService? UiNotificationService;
+@implements INotifyPropertyChanged
 <div class="mb-3">
     <Fields>
         <Field ColumnSize="ColumnSize.Is1.OnDesktop">
@@ -21,21 +29,28 @@
             <Check TValue="bool" @bind-Checked="@resultat">Resulat</Check>
         </Field>
         <Field ColumnSize="ColumnSize.Is1.OnDesktop">
-            <Check TValue="bool" @bind-Checked="@setInFolder">Set In folder</Check>
+            <Check TValue="bool" @bind-Checked="@scrapByFolderMonth">Par Dossier</Check>
         </Field>
     </Fields>
 </div>
 <div class="mb-3">
     <Fields>
-
-        <Field ColumnSize="ColumnSize.Is3.OnDesktop">
-            <FieldLabel>Date Start</FieldLabel>
-            <TextEdit Placeholder="Entrer date de debut" @bind-Text="@InnerStart"  />
-        </Field>
-        <Field ColumnSize="ColumnSize.Is3.OnDesktop">
-            <FieldLabel>Date End</FieldLabel>
+        @if (!scrapByFolderMonth)
+        {
+            <Field ColumnSize="ColumnSize.Is3.OnDesktop" Visibility="@HideIfLoadFromFolder">
+                <FieldLabel>Date Start</FieldLabel>
+                <TextEdit Placeholder="Entrer date de debut" @bind-Text="@InnerStart" />
+            </Field>
+            <Field ColumnSize="ColumnSize.Is3.OnDesktop" Visibility="@HideIfLoadFromFolder">
+                <FieldLabel>Date End</FieldLabel>
             <TextEdit Placeholder="Entrer date de fin" @bind-Text="@InnerEnd" />
         </Field>
+        }else{
+        <Field ColumnSize="ColumnSize.Is3.OnDesktop" Visibility="@HideIfLoadFromDate">
+            <FieldLabel>Dossier de chargement (MM YYYY)</FieldLabel>
+            <TextEdit Placeholder="Dossier " @bind-Text="@InnerFolder" />
+        </Field>
+        }
     </Fields>
 </div>
 <div class="mb-3">
@@ -63,10 +78,10 @@
                 </Fields>
             </TabPanel>
 
-            <ScrapTabPanelFile Name="to_predict" Files="ToPredictFiles" Type="PmuFileType.ToPredict" CsvHasHeader="true" />
+            <ScrapTabPanelFile Name="to_predict" Files="ToPredictFiles" Type="PmuFileType.ToPredict" CsvHasHeader="false" />
             <ScrapTabPanelFile Name="predicted" Files="PredictedFiles" Type="PmuFileType.Predicted" CsvHasHeader="false" />
-            <ScrapTabPanelFile Name="courses" Files="CoursesFiles" Type="PmuFileType.Course" CsvHasHeader="true" />
-            <ScrapTabPanelFile Name="resultats" Files="ResultatsFiles" Type="PmuFileType.Resultat" CsvHasHeader="true" />
+            <ScrapTabPanelFile Name="courses" Files="CoursesFiles" Type="PmuFileType.Course" CsvHasHeader="false" />
+            <ScrapTabPanelFile Name="resultats" Files="ResultatsFiles" Type="PmuFileType.Resultat" CsvHasHeader="false" />
 
 
         </Content>
@@ -74,20 +89,36 @@
 </div>
 
 @code {
-    bool scrap, predict, resultat,setInFolder;
+    bool scrap, predict, resultat, scrapByFolderMonth;
+    string _innerFolder = string.Empty;
     [Parameter]
     public string Start { get; set; } = string.Empty;
 
     [Parameter]
     public string End { get; set; } = string.Empty;
 
+    public ParameterDto? Parameter { get; set; } = null;
     public string InnerStart { get; set; } = string.Empty;
     public string InnerEnd { get; set; } = string.Empty;
+    public string InnerFolder
+    {
+        get => _innerFolder;
+        set
+        {
+            _innerFolder = value;
+            NotifyPropertyChanged();
+        }
+    }
+
     bool isExtractRunning = false;
     bool isInsertDatasRunning = false;
     bool CanInsertdatas => ToPredictFiles.Any() && PredictedFiles.Any() && CoursesFiles.Any() && ResultatsFiles.Any();
     Visibility InsertDatasVisibility => CanInsertdatas ? Visibility.Visible : Visibility.Invisible;
     Visibility ExtractDatasVisibility => isInsertDatasRunning ? Visibility.Invisible : Visibility.Visible;
+    Visibility HideIfLoadFromFolder => scrapByFolderMonth ? Visibility.Invisible : Visibility.Visible;
+    Visibility HideIfLoadFromDate => !scrapByFolderMonth ? Visibility.Invisible : Visibility.Visible;
+
+
 
     List<FileWithContent> files = new();
     List<string> ColumnNames = new List<string>() { "date", "reunion", "course", "nom", "numPmu" };
@@ -97,35 +128,140 @@
     IEnumerable<FileWithContent> CoursesFiles => files.Where(x => x.Type == PmuFileType.Course);
     IEnumerable<FileWithContent> ResultatsFiles => files.Where(x => x.Type == PmuFileType.Resultat);
 
+    public event PropertyChangedEventHandler? PropertyChanged = null;
 
     protected override async Task OnInitializedAsync()
     {
+        if(!string.IsNullOrEmpty(Start))
+            scrapByFolderMonth = IsValidMonthYear(Start);
+
+
+        var res = await Scrapper.GetParameter(new());
+        if (res)
+        {
+            Parameter = res.Value.Parameter;
+
+        }
+
         ConsoleOutput = string.Empty;
         Output.OnOutput.Subscribe(x => ConsoleOutput = $"{ConsoleOutput}\n{x}");
-        var dates = await ParseDate(Start, End);
-        InnerStart = dates.Item1.ToString("ddMMyyyy");
-        InnerEnd = dates.Item2.ToString("ddMMyyyy");
+
+        if (scrapByFolderMonth)
+        {
+
+            var ss = Start.Split(' ');
+            var dd = new DateOnly(int.Parse(ss[1]), int.Parse(ss[0]), 1);
+            InnerStart = dd.ToString("ddMMyyyy");
+            InnerEnd = dd.AddMonths(1).AddDays(-1).ToString("ddMMyyyy");
+            InnerFolder = Start;
+        }
+        else
+        {
+            var dates = await ParseDate(Start, End);
+            InnerStart = dates.Item1.ToString("ddMMyyyy");
+            InnerEnd = dates.Item2.ToString("ddMMyyyy");
+        }
+
+        this.WhenPropertyChanged()
+      .Where(e => e.EventArgs.PropertyName == nameof(InnerFolder))
+      .Select(e => _innerFolder)
+      .Subscribe(async folder => await UpdateFiles());
+
         await UpdateFiles();
     }
+
+
+    /*string BaseInnerFolder
+    {
+    get
+    {
+    if (Parameter is null)
+    return string.Empty;
+    if (!string.IsNullOrEmpty(InnerFolder) && setInFolder)
+    return $"{Parameter.BaseScrapFolder}{Path.DirectorySeparatorChar}{InnerFolder}";
+    if (!setInFolder)
+    return Parameter?.BaseScrapFolder ?? string.Empty;
+    return string.Empty;
+    }
+    }*/
+
+    string InputFolder
+    {
+        get
+        {
+            if (Parameter is null)
+                return string.Empty;
+            if (!string.IsNullOrEmpty(InnerFolder) && scrapByFolderMonth)
+                return $"{Parameter.InputScrapFolder}{Path.DirectorySeparatorChar}{InnerFolder}";
+            if (!scrapByFolderMonth)
+                return Parameter?.InputScrapFolder ?? string.Empty;
+            return string.Empty;
+        }
+    }
+    string OutputFolder
+    {
+        get
+        {
+            if (Parameter is null)
+                return string.Empty;
+            if (!string.IsNullOrEmpty(InnerFolder) && scrapByFolderMonth)
+                return $"{Parameter.OutputScrapFolder}{Path.DirectorySeparatorChar}{InnerFolder}";
+            if (!scrapByFolderMonth)
+                return Parameter?.OutputScrapFolder ?? string.Empty;
+            return string.Empty;
+        }
+    }
+    string ToPredictFilePath => Parameter is not null ? @$"{Parameter.BaseScrapFolder}{Path.DirectorySeparatorChar}{InputFolder}" : string.Empty;
+    string PredictedFilename => Parameter is not null ? @$"{Parameter.BaseScrapFolder}{Path.DirectorySeparatorChar}{OutputFolder}{Path.DirectorySeparatorChar}{Parameter.PredictionFilename}" : string.Empty;
+    string CourseFilename => Parameter is not null ? @$"{Parameter.BaseScrapFolder}{Path.DirectorySeparatorChar}{OutputFolder}{Path.DirectorySeparatorChar}{Parameter.CourseFilename}" : string.Empty;
+    string OutputFilePath => Parameter is not null ? @$"{Parameter.BaseScrapFolder}{Path.DirectorySeparatorChar}{OutputFolder}" : string.Empty;
+
     async Task UpdateFiles()
     {
+
         files = new();
+        if (!Directory.Exists(ToPredictFilePath))
+            UiNotificationService?.Warn($"ToPredictFilePath {ToPredictFilePath} n'existe pas");
+        else
+        {
+            //var res0 = await Scrapper.BrowseToPredictFiles(new() { Path = @"e:\projets\pmu_scrapper\input" });
+            var res0 = await Scrapper.BrowseToPredictFiles(new() { Path = ToPredictFilePath });
+            if (res0)
+                files.AddRange(res0.Value.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.ToPredict }));
+        }
 
-        var res0 = await Scrapper.BrowseToPredictFiles(new() { Path = @"e:\projets\pmu_scrapper\input" });
-        if (res0)
-            files.AddRange(res0.Value.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.ToPredict }));
+        if (!File.Exists(PredictedFilename))
+            UiNotificationService?.Warn($"PredictedFilename {PredictedFilename} n'existe pas");
+        else
+        {
+            //var res1 = await Scrapper.BrowsePredictedFiles(new() { Filename = @"e:\projets\pmu_scrapper\output\predicted.csv" });
+            var res1 = await Scrapper.BrowsePredictedFiles(new() { Filename = PredictedFilename });
+            if (res1)
+                files.Add(new FileWithContent() { Path = res1.Value.File, Type = PmuFileType.Predicted });
 
-        var res1 = await Scrapper.BrowsePredictedFiles(new() { Filename = @"e:\projets\pmu_scrapper\output\predicted.csv" });
-        if (res1)
-            files.Add(new FileWithContent() { Path = res1.Value.File, Type = PmuFileType.Predicted });
 
-        var res2 = await Scrapper.BrowseCourseFiles(new() { Filename = @"e:\projets\pmu_scrapper\output\courses.csv" });
-        if (res2)
-            files.Add(new FileWithContent() { Path = res2.Value.File, Type = PmuFileType.Course });
+        }
 
-        var res3 = await Scrapper.BrowseResultatsFiles(new() { Path = @"e:\projets\pmu_scrapper\output" });
-        if (res3)
-            files.AddRange(res3.Value.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.Resultat }));
+        if (!File.Exists(CourseFilename))
+            UiNotificationService?.Warn($"CourseFilename {CourseFilename} n'existe pas");
+        else
+        {
+            //var res2 = await Scrapper.BrowseCourseFiles(new() { Filename = @"e:\projets\pmu_scrapper\output\courses.csv" });
+            var res2 = await Scrapper.BrowseCourseFiles(new() { Filename = CourseFilename });
+            if (res2)
+                files.Add(new FileWithContent() { Path = res2.Value.File, Type = PmuFileType.Course });
+        }
+
+        if (!Directory.Exists(OutputFilePath))
+            UiNotificationService?.Warn($"OutputFilePath {OutputFilePath} n'existe pas");
+        else
+        {
+            //var res3 = await Scrapper.BrowseResultatsFiles(new() { Path = @"e:\projets\pmu_scrapper\output" });
+            var res3 = await Scrapper.BrowseResultatsFiles(new() { Path = OutputFilePath });
+            if (res3)
+                files.AddRange(res3.Value.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.Resultat }));
+
+        }
     }
 
     private async Task<(DateOnly, DateOnly)> ParseDate(string startDate, string endDate)
@@ -173,7 +309,8 @@
                     {
                         Start = dates.Item1,
                         End = dates.Item2,
-                        DeleteFilesIfExists = true
+                        DeleteFilesIfExists = true,
+                        UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty,
                     });
 
             if (!result0)
@@ -183,7 +320,7 @@
         if (predict)
         {
             Output.WriteLine("Prediction");
-            var result0 = await Scrapper.Predict(new PredictQuery() { DeleteFilesIfExists = true });
+            var result0 = await Scrapper.Predict(new PredictQuery() { UseFolder = scrapByFolderMonth ? InnerFolder:string.Empty, DeleteFilesIfExists = !scrapByFolderMonth });
             if (!result0)
                 Output.WriteLine(result0.Errors);
         }
@@ -195,7 +332,8 @@
                 {
                     Start = dates.Item1,
                     End = dates.Item2,
-                    DeleteFilesIfExists = true
+                    UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty,
+                    DeleteFilesIfExists = !scrapByFolderMonth
                 });
             if (!result0)
                 Output.WriteLine(result0.Errors);
@@ -212,20 +350,30 @@
     {
         ConsoleOutput = string.Empty;
         isInsertDatasRunning = true;
+
+        if(scrap && predict && resultat )
+        {
+            var res = await AppService.LoadOutputFolderIntoDb(new LoadOutputFolderIntoDbQuery() { Folder = OutputFilePath });
+            if (res.HasError)
+                 UiNotificationService?.Warn(res.Errors.AsString(),"Attention");
+            else
+                 UiNotificationService?.Success("Tout c'est bien passé!!","Confirmation");
+        }
+        else
         if (scrap)
         {
             Output.Write("Insertion des chevaux a predire");
             //foreach (var f in ToPredictFiles)
             //{
             var f = ToPredictFiles.First();
-            var result=await AppService.LoadToPredictIntoDatabase(new LoadToPredictIntoDbQuery() { Filename = f.Path, Rename = false });
+            var result = await AppService.LoadToPredictIntoDatabase(new LoadToPredictIntoDbQuery() { Filename = f.Path, Rename = false });
 
             foreach (var error in result.Errors)
             {
 
                 Output.WriteLine($"[ERROR] {error.Failure} ");
             }
-            
+
             //}
         }
         isInsertDatasRunning = false;
@@ -250,5 +398,18 @@
         selectedTab = name;
 
         return Task.CompletedTask;
+    }
+
+    protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public static bool IsValidMonthYear(string input)
+    {
+        RE.Regex regex = new RE.Regex(@"^\d{2}\s+\d{4}$");
+        RE.Match match = regex.Match(input);
+
+        return match.Success;
     }
 }

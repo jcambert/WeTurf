@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Volo.Abp.AutoMapper;
+using AutoMapper;
 using We.Turf.Entities;
 
 namespace We.Turf;
@@ -24,5 +23,6 @@ public class TurfApplicationAutoMapperProfile : Profile
         CreateMap<ProgrammeCourse, ProgrammeCourseDto>().ReverseMap();
         CreateMap<ProgrammeReunion, ProgrammeReunionDto>().ReverseMap();
         CreateMap<ToPredict, ToPredictDto>().ReverseMap();
+        CreateMap<Parameter, ParameterDto>().ReverseMap();
     }
 }

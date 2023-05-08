@@ -11,31 +11,31 @@ namespace We.Turf.Entities;
 public class Predicted : Entity<Guid>
 {
     //;index_classifier;date;reunion;course;numPmu;place;nom;rapport;specialite;hippo_code
-    [CsvField(1)]
+    [CsvField(0)]
     public string? Classifier { get; set; }
 
-    [CsvField(2)]
+    [CsvField(1)]
     public DateOnly Date { get; set; }
 
-    [CsvField(3)]
+    [CsvField(2)]
     public int Reunion { get; set; }
 
-    [CsvField(4)]
+    [CsvField(3)]
     public int Course { get; set; }
 
-    [CsvField(5)]
+    [CsvField(4)]
     public int NumeroPmu { get; set; }
 
-    [CsvField(7)]
+    [CsvField(6)]
     public string? Nom { get; set; }
 
-    [CsvField(8)]
+    [CsvField(7)]
     public double Rapport { get; set; }
 
-    [CsvField(9)]
+    [CsvField(8)]
     public string? Specialite { get; set; }
 
-    [CsvField(10)]
+    [CsvField(9)]
     public string? Hippodrome { get; set; }
 
     public override string ToString() =>

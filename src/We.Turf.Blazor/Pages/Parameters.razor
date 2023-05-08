@@ -1,0 +1,94 @@
+@page "/parameters"
+@using Volo.Abp.AspNetCore.Components.Notifications;
+@using We.Turf.Entities;
+@using We.Results;
+@inject IPmuScrapAppService Scrapper;
+@inject IUiNotificationService? UiNotificationService;
+<Div Class="mb-3">
+    @if (Parameter is not null)
+    {
+        <Row>
+            <Fields>
+                <Field ColumnSize="ColumnSize.Is3.OnDesktop">
+                    <FieldLabel>Dossier de Base du scrapper</FieldLabel>
+                    <TextEdit Placeholder="Dossier" @bind-Text="@Parameter.BaseScrapFolder" />
+                </Field>
+                <Field ColumnSize="ColumnSize.Is3.OnDesktop">
+                    <FieldLabel>Dossier D'entrée</FieldLabel>
+                    <TextEdit Placeholder="Dossier" @bind-Text="@Parameter.InputScrapFolder" />
+                </Field>
+                <Field ColumnSize="ColumnSize.Is3.OnDesktop">
+                    <FieldLabel>Dossier De sortie</FieldLabel>
+                    <TextEdit Placeholder="Dossier" @bind-Text="@Parameter.OutputScrapFolder" />
+                </Field>
+            </Fields>
+        </Row>
+        <Row>
+            <Fields>
+                <Field ColumnSize="ColumnSize.Is3.OnDesktop">
+                    <FieldLabel>Fichier de Prediction</FieldLabel>
+                    <TextEdit Placeholder="Nom du fichier.ext" @bind-Text="@Parameter.PredictionFilename" />
+                </Field>
+                <Field ColumnSize="ColumnSize.Is3.OnDesktop">
+                    <FieldLabel>Fichier des resultats</FieldLabel>
+                    <TextEdit Placeholder="Nom du fichier.ext" @bind-Text="@Parameter.CourseFilename" />
+                </Field>
+            </Fields>
+
+        </Row>
+        <Row>
+            <Fields>
+                <Field ColumnSize="ColumnSize.Is1.OnDesktop">
+                    <Check TValue="bool" @bind-Checked="@Parameter.ScrapInFolder">Scrap dans un dossier</Check>
+                </Field>
+                <Field ColumnSize="ColumnSize.Is3.OnDesktop" Visibility="@InputScrapFolderMonthPatternVisibility">
+                    <FieldLabel>Format du dossier d'entrée de scrap</FieldLabel>
+                    <TextEdit Placeholder="MM YYYY" @bind-Text="@Parameter.InputScrapFolderMonthPattern" />
+                </Field>
+            </Fields>
+
+        </Row>
+        <Row>
+            <Div Class="mb-3">
+                <Button Color="Color.Primary" Clicked="Sauver">Sauver</Button>
+            </Div>
+        </Row>
+    }
+    </Div>
+
+@code {
+    public ParameterDto? Parameter { get; set; } = null;
+    /* public string BaseScrapFolder { get; set; } = string.Empty;
+      public string InputScrapFolder { get; set; } = string.Empty;
+      public string OutputScrapFolder { get; set; } = string.Empty;
+      public string PredictionFilename { get; set; } = string.Empty;
+      public string CourseFilename { get; set; } = string.Empty;
+      public bool ScrapInFolder { get; set; } = false;
+      public string InputScrapFolderMonthPattern { get; set; } = string.Empty;*/
+
+    Visibility InputScrapFolderMonthPatternVisibility => !(Parameter?.ScrapInFolder) ?? true ? Visibility.Invisible : Visibility.Visible;
+
+    protected async Task Sauver()
+    {
+        var res= await Scrapper.UpdateParameter(new Queries.UpdateParameterQuery() { Parameter = Parameter });
+        if (res)
+        {
+            UiNotificationService?.Success("Les parametres ont été sauvegardés");
+        }
+        else
+        {
+            UiNotificationService?.Error(res.Errors.AsString());
+        }
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await Scrapper.GetParameter(new());
+        if (res)
+        {
+            Parameter = res.Value.Parameter;
+            
+        }
+    }
+}

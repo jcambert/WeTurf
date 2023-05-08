@@ -1,7 +1,5 @@
-using System.Security.Cryptography.X509Certificates;
 using We.Mediatr;
 using We.Results;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace We.Turf;
 
@@ -26,6 +24,9 @@ public class PmuScrapAppService : TurfAppService, IPmuScrapAppService
     public Task<Result<GetLastScrappedResponse>> GetLastScrapped(GetLastScrappedQuery query) =>
         Mediator.Send(query).AsTaskWrap();
 
+    public Task<Result<GetParameterResponse>> GetParameter(GetParameterQuery query) =>
+        Mediator.Send(query).AsTaskWrap();
+
     public Task<Result<PredictResponse>> Predict(PredictQuery query) =>
         Mediator.Send(query).AsTaskWrap();
 
@@ -33,4 +34,7 @@ public class PmuScrapAppService : TurfAppService, IPmuScrapAppService
         Mediator.Send(query).AsTaskWrap();
 
     public Task<Result<ScrapResponse>> Scrap(ScrapQuery query) => Mediator.Send(query).AsTaskWrap();
+
+    public Task<Result<UpdateParameterResponse>> UpdateParameter(UpdateParameterQuery query) =>
+        Mediator.Send(query).AsTaskWrap();
 }

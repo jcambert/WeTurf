@@ -6,6 +6,10 @@ public interface ILoadPredictedIntoDbQuery : WeM.IQuery<LoadPredictedIntoDbRespo
 {
     string Filename { get; set; }
     bool Rename { get; set; }
+
+    bool HasHeader { get; set; }
+
+    char Separator { get; set; }
 }
 
 public sealed record LoadPredictedIntoDbResponse(List<PredictedDto> Predicted) : WeM.Response;

@@ -33,7 +33,9 @@
                     else if (CurrentDate < Today && ShowProgrammeCourse)
                     {
                         <CascadingValue Name="ProgrammeCourses" Value="ProgrammeCourses">
-                            <ProgrammeCourseContent />
+                            <CascadingValue Name="Predicteds" Value="Predicteds">
+                                <ProgrammeCourseContent />
+                            </CascadingValue>
                         </CascadingValue>
                     }
                     else if (CurrentDate < Today && ShowProgrammeReunion)
@@ -89,6 +91,7 @@
        {
            await LoadProgammeCourseAsync(date);
            await LoadProgammeReunionAsync(date);
+           await LoadPredictedAsync(date);
            await InvokeAsync(StateHasChanged);
        });
         ShowCourseOrReunion(SelectMode.Course);

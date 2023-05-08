@@ -6,6 +6,7 @@
   </PropertyGroup>
  
   <ItemGroup Condition="'$(MediatorName)'=='bogard'">
+      <PackageReference Include="$(MediatorBogardLibraryName)" Version="$(MediatorBogardVersion)" />
         <PackageReference Include="$(MediatorBogardAbstractionLibraryName)" Version="$(MediatorBogardAbstractionVersion)" />
   </ItemGroup>
   <ItemGroup Condition="'$(MediatorName)'=='othamar'">

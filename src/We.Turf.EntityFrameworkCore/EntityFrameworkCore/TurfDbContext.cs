@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -51,6 +51,7 @@ public class TurfDbContext
     public DbSet<ProgrammeCourse> ProgrammeCourses { get; set; }
     public DbSet<ProgrammeReunion> ProgrammeReunions { get; set; }
     public DbSet<AccuracyPerClassifier> AccuracyPerClassifiers { get; set; }
+    public DbSet<Parameter> Parameters { get; set; }
 
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
@@ -232,6 +233,16 @@ public class TurfDbContext
                 b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
                 b.Property(x => x.Nombre).HasColumnName("count");
                 b.Property(x => x.Hippodrome).HasColumnName("HippoCourt");
+            }
+        );
+
+        builder.Entity<Parameter>(
+            b =>
+            {
+                b.ToTable(
+                    TurfConsts.DbTablePrefix + nameof(Parameter).ToLower(),
+                    TurfConsts.DbSchema
+                );
             }
         );
     }

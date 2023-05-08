@@ -107,6 +107,8 @@ public class TurfBlazorModule : AbpModule
         ConfigureMediator(context);
     }
 
+
+
     private static void ConfigureMediator(ServiceConfigurationContext context)
     {
 #if MEDIATOR

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+using System.Globalization;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
@@ -13,25 +15,41 @@ public class ReaderColumnSetException : Exception
         : base(message, innerException) { }
 }
 
-public record ReaderResponse<T>(int Index, T Value, Reader<T> Reader) where T : class, new();
+public sealed record ReaderResponse<T>(int Index, T Value, Reader<T> Reader) where T : class, new();
 
-public class Reader<T> where T : class, new()
+public interface ICsvReader<T> where T : class, new()
+{
+    IObservable<ReaderResponse<T>> OnReadLine { get; }
+    string Filename { get; set; }
+    bool HasHeader { get; set; }
+    char Separator { get; set; }
+    int LineRead { get; }
+    Task<Result> Start(CancellationToken cancellationToken = default);
+}
+
+public class Reader<T> : ICsvReader<T> where T : class, new()
 {
     private readonly ISubject<ReaderResponse<T>> _onReadLine = new Subject<ReaderResponse<T>>();
     public IObservable<ReaderResponse<T>> OnReadLine => _onReadLine.AsObservable();
-    public string Filename { get; init; }
-    public bool HasHeader { get; init; }
-    public char Separator { get; init; }
+    public string Filename { get; set; } = string.Empty;
+    public bool HasHeader { get; set; } = true;
+    public char Separator { get; set; } = ';';
     public int LineRead { get; private set; } = 0;
+    protected ILogger<Reader<T>>? Logger { get; }
 
     private Func<string?, char, T> _onReadLineMapping;
     private readonly List<MapColumn> columns = new List<MapColumn>();
 
-    public Reader(string filename, bool hasHeader, char separator)
+    public Reader(string filename, bool hasHeader, char separator) : this(default)
     {
         this.Filename = filename;
         this.HasHeader = hasHeader;
         this.Separator = separator;
+    }
+
+    public Reader(ILogger<Reader<T>>? logger)
+    {
+        this.Logger = logger;
         _onReadLineMapping = OnReadLineMapping;
 
         MapColumns();
@@ -39,6 +57,7 @@ public class Reader<T> where T : class, new()
 
     private void MapColumns()
     {
+        Logger?.LogTrace("Begin mapping columns");
         var properties = typeof(T)
             .GetProperties()
             .Where(p => p.CustomAttributes.Any(x => x.AttributeType == typeof(CsvFieldAttribute)));
@@ -47,6 +66,7 @@ public class Reader<T> where T : class, new()
             var attr = property.GetCustomAttribute<CsvFieldAttribute>();
             columns.Add(new MapColumn(attr?.Index ?? 0, attr?.Name ?? string.Empty, property));
         }
+        Logger?.LogTrace("Mapping Columns ended");
     }
 
     protected virtual T OnReadLineMapping(string? line, char separator)
@@ -122,15 +142,25 @@ public class Reader<T> where T : class, new()
 
     public async Task<Result> Start(CancellationToken cancellationToken = default)
     {
+        Logger?.LogTrace("Start csv reader process");
+        if (string.IsNullOrEmpty(Filename))
+            return Result.Failure(new Error("You must specify a filename"));
+        if (!File.Exists(Filename))
+            return Result.Failure(new Error($"{Filename} dit not exists"));
+
         List<Error> exceptions = new List<Error>();
         using (StreamReader reader = new StreamReader(Filename))
         {
+            Logger?.LogTrace("Start reading");
             bool skipped = false;
             while (!reader.EndOfStream)
             {
                 try
                 {
                     var line = await reader.ReadLineAsync(cancellationToken);
+                    if (line is null)
+                        continue;
+                    Logger?.LogTrace("Read line:{Line}", line);
                     if (HasHeader && !skipped)
                     {
                         skipped = true;
@@ -138,16 +168,27 @@ public class Reader<T> where T : class, new()
                     }
                     var v = _onReadLineMapping(line, Separator);
                     LineRead++;
-
+#if DEBUG
+                    if (LineRead == 4326)
+                    {
+                        if (!Debugger.IsAttached)
+                        {
+                            Debugger.Launch();
+                        }
+                        Debugger.Break();
+                    }
+#endif
                     _onReadLine.OnNext(new ReaderResponse<T>(LineRead, v, this));
                 }
                 catch (ReaderColumnSetException ex)
                 {
+                    Logger?.LogWarning(ex.Message);
                     var error = new Error($"Line {LineRead}-{ex.Message}", ex);
                     exceptions.Add(error);
                 }
                 catch (Exception ex)
                 {
+                    Logger?.LogWarning(ex.Message);
                     _onReadLine.OnError(ex);
                 }
             }

@@ -4,6 +4,7 @@ public interface IScrapQuery : WeM.IQuery<ScrapResponse>
 {
     DateOnly Start { get; set; }
     DateOnly End { get; set; }
+    string? UseFolder { get; set; }
     bool DeleteFilesIfExists { get; set; }
 }
 

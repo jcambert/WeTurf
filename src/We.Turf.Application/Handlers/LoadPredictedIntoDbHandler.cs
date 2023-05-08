@@ -1,5 +1,4 @@
-using Microsoft.Extensions.Logging;
-using System.IO;
+﻿using Microsoft.Extensions.Logging;
 using System.Reactive.Linq;
 using We.AbpExtensions;
 using We.Csv;
@@ -16,10 +15,19 @@ public class LoadPredictedIntoDbHandler
           Predicted,
           PredictedDto,
           Guid
-      >
+      >,
+      IDisposable
 {
+    private IDisposable? readerDisposable;
+    private bool disposedValue;
+
+    ICsvReader<Predicted> _reader { get; init; }
+
     public LoadPredictedIntoDbHandler(IAbpLazyServiceProvider serviceProvider)
-        : base(serviceProvider) { }
+        : base(serviceProvider)
+    {
+        _reader = serviceProvider.GetRequiredService<ICsvReader<Predicted>>();
+    }
 
 #if MEDIATOR
     public override async ValueTask<Result<LoadPredictedIntoDbResponse>> Handle(
@@ -40,10 +48,12 @@ public class LoadPredictedIntoDbHandler
                 var query0 = await Repository.GetQueryableAsync();
                 var query1 = query0.Select(x => new { x.Date, x.Reunion, x.Course }).Distinct();
                 var existings = await AsyncExecuter.ToListAsync(query1, cancellationToken);
-
-                var reader = new Reader<Predicted>($"{request.Filename}", true, ';');
+                _reader.Filename = request.Filename;
+                _reader.HasHeader = request.HasHeader;
+                _reader.Separator = request.Separator;
+                //var reader = new Reader<Predicted>($"{request.Filename}", true, ';');
                 List<Predicted> predicted = new();
-                reader.OnReadLine
+                readerDisposable = _reader.OnReadLine
                     .Where(
                         x =>
                             !existings.Any(
@@ -70,7 +80,7 @@ public class LoadPredictedIntoDbHandler
                         }
                     );
 
-                var result = await reader.Start(cancellationToken);
+                var result = await _reader.Start(cancellationToken);
 
                 await Repository.InsertManyAsync(predicted, true, cancellationToken);
 
@@ -91,4 +101,36 @@ public class LoadPredictedIntoDbHandler
             return Result.Failure<LoadPredictedIntoDbResponse>(ex);
         }
     }
+
+    #region IDisposable
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                readerDisposable?.Dispose();
+                // TODO: supprimer l'état managé (objets managés)
+            }
+
+            // TODO: libérer les ressources non managées (objets non managés) et substituer le finaliseur
+            // TODO: affecter aux grands champs une valeur null
+            disposedValue = true;
+        }
+    }
+
+    // // TODO: substituer le finaliseur uniquement si 'Dispose(bool disposing)' a du code pour libérer les ressources non managées
+    // ~LoadPredictedIntoDbHandler()
+    // {
+    //     // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
+    //     Dispose(disposing: false);
+    // }
+
+    public void Dispose()
+    {
+        // Ne changez pas ce code. Placez le code de nettoyage dans la méthode 'Dispose(bool disposing)'
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+    #endregion
 }

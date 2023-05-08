@@ -1,4 +1,6 @@
 @using We.Turf.Entities;
+@using We.Turf.Queries;
+@inject IPmuServiceAppService? AppService;
 @if (Courses != null)
 {
     @foreach (var course in Courses.OrderBy(x => x.Reunion).ThenBy(x => x.Course))
@@ -7,7 +9,7 @@
             <Column ColumnSize="ColumnSize.IsFull">
 
                 <Row>
-                    <CourseCardNumber Reunion="course.Reunion" Course="course.Course"/>
+                    <CourseCardNumber Reunion="course.Reunion" Course="course.Course" />
                     <CourseCardDescription Description1="@(course.Hippodrome)" Description2="@(course.Libelle)" />
                     <Column ColumnSize="ColumnSize.Is2">
 
@@ -19,8 +21,15 @@
 
                         <Row Class="course-resume ms-1">@course.Discipline - @course.Distance @course.DistanceUnite - @course.NombrePartants Partants</Row>
                         <Row Class="course-resultat ms-1">
-                            @( string.Join('-', course.Arrivee.Take(5)))
+                            @(string.Join('-', course.Arrivee.Take(5)))
                         </Row>
+                        
+                        <Row Class="course-resultat  ms-1">
+                        @(string.Join('-', GetPredicted(course.Reunion, course.Course).Select(x=>x.NumeroPmu)))
+                                
+                        </Row>
+
+                        
                     </Column>
                     <Column ColumnSize="ColumnSize.Is2">&nbsp;</Column>
 
@@ -33,6 +42,9 @@
 
 @code {
     [CascadingParameter(Name = "ProgrammeCourses")] public List<ProgrammeCourseDto> Courses { get; set; } = new();
+    [CascadingParameter(Name = "Predicteds")] public List<PredictedDto> Predicteds { get; set; } = new();
+  
 
+    IEnumerable<PredictedDto> GetPredicted(int reunion, int course) => Predicteds.Where(x => x.Reunion == reunion && x.Course == course).OrderBy(x=>x.NumeroPmu);
 
 }

@@ -27,9 +27,14 @@ public class ResultatHandler : AbpHandler.With<ResultatQuery, ResultatResponse>
 
         string date_start = request.Start.ToString("ddMMyyyy");
         string date_end = request.End.ToString("ddMMyyyy");
+        if (!string.IsNullOrEmpty(request.UseFolder))
+        {
+            args = $"usefolder={request.UseFolder}";
+        }
+
         if (request.DeleteFilesIfExists)
         {
-            args = $"mode=w";
+            args = $"{args} mode=w";
         }
         args = $"{args} start={date_start} end={date_end}";
         var res = await exe.SendAsync(@$"resultat.py {args}", cancellationToken);

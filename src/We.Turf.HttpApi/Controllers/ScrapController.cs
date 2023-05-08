@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using We.Results;
 using We.Turf.Queries;
 
@@ -46,6 +46,10 @@ public class ScrapController : TurfController, IPmuScrapAppService
     ) => _appService.GetLastScrapped(query);
 
     [HttpGet]
+    public Task<Result<GetParameterResponse>> GetParameter([FromQuery] GetParameterQuery query) =>
+        _appService.GetParameter(query);
+
+    [HttpGet]
     public Task<Result<PredictResponse>> Predict([FromQuery] PredictQuery query) =>
         _appService.Predict(query);
 
@@ -56,4 +60,9 @@ public class ScrapController : TurfController, IPmuScrapAppService
     [HttpGet]
     public Task<Result<ScrapResponse>> Scrap([FromQuery] ScrapQuery query) =>
         _appService.Scrap(query);
+
+    [HttpPost]
+    public Task<Result<UpdateParameterResponse>> UpdateParameter(
+        [FromBody] UpdateParameterQuery query
+    ) => _appService.UpdateParameter(query);
 }
