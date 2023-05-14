@@ -24,6 +24,9 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
         BrowseProgrammeReunionQuery query
     ) => Mediator.Send(query).AsTaskWrap();
 
+    public Task<Result<BrowseResultatResponse>> BrowseResultat(BrowseResultatQuery query) =>
+        Mediator.Send(query).AsTaskWrap();
+
     public Task<Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted(
         BrowseResultatOfPredictedQuery query
     ) => Mediator.Send(query).AsTaskWrap();

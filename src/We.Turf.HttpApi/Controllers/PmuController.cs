@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using We.Results;
 using We.Turf.Queries;
 
@@ -45,6 +45,11 @@ public class PmuController : TurfController, IPmuServiceAppService
     public Task<Result<BrowseProgrammeReunionResponse>> BrowseProgrammeReunion(
         [FromQuery] BrowseProgrammeReunionQuery query
     ) => pmuService.BrowseProgrammeReunion(query);
+
+    [HttpGet]
+    public Task<Result<BrowseResultatResponse>> BrowseResultat(
+        [FromQuery] BrowseResultatQuery query
+    ) => pmuService.BrowseResultat(query);
 
     [HttpGet]
     public Task<Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted(

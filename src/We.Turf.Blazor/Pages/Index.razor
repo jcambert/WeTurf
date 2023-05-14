@@ -34,7 +34,9 @@
                     {
                         <CascadingValue Name="ProgrammeCourses" Value="ProgrammeCourses">
                             <CascadingValue Name="Predicteds" Value="Predicteds">
-                                <ProgrammeCourseContent />
+                                <CascadingValue Name="Resultats" Value="Resultats">
+                                    <ProgrammeCourseContent />
+                                </CascadingValue>
                             </CascadingValue>
                         </CascadingValue>
                     }
@@ -71,6 +73,8 @@
     private List<PredictedDto> Predicteds { get; set; } = new();
     private List<ProgrammeCourseDto> ProgrammeCourses { get; set; } = new();
     private List<ProgrammeReunionDto> ProgrammeReunions { get; set; } = new();
+    private List<ResultatDto> Resultats { get; set; } = new();
+    private List<ResultatOfPredictedDto> ResultatOfPredicteds { get; set; } = new();
     public event PropertyChangedEventHandler? PropertyChanged = null;
     public Index()
     {
@@ -92,6 +96,8 @@
            await LoadProgammeCourseAsync(date);
            await LoadProgammeReunionAsync(date);
            await LoadPredictedAsync(date);
+           await LoadResultats(date);
+           await LoadResultatOfPredicteds(date);
            await InvokeAsync(StateHasChanged);
        });
         ShowCourseOrReunion(SelectMode.Course);
@@ -99,7 +105,7 @@
         NotifyPropertyChanged("CurrentDate");
 
     }
-    #pragma warning disable BL0007
+#pragma warning disable BL0007
     [Parameter]
     public string Date
     {
@@ -139,7 +145,16 @@
     }
 
 
+    private async Task LoadResultats(DateOnly? date)
+    {
+        var t = pmuService.BrowseResultat(new() { Date = date });
+        var (res, response) = await t;
+        if (res)
+        {
+            Resultats = response.Resultats;
 
+        }
+    }
     private async Task LoadPredictedAsync(DateOnly? date)
     {
         var t = pmuService.BrowsePrediction(new() { Date = date });
@@ -149,7 +164,7 @@
             Predicteds = response.Predicteds;
 
         }
-        await InvokeAsync(StateHasChanged);
+        //await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadProgammeCourseAsync(DateOnly? date)

@@ -1,0 +1,27 @@
+@using We.Turf.Entities;
+<Span Style="position:relative" Class="@ResultatButtonClass" TextColor="TextColor.White">
+    @NumeroPmu
+    @if (HasBadge)
+    {
+        <Badge Color="ResultatBadgeColor" Class="position-absolute top-0 start-100 rounded-pill translate-middle">@PredictionCount</Badge>
+    }
+</Span>
+
+@code {
+    [Parameter]public int Index{ get; set; }
+    [Parameter, EditorRequired] public int NumeroPmu { get; set; }
+    public bool HasBadge => Type == ResultatPillType.Prediction;
+    [Parameter] public int PredictionCount { get; set; } = 0;
+    [Parameter, EditorRequired] public ResultatPillType Type { get; set; }
+    [CascadingParameter(Name = "Course")] public ProgrammeCourseDto? Course { get; set; }
+    [CascadingParameter(Name = "Predicteds")] public List<PredictedDto>? Predicteds { get; set; } = new();
+    Blazorise.Color ResultatBadgeColor => (Course?.Arrivee.Take(3).Contains(NumeroPmu) ?? false) ? Color.Success : Color.Danger;
+
+    string ResultatButtonClass => Type switch
+    {
+        ResultatPillType.Arrivee=>"btn mx-1 " + ((Index<=2)? (Predicteds?.Any(x=>x.Reunion==Course?.Reunion && x.Course==Course?.Course && x.NumeroPmu==NumeroPmu) ?? false ? "btn-success" : "btn-danger"):"btn-primary"),
+        ResultatPillType.Prediction => "btn mx-1 " + ((Course?.Arrivee.Take(3).Contains(NumeroPmu) ?? false) ?"btn-success":"btn-danger"),
+        _=>throw new NotSupportedException()
+    };
+}
+

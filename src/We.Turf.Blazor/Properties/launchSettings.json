@@ -17,8 +17,9 @@
     },
     "We.Turf.Blazor": {
       "commandName": "Project",
-      "dotnetRunMessages": "true",
-      "launchBrowser": true,
+      "dotnetRunMessages": true,
+        "launchBrowser": true,
+      "launchUrl": "/29042023",
       "applicationUrl": "https://localhost:44381/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

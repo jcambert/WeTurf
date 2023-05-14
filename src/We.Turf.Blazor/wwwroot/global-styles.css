@@ -160,7 +160,7 @@ audio, canvas, embed, iframe, img, object, svg, video {
     padding: 0px;
     position: relative;
     z-index: 0;
-    height:116px;
+    height:136px;
 }
 
 .course-link{

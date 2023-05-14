@@ -1,4 +1,4 @@
-﻿using We.Results;
+using We.Results;
 
 namespace We.Turf;
 
@@ -40,4 +40,6 @@ public interface IPmuServiceAppService : IApplicationService
     );
 
     Task<Result<BrowsePredictionResponse>> BrowsePrediction(BrowsePredictionQuery query);
+
+    Task<Result<BrowseResultatResponse>> BrowseResultat(BrowseResultatQuery query);
 }
