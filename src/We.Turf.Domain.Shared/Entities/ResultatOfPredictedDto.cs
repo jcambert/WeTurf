@@ -3,6 +3,7 @@ using System.Diagnostics;
 namespace We.Turf.Entities;
 
 [Serializable]
+[DebuggerDisplay("{Reunion}-{Course}-{NumeroPmu}-{Dividende}")]
 public class ResultatOfPredictedDto : EntityDto<Guid>
 {
     public string? Classifier { get; set; }
@@ -18,6 +19,8 @@ public class ResultatOfPredictedDto : EntityDto<Guid>
     public Guid Resultat_Id { get; set; }
     public string? Pari { get; set; }
     public double Dividende { get; set; }
+
+    public string Hash => $"{Reunion}-{Course}-{NumeroPmu}";
 }
 
 [Serializable]
@@ -32,4 +35,6 @@ public class ResultatOfPredictedStatisticalDto : EntityDto<Guid>
 
     public string? Pari { get; set; }
     public double Dividende { get; set; }
+
+    public string Hash => $"{Reunion}-{Course}-{NumeroPmu}";
 }

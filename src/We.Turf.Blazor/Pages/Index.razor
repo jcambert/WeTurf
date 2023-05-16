@@ -120,7 +120,7 @@
     }
     protected async Task InternalInitializationAsync()
     {
-        foreach (var course in ProgrammeCourses)
+        foreach (var course in ProgrammeCourses.OrderBy(x=>x.Reunion).ThenBy(x=>x.Course))
         {
             ResultatsOfPredicteds[(course.Reunion, course.Course)] = GetResultats(course);
         }
@@ -268,7 +268,7 @@
 
 
     public (int, double) CalculSommeDesMises()
-       => (PredictionsOnly.Count(), ResultatOfPredictedStatistical.Sum(x => x.Dividende));
+       => (PredictionsOnly.DistinctBy(x=>x.Hash).Count(), ResultatOfPredictedStatistical.DistinctBy(x=>x.Hash).Sum(x => x.Dividende));
     #region Chart
     LineChart<double> lineChart;
 
@@ -320,14 +320,23 @@
 
     List<double> GetChartData()
     {
-        List<double> res = new();
+        if ( !ResultatOfPredictedStatistical?.Any() ?? false)
+            return new();
+        Dictionary<(int,int),double> res = new();
         double cumul = 0;
-        foreach (var item in ResultatOfPredictedStatistical.OrderBy(x=>x.Reunion).ThenBy(x=>x.Course))
+#pragma warning disable  CS8604
+        var items = ResultatOfPredictedStatistical.DistinctBy(x => x.Hash).OrderBy(x => x.Reunion).ThenBy(x => x.Course);
+#pragma warning restore CS8604
+        foreach (var key in ResultatsOfPredicteds.Keys)
         {
-            cumul = cumul+item.Dividende - 1;
-            res.Add(cumul);
+            var v = ResultatsOfPredicteds[key];
+           
+            //if(res.TryGetValue((item.Reunion,item.Course),out var currentValue))
+            cumul = cumul + v.Sum(x => x.DividendePlace) - v.Count();
+            res[key] = cumul;
+            
         }
-        return res;
+        return res.Values.ToList();
     }
     #endregion
 }

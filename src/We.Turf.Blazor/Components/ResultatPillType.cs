@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace We.Turf.Blazor.Components;
 
 public enum ResultatPillType
@@ -6,4 +8,5 @@ public enum ResultatPillType
     Prediction
 }
 
+[DebuggerDisplay("{NumPmu}-{Count}-{DividendePlace}")]
 public sealed record ResultatPlace(int NumPmu, int Count, double DividendePlace);

@@ -65,6 +65,7 @@
                                 }
                                 @ResultatsCourse.Count()
                                 @ResultatsCourse.Sum(x=>x.DividendePlace).ToN2String()
+                                @((ResultatsCourse.Sum(x => x.DividendePlace) - ResultatsCourse.Count() ).ToN2String())
                             </Column>
 
                         </Row>
