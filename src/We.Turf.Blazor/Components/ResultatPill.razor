@@ -1,9 +1,14 @@
 @using We.Turf.Entities;
 <Span Style="position:relative" Class="@ResultatButtonClass" TextColor="TextColor.White">
     @NumeroPmu
-    @if (HasBadge)
+    @if (HasBadge && PredictionCount>0)
     {
         <Badge Color="ResultatBadgeColor" Class="position-absolute top-0 start-100 rounded-pill translate-middle">@PredictionCount</Badge>
+    }
+
+    @if (HasBadge && Dividende > 0)
+    {
+        <Badge Color="ResultatBadgeColor" Class="position-absolute top-100 start-100 rounded-pill translate-middle">@Dividende.ToN2String()</Badge>
     }
 </Span>
 
@@ -12,6 +17,7 @@
     [Parameter, EditorRequired] public int NumeroPmu { get; set; }
     public bool HasBadge => Type == ResultatPillType.Prediction;
     [Parameter] public int PredictionCount { get; set; } = 0;
+    [Parameter] public double Dividende { get; set; } = 0;
     [Parameter, EditorRequired] public ResultatPillType Type { get; set; }
     [CascadingParameter(Name = "Course")] public ProgrammeCourseDto? Course { get; set; }
     [CascadingParameter(Name = "Predicteds")] public List<PredictedDto>? Predicteds { get; set; } = new();

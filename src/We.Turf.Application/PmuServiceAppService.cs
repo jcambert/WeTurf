@@ -12,6 +12,10 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
     public Task<Result<BrowsePredictionResponse>> BrowsePrediction(BrowsePredictionQuery query) =>
         Mediator.Send(query).AsTaskWrap();
 
+    public Task<Result<BrowsePredictedOnlyResponse>> BrowsePredictionOnly(
+        BrowsePredictedOnlyQuery query
+    ) => Mediator.Send(query).AsTaskWrap();
+
     public Task<Result<BrowsePredictionPerClassifierResponse>> BrowsePredictionPerClassifier(
         BrowsePredictionPerClassifierQuery query
     ) => Mediator.Send(query).AsTaskWrap();
@@ -30,6 +34,11 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
     public Task<Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted(
         BrowseResultatOfPredictedQuery query
     ) => Mediator.Send(query).AsTaskWrap();
+
+    public Task<
+        Result<BrowseResultatOfPredictedStatisticalResponse>
+    > BrowseResultatOfPredictedStatistical(BrowseResultatOfPredictedStatisticalQuery query) =>
+        Mediator.Send(query).AsTaskWrap();
 
     public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier(
         BrowseResultatPerClassifierQuery query

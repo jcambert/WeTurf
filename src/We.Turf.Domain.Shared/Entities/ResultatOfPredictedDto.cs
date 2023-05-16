@@ -17,3 +17,16 @@ public class ResultatOfPredictedDto : EntityDto<Guid>
     public string? Pari { get; set; }
     public double Dividende { get; set; }
 }
+
+[Serializable]
+public class ResultatOfPredictedStatisticalDto : EntityDto<Guid>
+{
+    public int Reunion { get; set; }
+    public int Course { get; set; }
+    public int NumeroPmu { get; set; }
+    public string? Nom { get; set; }
+    public double Rapport { get; set; }
+
+    public string? Pari { get; set; }
+    public double Dividende { get; set; }
+}

@@ -26,6 +26,9 @@ public interface IPmuServiceAppService : IApplicationService
     Task<Result<BrowseResultatOfPredictedResponse>> BrowseResultatOfPredicted(
         BrowseResultatOfPredictedQuery query
     );
+    Task<Result<BrowseResultatOfPredictedStatisticalResponse>> BrowseResultatOfPredictedStatistical(
+        BrowseResultatOfPredictedStatisticalQuery query
+    );
 
     Task<Result<BrowsePredictionPerClassifierResponse>> BrowsePredictionPerClassifier(
         BrowsePredictionPerClassifierQuery query
@@ -42,4 +45,6 @@ public interface IPmuServiceAppService : IApplicationService
     Task<Result<BrowsePredictionResponse>> BrowsePrediction(BrowsePredictionQuery query);
 
     Task<Result<BrowseResultatResponse>> BrowseResultat(BrowseResultatQuery query);
+
+    Task<Result<BrowsePredictedOnlyResponse>> BrowsePredictionOnly(BrowsePredictedOnlyQuery query);
 }

@@ -1,6 +1,7 @@
 @using We.Turf.Entities;
 @using We.Turf.Queries;
 @using We.Utilities;
+@using System.Diagnostics;
 @inject IPmuServiceAppService? AppService;
 @if (Courses != null)
 {
@@ -12,8 +13,8 @@
 
     <Row>
         <ul>
-            <li>Somme des mises:@SommeDesMises.Mises</li>
-            <li>Somme des Dividendes:@SommeDesMises.Dividendes</li>
+            <li>Somme des mises:@SommeDesMises.Mises.ToN2String() €</li>
+            <li>Somme des Dividendes:@SommeDesMises.Dividendes.ToN2String() €</li>
         </ul>
 
 
@@ -61,11 +62,13 @@
 
                                     <CascadingValue Name="Predicteds" Value="Predicteds">
                                         <CascadingValue Name="Course" Value="course">
-                                            <ResultatPill Type="ResultatPillType.Prediction" NumeroPmu="item.NumPmu" Index="index" PredictionCount="item.Count" />
+                                            <ResultatPill Type="ResultatPillType.Prediction" NumeroPmu="item.NumPmu" Index="index" PredictionCount="item.Count" Dividende="item.DividendePlace"/>
                                         </CascadingValue>
                                     </CascadingValue>
 
                                 }
+                                @ResultatsCourse.Count()
+                                @ResultatsCourse.Sum(x=>x.DividendePlace).ToN2String()
                             </Column>
 
                         </Row>
@@ -83,60 +86,46 @@
 @code {
     [CascadingParameter(Name = "ProgrammeCourses")] public List<ProgrammeCourseDto> Courses { get; set; } = new();
     [CascadingParameter(Name = "Predicteds")] public List<PredictedDto> Predicteds { get; set; } = new();
-    [CascadingParameter(Name = "Resultats")] public List<ResultatDto> Resultats { get; set; } = new();
-
-
+    //[CascadingParameter(Name = "Resultats")] public List<ResultatDto> Resultats { get; set; } = new();
+    [CascadingParameter(Name = "Resultats")] List<ResultatOfPredictedStatisticalDto> Resultats { get; set; } = new();
+    [CascadingParameter(Name = "PredictionsOnly")] private List<PredictedOnlyDto> PredictionsOnly { get; set; } = new();
 
     IEnumerable<PredictedDto> GetPredicted(ProgrammeCourseDto course) => Predicteds.Where(x => x.Reunion == course.Reunion && x.Course == course.Course).OrderBy(x => x.NumeroPmu);
     bool GetIsPlace(ProgrammeCourseDto course, int numeroPmu) => course.Arrivee.Take(3).Contains(numeroPmu);
-    double GetDividende(ProgrammeCourseDto course, int numeroPmu) => Resultats?.FirstOrDefault(x => x.Reunion == course.Reunion && x.Course == course.Course && GetIsPlace(course, numeroPmu))?.Rapport ?? 0.0;
+    double GetDividende(ProgrammeCourseDto course, int numeroPmu)
+    {
+
+        var res = Resultats?.FirstOrDefault(x => x.Reunion == course.Reunion && x.Course == course.Course && x.NumeroPmu==numeroPmu && GetIsPlace(course, numeroPmu))?.Dividende ?? 0.0;
+        /*if (course.Reunion == 2 && course.Course == 2)
+            Debugger.Break();*/
+        return res;
+    }
     IEnumerable<ResultatPlace> GetResultats(ProgrammeCourseDto course)
     {
         var res = from resultat in GetPredicted(course)
                   group resultat by resultat.NumeroPmu into gp
                   select new ResultatPlace(gp.Key, gp.Count(), GetDividende(course, gp.Key));
 
+        /*if (course.Reunion == 2 && course.Course == 2)
+            Debugger.Break();*/
         return res;
     }
     Dictionary<(int, int), IEnumerable<ResultatPlace>> ResultatsOfPredicteds = new();
     (int Mises, double Dividendes) SommeDesMises = (0, 0.0);
-   /* protected override void OnInitialized()
-    {
-        if (Courses is not null)
-        {
-            foreach (var course in Courses)
-            {
-                ResultatsOfPredicteds[(course.Reunion, course.Course)] = GetResultats(course);
-            }
-            SommeDesMises = CalculSommeDesMises();
-        }
-        base.OnInitialized();
-
-    }*/
-    /*
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        if (Courses is not null)
-        {
-            foreach (var course in Courses)
-            {
-                ResultatsOfPredicteds[(course.Reunion, course.Course)] = GetResultats(course);
-            }
-            SommeDesMises = CalculSommeDesMises();
-        }
-    }*/
 
 
     public (int, double) CalculSommeDesMises()
     {
         int mises = 0;
         double dividendes = 0.0;
-        foreach (var key in ResultatsOfPredicteds.Keys)
-        {
-            mises += ResultatsOfPredicteds[key].Count();
-            dividendes += ResultatsOfPredicteds[key].Sum(x => x.DividendePlace);
-        }
+        /* foreach (var key in ResultatsOfPredicteds.Keys)
+             {
+             mises += ResultatsOfPredicteds[key].Count();
+             dividendes += ResultatsOfPredicteds[key].Sum(x => x.DividendePlace);
+         }*/
+        mises = PredictionsOnly.Count();
+        dividendes = Resultats.Sum(x => x.Dividende);
+      
 
         return (mises, dividendes);
     }

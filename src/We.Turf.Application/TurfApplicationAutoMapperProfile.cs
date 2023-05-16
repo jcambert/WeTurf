@@ -12,8 +12,10 @@ public class TurfApplicationAutoMapperProfile : Profile
          * into multiple profile classes for a better organization. */
         CreateMap<Predicted, PredictedDto>()
             .ReverseMap();
+        CreateMap<Predicted, PredictedOnlyDto>();
         CreateMap<Resultat, ResultatDto>().ReverseMap();
         CreateMap<ResultatOfPredicted, ResultatOfPredictedDto>().ReverseMap();
+        CreateMap<ResultatOfPredicted, ResultatOfPredictedStatisticalDto>();
         CreateMap<PredictionPerClassifier, PredictionPerClassifierDto>().ReverseMap();
         CreateMap<ResultatPerClassifier, ResultatPerClassifierDto>().ReverseMap();
         CreateMap<ScrapTrigger, ScrapTriggerDto>().ReverseMap();

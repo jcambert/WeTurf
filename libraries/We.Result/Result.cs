@@ -178,6 +178,9 @@ public abstract class Result<T> : Result, IResult<T>
 
     public void Deconstruct(out bool success, out T value) => (success, value) = (IsSuccess, Value);
 
+    public void Deconstruct(out bool success, out T value, out IReadOnlyList<Error> errors) =>
+        (success, value, errors) = (IsSuccess, Value, Errors);
+
     public IEnumerable<Error> GetErrors()
     {
         return Errors;

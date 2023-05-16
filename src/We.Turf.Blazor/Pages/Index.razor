@@ -2,9 +2,11 @@
 @page "/{Date}"
 @using System.ComponentModel;
 @using System.Runtime.CompilerServices;
+@using Volo.Abp.AspNetCore.Components.Notifications;
 @using We.Turf.Entities;
 @using We.Utilities;
 @inject IPmuServiceAppService pmuService;
+@inject IUiNotificationService notification;
 @implements INotifyPropertyChanged
 <Row>
 
@@ -34,8 +36,10 @@
                     {
                         <CascadingValue Name="ProgrammeCourses" Value="ProgrammeCourses">
                             <CascadingValue Name="Predicteds" Value="Predicteds">
-                                <CascadingValue Name="Resultats" Value="Resultats">
-                                    <ProgrammeCourseContent />
+                                <CascadingValue Name="Resultats" Value="ResultatOfPredictedStatistical">
+                                    <CascadingValue Name="PredictionsOnly" Value="PredictionsOnly">
+                                        <ProgrammeCourseContent />
+                                    </CascadingValue>
                                 </CascadingValue>
                             </CascadingValue>
                         </CascadingValue>
@@ -75,6 +79,8 @@
     private List<ProgrammeReunionDto> ProgrammeReunions { get; set; } = new();
     private List<ResultatDto> Resultats { get; set; } = new();
     private List<ResultatOfPredictedDto> ResultatOfPredicteds { get; set; } = new();
+    private List<ResultatOfPredictedStatisticalDto> ResultatOfPredictedStatistical { get; set; } = new();
+    private List<PredictedOnlyDto> PredictionsOnly { get; set; } = new();
     public event PropertyChangedEventHandler? PropertyChanged = null;
     public Index()
     {
@@ -98,6 +104,7 @@
            await LoadPredictedAsync(date);
            await LoadResultats(date);
            await LoadResultatOfPredicteds(date);
+           await LoadPredictedOnly(date);
            await InvokeAsync(StateHasChanged);
        });
         ShowCourseOrReunion(SelectMode.Course);
@@ -144,7 +151,35 @@
         StateHasChanged();
     }
 
+    private async Task LoadPredictedOnly(DateOnly? date)
+    {
+        var t = pmuService.BrowsePredictionOnly(new() { Date = date });
+        var (res, response, errors) = await t;
+        if (res)
+        {
+            PredictionsOnly = response.Predicteds;
 
+        }
+        else
+        {
+            await notification.Warn(errors.AsString());
+        }
+    }
+
+    private async Task LoadResultatOfPredicteds(DateOnly? date)
+    {
+        var t = pmuService.BrowseResultatOfPredictedStatistical(new() { Date = date });
+        var (res, response, errors) = await t;
+        if (res)
+        {
+            ResultatOfPredictedStatistical = response.Resultats;
+
+        }
+        else
+        {
+            await notification.Warn(errors.AsString());
+        }
+    }
     private async Task LoadResultats(DateOnly? date)
     {
         var t = pmuService.BrowseResultat(new() { Date = date });

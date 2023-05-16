@@ -30,8 +30,5 @@ public class StringTests
     {
         var res0 = value.Pad(part, paddingChar, padding, final);
         Assert.Equal(attendee, res0);
-
-       
-        
     }
 }

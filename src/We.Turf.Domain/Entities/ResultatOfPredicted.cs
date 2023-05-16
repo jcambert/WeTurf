@@ -16,7 +16,7 @@ public class ResultatOfPredicted : Entity<Guid>
     public string? Specialite { get; set; }
     public string? Hippodrome { get; set; }
 
-    public Guid Resultat_Id { get; set; }
+    public Guid? Resultat_Id { get; set; }
     public string? Pari { get; set; }
-    public double Dividende { get; set; }
+    public double? Dividende { get; set; }
 }
