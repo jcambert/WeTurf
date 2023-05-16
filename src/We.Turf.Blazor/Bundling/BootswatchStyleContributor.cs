@@ -25,5 +25,7 @@ public class BootswatchStyleContributor : BundleContributor
                 "/libs/bootstrap/css/bootstrap.css",
                 $"/libs/bootswatch/{theme.Name}/bootstrap.css"
             );
+
+        // context.Files.Add("/libs/chart.js/chart.css");
     }
 }

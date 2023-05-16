@@ -8,5 +8,6 @@ module.exports = {
     ],
     mappings: {
         "@node_modules/bootswatch/dist/**/*.css": "@libs/bootswatch/",
+        "@node_modules/chart.js/dist/*": "@libs/chart.js/"
     }
 };

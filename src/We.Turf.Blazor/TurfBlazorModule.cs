@@ -58,7 +58,7 @@ namespace We.Turf.Blazor;
     typeof(AbpIdentityBlazorServerModule),
     typeof(AbpTenantManagementBlazorServerModule),
     typeof(AbpSettingManagementBlazorServerModule),
-    typeof(WeAspNetCoreComponentsServerBasicThemeModule), 
+    typeof(WeAspNetCoreComponentsServerBasicThemeModule),
     typeof(WeAspNetCoreComponentsWebBasicThemeModule)
    )]
 public class TurfBlazorModule : AbpModule
@@ -124,7 +124,7 @@ public class TurfBlazorModule : AbpModule
             );
         });
 #endif
-        
+
     }
 
     private void ConfigureJsonConverters()
@@ -143,11 +143,11 @@ public class TurfBlazorModule : AbpModule
 
     private void ConfigureUrls(IConfiguration configuration)
     {
-        
+
         Configure<AppUrlOptions>(options =>
         {
             options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-            options.RedirectAllowedUrls.AddRange((configuration["App:RedirectAllowedUrls"] ?? string.Empty ).Split(','));
+            options.RedirectAllowedUrls.AddRange((configuration["App:RedirectAllowedUrls"] ?? string.Empty).Split(','));
         });
     }
 
@@ -155,7 +155,7 @@ public class TurfBlazorModule : AbpModule
     {
         Configure<AbpBundlingOptions>(options =>
         {
-           
+
 
             //BLAZOR UI
             options.StyleBundles.Configure(
@@ -170,7 +170,13 @@ public class TurfBlazorModule : AbpModule
                 }
             );
 
-           
+            options.ScriptBundles.Configure(
+                BlazorBasicThemeBundles.Scripts.Global,
+                bundle =>
+                {
+                    bundle.AddContributors(typeof(BootswatchSciptContributor));
+                }
+            );
 
         });
     }
@@ -192,16 +198,16 @@ public class TurfBlazorModule : AbpModule
 
     private static void ConfigureSwaggerServices(IServiceCollection services)
     {
-        
+
         services.AddAbpSwaggerGen(
             options =>
             {
-                
+
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Turf API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
-                
-                options.MapType<DateOnly>(()=> new OpenApiSchema
+
+                options.MapType<DateOnly>(() => new OpenApiSchema
                 {
                     Type = "string",
                     Format = "date",
@@ -223,10 +229,10 @@ public class TurfBlazorModule : AbpModule
         {
             options.MenuContributors.Add(new TurfMenuContributor());
         });
-       /* Configure<WeMenuStyleOptions>(options =>
-        {
-            options.DefaultStyle = WeMenuStyle.LeftSide;
-        });*/
+        /* Configure<WeMenuStyleOptions>(options =>
+         {
+             options.DefaultStyle = WeMenuStyle.LeftSide;
+         });*/
     }
 
     private void ConfigureRouter(ServiceConfigurationContext context)
@@ -241,10 +247,10 @@ public class TurfBlazorModule : AbpModule
     {
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
-           // options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+            // options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
             //options.ConventionalControllers.Create(typeof(TurfHttpApiModule).Assembly);
-           //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
-           
+            //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
+
         });
     }
 
@@ -276,7 +282,7 @@ public class TurfBlazorModule : AbpModule
         app.UseHttpsRedirection();
         app.UseCorrelationId();
         app.UseStaticFiles();
-        
+
         app.UseRouting();
         app.UseAuthentication();
         app.UseAbpOpenIddictValidation();
@@ -290,12 +296,12 @@ public class TurfBlazorModule : AbpModule
         app.UseAuthorization();
         app.UseSwagger(options =>
         {
-            
+
         });
         app.UseAbpSwaggerUI(options =>
         {
             options.SwaggerEndpoint("/swagger/v1/swagger.json", "Turf API");
-            
+
         });
         app.UseConfiguredEndpoints();
     }

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace We.Turf.Entities;
 
 [Serializable]
@@ -19,6 +21,7 @@ public class ResultatOfPredictedDto : EntityDto<Guid>
 }
 
 [Serializable]
+[DebuggerDisplay("{Reunion}-{Course}-{NumeroPmu}-{Dividende}")]
 public class ResultatOfPredictedStatisticalDto : EntityDto<Guid>
 {
     public int Reunion { get; set; }

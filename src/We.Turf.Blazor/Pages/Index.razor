@@ -36,9 +36,11 @@
                     {
                         <CascadingValue Name="ProgrammeCourses" Value="ProgrammeCourses">
                             <CascadingValue Name="Predicteds" Value="Predicteds">
-                                <CascadingValue Name="Resultats" Value="ResultatOfPredictedStatistical">
-                                    <CascadingValue Name="PredictionsOnly" Value="PredictionsOnly">
-                                        <ProgrammeCourseContent />
+                                <CascadingValue Name="ResultatsOfPredicteds" Value="ResultatsOfPredicteds">
+                                    <CascadingValue Name="Resultats" Value="ResultatOfPredictedStatistical">
+                                        <CascadingValue Name="PredictionsOnly" Value="PredictionsOnly">
+                                            <ProgrammeCourseContent SommeDesMises="SommeDesMises" />
+                                        </CascadingValue>
                                     </CascadingValue>
                                 </CascadingValue>
                             </CascadingValue>
@@ -60,8 +62,7 @@
     </Column>
     <Column Class="col-lg-7 d-none d-lg-block">
         <Div Class="main-tab container">
-            MAIN
-
+            <LineChart @ref="lineChart" TItem="double" />
         </Div>
     </Column>
 </Row>
@@ -81,7 +82,9 @@
     private List<ResultatOfPredictedDto> ResultatOfPredicteds { get; set; } = new();
     private List<ResultatOfPredictedStatisticalDto> ResultatOfPredictedStatistical { get; set; } = new();
     private List<PredictedOnlyDto> PredictionsOnly { get; set; } = new();
+    private Dictionary<(int, int), IEnumerable<ResultatPlace>> ResultatsOfPredicteds = new();
     public event PropertyChangedEventHandler? PropertyChanged = null;
+    public (int Mises, double Dividendes) SommeDesMises = (0, 0.0);
     public Index()
     {
     }
@@ -105,12 +108,47 @@
            await LoadResultats(date);
            await LoadResultatOfPredicteds(date);
            await LoadPredictedOnly(date);
+
+           await InternalInitializationAsync();
+
            await InvokeAsync(StateHasChanged);
        });
         ShowCourseOrReunion(SelectMode.Course);
         Today = DateOnly.FromDateTime(DateTime.Now);
         NotifyPropertyChanged("CurrentDate");
 
+    }
+    protected async Task InternalInitializationAsync()
+    {
+        foreach (var course in ProgrammeCourses)
+        {
+            ResultatsOfPredicteds[(course.Reunion, course.Course)] = GetResultats(course);
+        }
+        SommeDesMises = CalculSommeDesMises();
+        Labels = ProgrammeCourses.OrderBy(x => x.Reunion).ThenBy(x => x.Course).Select(x => $"R{x.Reunion}C{x.Course}").ToArray();
+
+        await HandleRedraw();
+    }
+    IEnumerable<PredictedDto> GetPredicted(ProgrammeCourseDto course) => Predicteds.Where(x => x.Reunion == course.Reunion && x.Course == course.Course).OrderBy(x => x.NumeroPmu);
+
+    IEnumerable<ResultatPlace> GetResultats(ProgrammeCourseDto course)
+    {
+        var res = from resultat in GetPredicted(course)
+                  group resultat by resultat.NumeroPmu into gp
+                  select new ResultatPlace(gp.Key, gp.Count(), GetDividende(course, gp.Key));
+
+
+        return res;
+    }
+
+    bool GetIsPlace(ProgrammeCourseDto course, int numeroPmu) => course.Arrivee.Take(3).Contains(numeroPmu);
+    double GetDividende(ProgrammeCourseDto course, int numeroPmu)
+    {
+
+        var res = ResultatOfPredictedStatistical?.FirstOrDefault(x => x.Reunion == course.Reunion && x.Course == course.Course && x.NumeroPmu == numeroPmu && GetIsPlace(course, numeroPmu))?.Dividende ?? 0.0;
+        /*if (course.Reunion == 2 && course.Course == 2)
+            Debugger.Break();*/
+        return res;
     }
 #pragma warning disable BL0007
     [Parameter]
@@ -228,4 +266,68 @@
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+
+    public (int, double) CalculSommeDesMises()
+       => (PredictionsOnly.Count(), ResultatOfPredictedStatistical.Sum(x => x.Dividende));
+    #region Chart
+    LineChart<double> lineChart;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await HandleRedraw();
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        await lineChart.Clear();
+
+        await lineChart.AddLabelsDatasetsAndUpdate(Labels, GetLineChartDataset());
+    }
+
+    LineChartDataset<double> GetLineChartDataset()
+    {
+        return new LineChartDataset<double>
+            {
+                Label = "# of randoms",
+                Data = GetChartData(),// RandomizeData(),
+                BackgroundColor = backgroundColors,
+                BorderColor = borderColors,
+                Fill = true,
+                PointRadius = 3,
+                CubicInterpolationMode = "monotone",
+            };
+    }
+
+    string[] Labels = Array.Empty<string>();
+    List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
+    List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
+
+    List<double> RandomizeData()
+    {
+        var r = new Random(DateTime.Now.Millisecond);
+
+        return new List<double> {
+            r.Next( -50, 50 ) * r.NextDouble(),
+            r.Next( -50, 50 ) * r.NextDouble(),
+            r.Next( -50, 50 ) * r.NextDouble(),
+            r.Next( -50, 50 ) * r.NextDouble(),
+            r.Next( -50, 50 ) * r.NextDouble(),
+            r.Next( -50, 50 ) * r.NextDouble() };
+    }
+
+    List<double> GetChartData()
+    {
+        List<double> res = new();
+        double cumul = 0;
+        foreach (var item in ResultatOfPredictedStatistical.OrderBy(x=>x.Reunion).ThenBy(x=>x.Course))
+        {
+            cumul = cumul+item.Dividende - 1;
+            res.Add(cumul);
+        }
+        return res;
+    }
+    #endregion
 }
