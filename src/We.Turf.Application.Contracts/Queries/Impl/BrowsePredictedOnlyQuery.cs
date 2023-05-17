@@ -5,4 +5,6 @@ namespace We.Turf.Queries;
 public class BrowsePredictedOnlyQuery : IBrowsePredictedOnlyQuery
 {
     public DateOnly? Date { get; set; }
+
+    public string? Classifier { get; set; }
 }

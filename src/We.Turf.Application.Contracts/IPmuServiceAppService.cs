@@ -4,6 +4,7 @@ namespace We.Turf;
 
 public interface IPmuServiceAppService : IApplicationService
 {
+    Task<Result<BrowseClassifierResponse>> BrowseClassifier(BrowseClassifierQuery query);
     Task<Result<BrowseProgrammeReunionResponse>> BrowseProgrammeReunion(
         BrowseProgrammeReunionQuery query
     );

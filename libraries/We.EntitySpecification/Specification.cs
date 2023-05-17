@@ -1,6 +1,12 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 namespace We.EntitySpecification;
+
+public enum Order
+{
+    Asc,
+    Desc,
+}
 
 /// <summary>
 /// Base Class of specification
@@ -8,6 +14,8 @@ namespace We.EntitySpecification;
 /// <typeparam name="T"></typeparam>
 public abstract class Specification<T> : ISpecification<T>
 {
+    public record OrderByRec(Expression<Func<T, object>> Expression, Order Order);
+
     protected Specification(Expression<Func<T, bool>> criteria) => Criteria = criteria;
 
     protected Specification() { }
@@ -16,6 +24,11 @@ public abstract class Specification<T> : ISpecification<T>
     /// Get Criteria
     /// </summary>
     public Expression<Func<T, bool>> Criteria { get; }
+
+    /// <summary>
+    /// Get Orders
+    /// </summary>
+    public List<OrderByRec> Orders { get; } = new List<OrderByRec>();
 
     /// <summary>
     /// Get includes
@@ -29,7 +42,7 @@ public abstract class Specification<T> : ISpecification<T>
     public List<string> IncludeStrings { get; } = new List<string>();
 
     /// <summary>
-    /// Get Orderby ascendind Criteria
+    /// Get Orderby ascending Criteria
     /// </summary>
     public Expression<Func<T, object>> OrderBy { get; private set; }
 
@@ -69,17 +82,47 @@ public abstract class Specification<T> : ISpecification<T>
     public PagedBy PagedBy { get; private set; }
 
     /// <summary>
+    /// Set query as Distinct
+    /// </summary>
+    public bool Distinct { get; private set; }
+
+    /// <summary>
     /// Add Include Criteria
     /// </summary>
     /// <param name="includeExpression"></param>
-    protected virtual void AddInclude(Expression<Func<T, object>> includeExpression) =>
+    protected virtual Specification<T> AddInclude(Expression<Func<T, object>> includeExpression)
+    {
         Includes.Add(includeExpression);
+        return this;
+    }
 
     /// <summary>
     /// Add Include Criteria
     /// </summary>
     /// <param name="includeString"></param>
-    protected virtual void AddInclude(string includeString) => IncludeStrings.Add(includeString);
+    protected virtual Specification<T> AddInclude(string includeString)
+    {
+        IncludeStrings.Add(includeString);
+        return this;
+    }
+
+    protected virtual Specification<T> AddOrderBy(Expression<Func<T, object>> orderByExpression)
+    {
+        Orders.Add(new OrderByRec(orderByExpression, Order.Asc));
+        return this;
+    }
+
+    protected virtual Specification<T> AddOrderByDesc(Expression<Func<T, object>> orderByExpression)
+    {
+        Orders.Add(new OrderByRec(orderByExpression, Order.Desc));
+        return this;
+    }
+
+    protected virtual Specification<T> AddDistinct()
+    {
+        Distinct = true;
+        return this;
+    }
 
     /// <summary>
     /// Applying Paging

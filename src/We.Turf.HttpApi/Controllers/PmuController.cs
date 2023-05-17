@@ -12,11 +12,6 @@ namespace We.Turf.Controllers;
 [ControllerName("Pmu")]
 public class PmuController : TurfController, IPmuServiceAppService
 {
-    /*[HttpGet("hello")]
-    public Task<string> GetHello()
-    {
-        return Task.FromResult("HELLO");
-    }*/
     protected readonly IPmuServiceAppService pmuService;
 
     public PmuController(IPmuServiceAppService service) => (pmuService) = (service);
@@ -25,6 +20,11 @@ public class PmuController : TurfController, IPmuServiceAppService
     public Task<Result<BrowseAccuracyOfClassifierResponse>> BrowseAccuracyOfClassifier(
         [FromQuery] BrowseAccuracyOfClassifierQuery query
     ) => pmuService.BrowseAccuracyOfClassifier(query);
+
+    [HttpGet]
+    public Task<Result<BrowseClassifierResponse>> BrowseClassifier(
+        [FromQuery] BrowseClassifierQuery query
+    ) => pmuService.BrowseClassifier(query);
 
     [HttpGet]
     public Task<Result<BrowsePredictionResponse>> BrowsePrediction(

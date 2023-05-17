@@ -53,6 +53,8 @@ public class TurfDbContext
     public DbSet<AccuracyPerClassifier> AccuracyPerClassifiers { get; set; }
     public DbSet<Parameter> Parameters { get; set; }
 
+    public DbSet<Classifier> Classifiers { get; set; }
+
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
@@ -191,6 +193,15 @@ public class TurfDbContext
                 b.Property(x => x.PredictionCount).HasColumnName("predictioncounting");
                 b.Property(x => x.ResultatCount).HasColumnName("resultatcounting");
                 b.Property(x => x.Percentage).HasColumnName("accuracy");
+            }
+        );
+
+        builder.Entity<Classifier>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfclassifier");
+                b.Property(x => x.Name).HasColumnName("classifier");
             }
         );
 

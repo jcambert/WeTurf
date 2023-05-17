@@ -9,6 +9,28 @@ internal class ResultatOfPredictedStatisticalByDate : Specification<ResultatOfPr
     public ResultatOfPredictedStatisticalByDate(DateOnly date) : base(e => e.Date == date) { }
 }
 
+internal class ResultatOfPredictedStatisticalByClassifier : Specification<ResultatOfPredicted>
+{
+    public ResultatOfPredictedStatisticalByClassifier(string classifier)
+        : base(e => e.Classifier == classifier) { }
+}
+
+internal class ResultatOfPredictedStatisticalByPari : Specification<ResultatOfPredicted>
+{
+    public ResultatOfPredictedStatisticalByPari(string pari) : base(e => e.Pari == pari) { }
+}
+
+internal class ResultatOfPredictedStatisticalSpecification : Specification<ResultatOfPredicted>
+{
+    public ResultatOfPredictedStatisticalSpecification()
+    {
+        AddDistinct();
+        AddOrderBy(x => x.Reunion);
+        AddOrderBy(x => x.Course);
+        AddOrderBy(x => x.NumeroPmu);
+    }
+}
+
 public class BrowseResultatOfPredictedStatisticalHandler
     : AbpHandler.With<
           BrowseResultatOfPredictedStatisticalQuery,
@@ -41,12 +63,22 @@ public class BrowseResultatOfPredictedStatisticalHandler
 
         var query = await Repository.GetQueryableAsync();
         query = query.GetQuery(new ResultatOfPredictedStatisticalByDate(date));
-        query = query
+
+        if (!string.IsNullOrEmpty(request.Classifier))
+            query = query.GetQuery(
+                new ResultatOfPredictedStatisticalByClassifier(request.Classifier)
+            );
+
+        if (request.Pari != TypePari.Tous)
+            query = query.GetQuery(new ResultatOfPredictedStatisticalByPari(request.PariAsString));
+
+        query = query.GetQuery(new ResultatOfPredictedStatisticalSpecification());
+        /*query = query
             .Distinct()
-            .Where(x => x.Pari == "E_SIMPLE_PLACE")
+            
             .OrderBy(x => x.Reunion)
             .ThenBy(x => x.Course)
-            .ThenBy(x => x.NumeroPmu);
+            .ThenBy(x => x.NumeroPmu);*/
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new BrowseResultatOfPredictedStatisticalResponse(MapToDtoList(result));
     }

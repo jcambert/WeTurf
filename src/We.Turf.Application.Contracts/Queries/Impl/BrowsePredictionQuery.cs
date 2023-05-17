@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json.Serialization;
 using We.Turf.Converters;
 
@@ -8,6 +8,7 @@ namespace We.Turf.Queries;
 [ExposeServices(typeof(IBrowsePredictionQuery))]
 public class BrowsePredictionQuery : IBrowsePredictionQuery
 {
-    //[JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly? Date { get; set; }
+
+    public string Classifier { get; set; }
 }

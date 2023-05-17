@@ -4,10 +4,22 @@
 @using System.Runtime.CompilerServices;
 @using Volo.Abp.AspNetCore.Components.Notifications;
 @using We.Turf.Entities;
+@using We.Turf.Queries;
 @using We.Utilities;
 @inject IPmuServiceAppService pmuService;
 @inject IUiNotificationService notification;
-@implements INotifyPropertyChanged
+@implements INotifyPropertyChanged;
+<Row>
+    <Column Class="col-sm-8 col-md-6 col-lg-5  mx-auto ">
+        <Select TValue="int" SelectedValue="@_currentClassifier" SelectedValueChanged="@OnCurrentClassifierChanged" >
+            @foreach (var (item,index) in Classifiers.OrderByDescending(x=>x.Percentage).WithIndex())
+            {
+                <SelectItem Value="index">@item.Classifier.Replace("classifier","").ToPascalCase()</SelectItem>
+            }
+
+        </Select>
+    </Column>
+</Row>
 <Row>
 
     <Column Class="col-sm-8 col-md-6 col-lg-5  mx-auto ">
@@ -68,10 +80,12 @@
 </Row>
 
 @code {
+    private const string ALL_CLASSIFIER = "tous";
     private DateOnly? _date;
     private DateOnly? Today;
-    private IDisposable? _whenDateChangedToToday;
-    private IDisposable? _whenDateChangeBeforeToday;
+    private int _currentClassifier;
+    private IDisposable? _whenDateChangedToToday, _whenDateChangeBeforeToday,_whenClassifierChanged;
+
     private SelectMode? _mode;
     private bool ShowProgrammeCourse => _mode == SelectMode.Course;
     private bool ShowProgrammeReunion => _mode == SelectMode.Reunion;
@@ -82,6 +96,8 @@
     private List<ResultatOfPredictedDto> ResultatOfPredicteds { get; set; } = new();
     private List<ResultatOfPredictedStatisticalDto> ResultatOfPredictedStatistical { get; set; } = new();
     private List<PredictedOnlyDto> PredictionsOnly { get; set; } = new();
+    private List<AccuracyPerClassifierDto> Classifiers { get; set; } = new();
+
     private Dictionary<(int, int), IEnumerable<ResultatPlace>> ResultatsOfPredicteds = new();
     public event PropertyChangedEventHandler? PropertyChanged = null;
     public (int Mises, double Dividendes) SommeDesMises = (0, 0.0);
@@ -94,7 +110,7 @@
        .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
        .Select(e => _date)
        .Where(d => d == Today)
-       .Subscribe(async date => await LoadPredictedAsync(date));
+       .Subscribe(async date => await LoadPredictionAsync(date));
 
         _whenDateChangeBeforeToday = this.WhenPropertyChanged()
        .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
@@ -104,8 +120,9 @@
        {
            await LoadProgammeCourseAsync(date);
            await LoadProgammeReunionAsync(date);
-           await LoadPredictedAsync(date);
            await LoadResultats(date);
+           await LoadClassifiersAsync();
+           await LoadPredictionAsync(date);
            await LoadResultatOfPredicteds(date);
            await LoadPredictedOnly(date);
 
@@ -113,6 +130,19 @@
 
            await InvokeAsync(StateHasChanged);
        });
+
+
+        _whenClassifierChanged = this.WhenPropertyChanged()
+        .Where(e => e.EventArgs.PropertyName == nameof(CurrentClassifier))
+        .Select(e => (_date, _currentClassifier))
+        .Subscribe(async item =>
+        {
+            await LoadPredictionAsync(item._date);
+            await LoadResultatOfPredicteds(item._date);
+            await LoadPredictedOnly(item._date);
+            await InvokeAsync(StateHasChanged);
+            await InternalInitializationAsync();
+        });
         ShowCourseOrReunion(SelectMode.Course);
         Today = DateOnly.FromDateTime(DateTime.Now);
         NotifyPropertyChanged("CurrentDate");
@@ -120,7 +150,8 @@
     }
     protected async Task InternalInitializationAsync()
     {
-        foreach (var course in ProgrammeCourses.OrderBy(x=>x.Reunion).ThenBy(x=>x.Course))
+        ResultatsOfPredicteds.Clear();
+        foreach (var course in ProgrammeCourses.OrderBy(x => x.Reunion).ThenBy(x => x.Course))
         {
             ResultatsOfPredicteds[(course.Reunion, course.Course)] = GetResultats(course);
         }
@@ -177,6 +208,20 @@
         }
     }
 
+    public AccuracyPerClassifierDto CurrentClassifier
+    {
+        get => Classifiers[_currentClassifier];
+        set
+        {
+            _currentClassifier = Classifiers.IndexOf( value);
+            NotifyPropertyChanged();
+        }
+    }
+    Task OnCurrentClassifierChanged(int selected)
+    {
+        CurrentClassifier=Classifiers[ selected];
+        return Task.CompletedTask;
+    }
     private void SetDate(DateOnly d)
     {
         CurrentDate = d;
@@ -189,9 +234,27 @@
         StateHasChanged();
     }
 
+    private async Task LoadClassifiersAsync()
+    {
+        var t = pmuService.BrowseAccuracyOfClassifier(new BrowseAccuracyOfClassifierQuery());
+        var (res, response, errors) = await t;
+        if (res)
+        {
+            Classifiers = response.ClassifiersAccuracy;
+            var c = new AccuracyPerClassifierDto() { Classifier = ALL_CLASSIFIER, Percentage = 1.0, PredictionCount = 1, ResultatCount = 1 };
+            Classifiers.Insert(0,c);
+            CurrentClassifier = c;
+        }
+        else
+        {
+            await notification.Warn(errors.AsString());
+        }
+    }
+
     private async Task LoadPredictedOnly(DateOnly? date)
     {
-        var t = pmuService.BrowsePredictionOnly(new() { Date = date });
+        string? classifier = CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
+        var t = pmuService.BrowsePredictionOnly(new() { Date = date, Classifier = classifier });
         var (res, response, errors) = await t;
         if (res)
         {
@@ -206,7 +269,9 @@
 
     private async Task LoadResultatOfPredicteds(DateOnly? date)
     {
-        var t = pmuService.BrowseResultatOfPredictedStatistical(new() { Date = date });
+        ResultatOfPredictedStatistical.Clear();
+        string? classifier = CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
+        var t = pmuService.BrowseResultatOfPredictedStatistical(new() { Date = date, Classifier = classifier });
         var (res, response, errors) = await t;
         if (res)
         {
@@ -228,14 +293,19 @@
 
         }
     }
-    private async Task LoadPredictedAsync(DateOnly? date)
+    private async Task LoadPredictionAsync(DateOnly? date)
     {
-        var t = pmuService.BrowsePrediction(new() { Date = date });
-        var (res, response) = await t;
+        string? classifier = CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
+        var t = pmuService.BrowsePrediction(new() { Date = date,Classifier=classifier });
+        var (res, response,errors) = await t;
         if (res)
         {
             Predicteds = response.Predicteds;
 
+        }
+        else
+        {
+            await notification.Warn(errors.AsString());
         }
         //await InvokeAsync(StateHasChanged);
     }
@@ -268,7 +338,7 @@
 
 
     public (int, double) CalculSommeDesMises()
-       => (PredictionsOnly.DistinctBy(x=>x.Hash).Count(), ResultatOfPredictedStatistical.DistinctBy(x=>x.Hash).Sum(x => x.Dividende));
+       => (PredictionsOnly.DistinctBy(x => x.Hash).Count(), ResultatOfPredictedStatistical.DistinctBy(x => x.Hash).Sum(x => x.Dividende));
     #region Chart
     LineChart<double> lineChart;
 
@@ -276,7 +346,7 @@
     {
         if (firstRender)
         {
-            await HandleRedraw();
+            //await HandleRedraw();
         }
     }
 
@@ -291,7 +361,7 @@
     {
         return new LineChartDataset<double>
             {
-                Label = "# of randoms",
+                Label = "€",
                 Data = GetChartData(),// RandomizeData(),
                 BackgroundColor = backgroundColors,
                 BorderColor = borderColors,
@@ -305,36 +375,22 @@
     List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
     List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
 
-    List<double> RandomizeData()
-    {
-        var r = new Random(DateTime.Now.Millisecond);
 
-        return new List<double> {
-            r.Next( -50, 50 ) * r.NextDouble(),
-            r.Next( -50, 50 ) * r.NextDouble(),
-            r.Next( -50, 50 ) * r.NextDouble(),
-            r.Next( -50, 50 ) * r.NextDouble(),
-            r.Next( -50, 50 ) * r.NextDouble(),
-            r.Next( -50, 50 ) * r.NextDouble() };
-    }
 
     List<double> GetChartData()
     {
-        if ( !ResultatOfPredictedStatistical?.Any() ?? false)
+        if (!ResultatOfPredictedStatistical?.Any() ?? false)
             return new();
-        Dictionary<(int,int),double> res = new();
+        Dictionary<(int, int), double> res = new();
         double cumul = 0;
-#pragma warning disable  CS8604
-        var items = ResultatOfPredictedStatistical.DistinctBy(x => x.Hash).OrderBy(x => x.Reunion).ThenBy(x => x.Course);
-#pragma warning restore CS8604
+
         foreach (var key in ResultatsOfPredicteds.Keys)
         {
             var v = ResultatsOfPredicteds[key];
-           
-            //if(res.TryGetValue((item.Reunion,item.Course),out var currentValue))
+
             cumul = cumul + v.Sum(x => x.DividendePlace) - v.Count();
             res[key] = cumul;
-            
+
         }
         return res.Values.ToList();
     }

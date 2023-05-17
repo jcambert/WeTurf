@@ -9,6 +9,9 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
         BrowseAccuracyOfClassifierQuery query
     ) => Mediator.Send(query).AsTaskWrap();
 
+    public Task<Result<BrowseClassifierResponse>> BrowseClassifier(BrowseClassifierQuery query) =>
+        Mediator.Send(query).AsTaskWrap();
+
     public Task<Result<BrowsePredictionResponse>> BrowsePrediction(BrowsePredictionQuery query) =>
         Mediator.Send(query).AsTaskWrap();
 
