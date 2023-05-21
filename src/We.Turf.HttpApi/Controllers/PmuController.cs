@@ -78,6 +78,16 @@ public class PmuController : TurfController, IPmuServiceAppService
         [FromQuery] GetProgrammeCourseQuery query
     ) => pmuService.GetProgrammeCourse(query);
 
+    [HttpGet]
+    public Task<Result<GetStatistiqueResponse>> GetStatistics(
+        [FromQuery] GetStatistiqueQuery query
+    ) => pmuService.GetStatistics(query);
+
+    [HttpGet]
+    public Task<Result<GetStatistiqueWithDateResponse>> GetStatisticsWithDate(
+        [FromQuery] GetStatistiqueWithDateQuery query
+    ) => pmuService.GetStatisticsWithDate(query);
+
     [HttpPost]
     public Task<Result<LoadCourseIntoDbResponse>> LoadCourseIntoDb(LoadCourseIntoDbQuery query) =>
         pmuService.LoadCourseIntoDb(query);

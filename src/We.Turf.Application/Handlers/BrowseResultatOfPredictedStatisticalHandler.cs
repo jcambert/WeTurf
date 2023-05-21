@@ -20,6 +20,12 @@ internal class ResultatOfPredictedStatisticalByPari : Specification<ResultatOfPr
     public ResultatOfPredictedStatisticalByPari(string pari) : base(e => e.Pari == pari) { }
 }
 
+internal class ResultatOfPredictedStatisticalByCourse : Specification<ResultatOfPredicted>
+{
+    public ResultatOfPredictedStatisticalByCourse(DateOnly date, int reunion, int course)
+        : base(e => e.Date == date && e.Reunion == reunion && e.Course == course) { }
+}
+
 internal class ResultatOfPredictedStatisticalSpecification : Specification<ResultatOfPredicted>
 {
     public ResultatOfPredictedStatisticalSpecification()
@@ -62,7 +68,17 @@ public class BrowseResultatOfPredictedStatisticalHandler
         var date = request.Date ?? DateOnly.FromDateTime(DateTime.Now);
 
         var query = await Repository.GetQueryableAsync();
-        query = query.GetQuery(new ResultatOfPredictedStatisticalByDate(date));
+
+        if (request.Reunion is not null && request.Course is not null)
+            query = query.GetQuery(
+                new ResultatOfPredictedStatisticalByCourse(
+                    date,
+                    request.Reunion ?? 0,
+                    request.Course ?? 0
+                )
+            );
+        else
+            query = query.GetQuery(new ResultatOfPredictedStatisticalByDate(date));
 
         if (!string.IsNullOrEmpty(request.Classifier))
             query = query.GetQuery(
@@ -70,7 +86,9 @@ public class BrowseResultatOfPredictedStatisticalHandler
             );
 
         if (request.Pari != TypePari.Tous)
-            query = query.GetQuery(new ResultatOfPredictedStatisticalByPari(request.PariAsString));
+            query = query.GetQuery(
+                new ResultatOfPredictedStatisticalByPari(request.Pari.AsString())
+            );
 
         query = query.GetQuery(new ResultatOfPredictedStatisticalSpecification());
         /*query = query

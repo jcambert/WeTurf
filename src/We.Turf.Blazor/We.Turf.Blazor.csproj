@@ -10,12 +10,14 @@
     <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
     <UserSecretsId>We.Turf-4681b4fd-151f-4221-84a4-929d86723e4c</UserSecretsId>
+      <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.3" />
     <PackageReference Include="Blazorise.Charts" Version="1.2.3" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.3" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.5" />
     
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -29,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\We.Blazor.Csv\We.Blazor.Csv.csproj" />
+    <ProjectReference Include="..\..\libraries\We.Blazor\We.Blazor.csproj" />
     <ProjectReference Include="..\..\libraries\We.Utilities\We.Utilities.csproj" />
     <ProjectReference Include="..\..\themes\We.Bootswatch.Components.Web.BasicTheme\We.Bootswatch.Components.Web.BasicTheme.csproj" />
     <ProjectReference Include="..\..\themes\We.Bootswatch.Server.BasicTheme\We.Bootswatch.Server.BasicTheme.csproj" />

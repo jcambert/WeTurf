@@ -43,13 +43,15 @@
             </Field>
             <Field ColumnSize="ColumnSize.Is3.OnDesktop" Visibility="@HideIfLoadFromFolder">
                 <FieldLabel>Date End</FieldLabel>
-            <TextEdit Placeholder="Entrer date de fin" @bind-Text="@InnerEnd" />
-        </Field>
-        }else{
-        <Field ColumnSize="ColumnSize.Is3.OnDesktop" Visibility="@HideIfLoadFromDate">
-            <FieldLabel>Dossier de chargement (MM YYYY)</FieldLabel>
-            <TextEdit Placeholder="Dossier " @bind-Text="@InnerFolder" />
-        </Field>
+                <TextEdit Placeholder="Entrer date de fin" @bind-Text="@InnerEnd" />
+            </Field>
+        }
+        else
+        {
+            <Field ColumnSize="ColumnSize.Is3.OnDesktop" Visibility="@HideIfLoadFromDate">
+                <FieldLabel>Dossier de chargement (MM YYYY)</FieldLabel>
+                <TextEdit Placeholder="Dossier " @bind-Text="@InnerFolder" />
+            </Field>
         }
     </Fields>
 </div>
@@ -132,7 +134,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if(!string.IsNullOrEmpty(Start))
+        if (!string.IsNullOrEmpty(Start))
             scrapByFolderMonth = IsValidMonthYear(Start);
 
 
@@ -320,7 +322,7 @@
         if (predict)
         {
             Output.WriteLine("Prediction");
-            var result0 = await Scrapper.Predict(new PredictQuery() { UseFolder = scrapByFolderMonth ? InnerFolder:string.Empty, DeleteFilesIfExists = !scrapByFolderMonth });
+            var result0 = await Scrapper.Predict(new PredictQuery() { UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty, DeleteFilesIfExists = !scrapByFolderMonth });
             if (!result0)
                 Output.WriteLine(result0.Errors);
         }
@@ -350,31 +352,62 @@
     {
         ConsoleOutput = string.Empty;
         isInsertDatasRunning = true;
-
-        if(scrap && predict && resultat )
+        Action<Result> handle = (res) =>
+        {
+            if (res.HasError)
+            {
+                UiNotificationService?.Warn("Regarder la console", "Attention");
+                Output.WriteLine(res.Errors.AsString("[ERROR]"));
+            }
+            else
+            {
+                Output.WriteLine("Terminé");
+                UiNotificationService?.Success("Tout c'est bien passé!!", "Confirmation");
+            }
+        };
+        if (scrap && predict && resultat)
         {
             var res = await AppService.LoadOutputFolderIntoDb(new LoadOutputFolderIntoDbQuery() { Folder = OutputFilePath });
-            if (res.HasError)
-                 UiNotificationService?.Warn(res.Errors.AsString(),"Attention");
-            else
-                 UiNotificationService?.Success("Tout c'est bien passé!!","Confirmation");
+            handle(res);
+
         }
         else
-        if (scrap)
         {
-            Output.Write("Insertion des chevaux a predire");
-            //foreach (var f in ToPredictFiles)
-            //{
-            var f = ToPredictFiles.First();
-            var result = await AppService.LoadToPredictIntoDatabase(new LoadToPredictIntoDbQuery() { Filename = f.Path, Rename = false });
 
-            foreach (var error in result.Errors)
+            if (scrap)
             {
+                Output.Write("Insertion des chevaux a predire");
+                var f = ToPredictFiles.First();
+                var res = await AppService.LoadToPredictIntoDatabase(new LoadToPredictIntoDbQuery() { Filename = f.Path, Rename = false });
 
-                Output.WriteLine($"[ERROR] {error.Failure} ");
+                handle(res);
+
             }
+            if (predict)
+            {
+                Output.Write("Insertion des chevaux predis");
+                foreach (var f in PredictedFiles)
+                {
+                    var res = await AppService.LoadPredictedIntoDb(new LoadPredictedIntoDbQuery() { Filename = f.Path, Rename = false });
+                    handle(res);
+                }
+                
+            }
+            if (resultat)
+            {
+                Output.Write("Insertion des resultats");
+                foreach (var f in ResultatsFiles)
+                {
+                    var res = await AppService.LoadResultatIntoDb(new LoadResultatIntoDbQuery() { Filename = f.Path, Rename = false });
+                    handle(res);
+                }
+                foreach (var f in CoursesFiles)
+                {
+                    var res = await AppService.LoadCourseIntoDb(new LoadCourseIntoDbQuery() { Filename = f.Path, Rename = false });
+                    handle(res);
+                }
 
-            //}
+            }
         }
         isInsertDatasRunning = false;
 

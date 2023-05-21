@@ -1,19 +1,21 @@
 @using We.Turf.Entities;
+@using We.Turf.Queries;
+@using System.Diagnostics;
 <Span Style="position:relative" Class="@ResultatButtonClass" TextColor="TextColor.White">
     @NumeroPmu
-    @if (HasBadge && PredictionCount>0)
+    @if (ShowBadgeUp && HasBadge && PredictionCount > 0 )
     {
         <Badge Color="ResultatBadgeColor" Class="position-absolute top-0 start-100 rounded-pill translate-middle">@PredictionCount</Badge>
     }
 
-    @if (HasBadge && Dividende > 0)
+    @if ( HasBadge && Dividende > 0)
     {
         <Badge Color="ResultatBadgeColor" Class="position-absolute top-100 start-100 rounded-pill translate-middle">@Dividende.ToN2String()</Badge>
     }
-</Span>
+    </Span>
 
 @code {
-    [Parameter]public int Index{ get; set; }
+    [Parameter] public int Index{ get; set; }
     [Parameter, EditorRequired] public int NumeroPmu { get; set; }
     public bool HasBadge => Type == ResultatPillType.Prediction;
     [Parameter] public int PredictionCount { get; set; } = 0;
@@ -21,13 +23,35 @@
     [Parameter, EditorRequired] public ResultatPillType Type { get; set; }
     [CascadingParameter(Name = "Course")] public ProgrammeCourseDto? Course { get; set; }
     [CascadingParameter(Name = "Predicteds")] public List<PredictedDto>? Predicteds { get; set; } = new();
-    Blazorise.Color ResultatBadgeColor => (Course?.Arrivee.Take(3).Contains(NumeroPmu) ?? false) ? Color.Success : Color.Danger;
-
-    string ResultatButtonClass => Type switch
+    [CascadingParameter(Name = "TypePari")] public TypePari Pari { get; set; } = TypePari.Tous;
+    [Parameter] public bool ShowBadgeUp { get; set; } = true;
+    private bool EstArrivee(int numeroPmu)
     {
-        ResultatPillType.Arrivee=>"btn mx-1 " + ((Index<=2)? (Predicteds?.Any(x=>x.Reunion==Course?.Reunion && x.Course==Course?.Course && x.NumeroPmu==NumeroPmu) ?? false ? "btn-success" : "btn-danger"):"btn-primary"),
-        ResultatPillType.Prediction => "btn mx-1 " + ((Course?.Arrivee.Take(3).Contains(NumeroPmu) ?? false) ?"btn-success":"btn-danger"),
-        _=>throw new NotSupportedException()
-    };
-}
+        /*if(Course.Reunion==1 && Course.Course==5 && Pari==TypePari.Gagnant && HasBadge)
+            Debugger.Break();*/
+        try
+        {
+            return Pari switch
+            {
+                TypePari.Gagnant => Course?.Arrivee.First() == numeroPmu,
+                TypePari.Place => Course?.Arrivee.Take(3).Contains(numeroPmu) ??false,
+                _ => false
+            };
+
+        }catch(Exception e)
+        {
+
+        }
+        return false;
+    }
+
+    Blazorise.Color ResultatBadgeColor => EstArrivee(NumeroPmu) ? Color.Success : Color.Danger;
+
+        string ResultatButtonClass => Type switch
+        {
+            ResultatPillType.Arrivee => "btn mx-1 " + ((Index <= 2) ? (Predicteds?.Any(x => x.Reunion == Course?.Reunion && x.Course == Course?.Course && x.NumeroPmu == NumeroPmu && EstArrivee(NumeroPmu)) ?? false ? "btn-success" : "btn-danger") : "btn-primary"),
+            ResultatPillType.Prediction => "btn mx-1 " + (EstArrivee(NumeroPmu) ? "btn-success" : "btn-danger"),
+            _ => throw new NotSupportedException()
+        };
+    }
 

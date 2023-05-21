@@ -1,23 +1,56 @@
 @page "/"
 @page "/{Date}"
-@using System.ComponentModel;
-@using System.Runtime.CompilerServices;
-@using Volo.Abp.AspNetCore.Components.Notifications;
-@using We.Turf.Entities;
+@page "/{Date}/{Reunion:int}/{Course:int}"
+@using We.Blazor
 @using We.Turf.Queries;
-@using We.Utilities;
-@inject IPmuServiceAppService pmuService;
-@inject IUiNotificationService notification;
-@implements INotifyPropertyChanged;
+@inherits WeComponentBase
 <Row>
-    <Column Class="col-sm-8 col-md-6 col-lg-5  mx-auto ">
-        <Select TValue="int" SelectedValue="@_currentClassifier" SelectedValueChanged="@OnCurrentClassifierChanged" >
-            @foreach (var (item,index) in Classifiers.OrderByDescending(x=>x.Percentage).WithIndex())
+    @if (_currentClassifier == 0)
+    {
+
+        <Column Class="col-sm-4 col-md-4 col-lg-2  mx-auto ">
+            <Field>
+                <FieldLabel>Indice de confiance</FieldLabel>
+            <Select TValue="int" SelectedValue="@_indiceConfiance" SelectedValueChanged="@OnCurrentIndiceConfianceChanged">
+                @for (int i = 0; i < Classifiers.Count - 1; i++)
+                {
+                    var j = i + 1;
+                    <SelectItem Value="j">
+                        @(
+                    j
+                    )
+                    </SelectItem>
+                }
+
+
+            </Select>
+            </Field>
+        </Column>
+    }
+    <Column Class="col-sm-4 col-md-4 col-lg-2  mx-auto ">
+        <Field>
+            <FieldLabel>Classificateur</FieldLabel>
+        <Select TValue="int" SelectedValue="@_currentClassifier" SelectedValueChanged="@OnCurrentClassifierChanged">
+            @foreach (var (item, index) in Classifiers.OrderByDescending(x => x.Percentage).WithIndex())
             {
                 <SelectItem Value="index">@item.Classifier.Replace("classifier","").ToPascalCase()</SelectItem>
             }
 
         </Select>
+        </Field>
+
+    </Column>
+
+    <Column Class="col-sm-4 col-md-4 col-lg-2  mx-auto ">
+        <Field>
+            <FieldLabel>Type de Pari</FieldLabel>
+        <Select TValue="TypePari" SelectedValue="@_currentPari" SelectedValueChanged="@OnCurrentPariChanged">
+
+            <SelectItem Value="TypePari.Place">Placé</SelectItem>
+            <SelectItem Value="TypePari.Gagnant">Gagnant</SelectItem>
+
+        </Select>
+        </Field>
     </Column>
 </Row>
 <Row>
@@ -51,7 +84,9 @@
                                 <CascadingValue Name="ResultatsOfPredicteds" Value="ResultatsOfPredicteds">
                                     <CascadingValue Name="Resultats" Value="ResultatOfPredictedStatistical">
                                         <CascadingValue Name="PredictionsOnly" Value="PredictionsOnly">
-                                            <ProgrammeCourseContent SommeDesMises="SommeDesMises" />
+                                            <CascadingValue Name="TypePari" Value="CurrentPari">
+                                                <ProgrammeCourseContent SommeDesMises="SommeDesMises" IndiceConfiance="IndiceConfiance" Classifier="_currentClassifier"/>
+                                            </CascadingValue>
                                         </CascadingValue>
                                     </CascadingValue>
                                 </CascadingValue>
@@ -78,321 +113,3 @@
         </Div>
     </Column>
 </Row>
-
-@code {
-    private const string ALL_CLASSIFIER = "tous";
-    private DateOnly? _date;
-    private DateOnly? Today;
-    private int _currentClassifier;
-    private IDisposable? _whenDateChangedToToday, _whenDateChangeBeforeToday,_whenClassifierChanged;
-
-    private SelectMode? _mode;
-    private bool ShowProgrammeCourse => _mode == SelectMode.Course;
-    private bool ShowProgrammeReunion => _mode == SelectMode.Reunion;
-    private List<PredictedDto> Predicteds { get; set; } = new();
-    private List<ProgrammeCourseDto> ProgrammeCourses { get; set; } = new();
-    private List<ProgrammeReunionDto> ProgrammeReunions { get; set; } = new();
-    private List<ResultatDto> Resultats { get; set; } = new();
-    private List<ResultatOfPredictedDto> ResultatOfPredicteds { get; set; } = new();
-    private List<ResultatOfPredictedStatisticalDto> ResultatOfPredictedStatistical { get; set; } = new();
-    private List<PredictedOnlyDto> PredictionsOnly { get; set; } = new();
-    private List<AccuracyPerClassifierDto> Classifiers { get; set; } = new();
-
-    private Dictionary<(int, int), IEnumerable<ResultatPlace>> ResultatsOfPredicteds = new();
-    public event PropertyChangedEventHandler? PropertyChanged = null;
-    public (int Mises, double Dividendes) SommeDesMises = (0, 0.0);
-    public Index()
-    {
-    }
-    protected override void OnInitialized()
-    {
-        _whenDateChangedToToday = this.WhenPropertyChanged()
-       .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
-       .Select(e => _date)
-       .Where(d => d == Today)
-       .Subscribe(async date => await LoadPredictionAsync(date));
-
-        _whenDateChangeBeforeToday = this.WhenPropertyChanged()
-       .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
-       .Select(e => _date)
-       .Where(d => d < Today)
-       .Subscribe(async date =>
-       {
-           await LoadProgammeCourseAsync(date);
-           await LoadProgammeReunionAsync(date);
-           await LoadResultats(date);
-           await LoadClassifiersAsync();
-           await LoadPredictionAsync(date);
-           await LoadResultatOfPredicteds(date);
-           await LoadPredictedOnly(date);
-
-           await InternalInitializationAsync();
-
-           await InvokeAsync(StateHasChanged);
-       });
-
-
-        _whenClassifierChanged = this.WhenPropertyChanged()
-        .Where(e => e.EventArgs.PropertyName == nameof(CurrentClassifier))
-        .Select(e => (_date, _currentClassifier))
-        .Subscribe(async item =>
-        {
-            await LoadPredictionAsync(item._date);
-            await LoadResultatOfPredicteds(item._date);
-            await LoadPredictedOnly(item._date);
-            await InvokeAsync(StateHasChanged);
-            await InternalInitializationAsync();
-        });
-        ShowCourseOrReunion(SelectMode.Course);
-        Today = DateOnly.FromDateTime(DateTime.Now);
-        NotifyPropertyChanged("CurrentDate");
-
-    }
-    protected async Task InternalInitializationAsync()
-    {
-        ResultatsOfPredicteds.Clear();
-        foreach (var course in ProgrammeCourses.OrderBy(x => x.Reunion).ThenBy(x => x.Course))
-        {
-            ResultatsOfPredicteds[(course.Reunion, course.Course)] = GetResultats(course);
-        }
-        SommeDesMises = CalculSommeDesMises();
-        Labels = ProgrammeCourses.OrderBy(x => x.Reunion).ThenBy(x => x.Course).Select(x => $"R{x.Reunion}C{x.Course}").ToArray();
-
-        await HandleRedraw();
-    }
-    IEnumerable<PredictedDto> GetPredicted(ProgrammeCourseDto course) => Predicteds.Where(x => x.Reunion == course.Reunion && x.Course == course.Course).OrderBy(x => x.NumeroPmu);
-
-    IEnumerable<ResultatPlace> GetResultats(ProgrammeCourseDto course)
-    {
-        var res = from resultat in GetPredicted(course)
-                  group resultat by resultat.NumeroPmu into gp
-                  select new ResultatPlace(gp.Key, gp.Count(), GetDividende(course, gp.Key));
-
-
-        return res;
-    }
-
-    bool GetIsPlace(ProgrammeCourseDto course, int numeroPmu) => course.Arrivee.Take(3).Contains(numeroPmu);
-    double GetDividende(ProgrammeCourseDto course, int numeroPmu)
-    {
-
-        var res = ResultatOfPredictedStatistical?.FirstOrDefault(x => x.Reunion == course.Reunion && x.Course == course.Course && x.NumeroPmu == numeroPmu && GetIsPlace(course, numeroPmu))?.Dividende ?? 0.0;
-        /*if (course.Reunion == 2 && course.Course == 2)
-            Debugger.Break();*/
-        return res;
-    }
-#pragma warning disable BL0007
-    [Parameter]
-    public string Date
-    {
-        get => _date?.ToShortDateString() ?? string.Empty;
-        set
-        {
-            var res = value.TryParseToDateOnly(out var __date);
-            if (!res)
-            {
-                __date = DateOnlyExtensions.Now;
-            }
-            CurrentDate = __date;
-
-        }
-    }
-#pragma warning restore BL0007
-    internal DateOnly? CurrentDate
-    {
-        get => _date;
-        set
-        {
-            _date = value;
-            NotifyPropertyChanged();
-        }
-    }
-
-    public AccuracyPerClassifierDto CurrentClassifier
-    {
-        get => Classifiers[_currentClassifier];
-        set
-        {
-            _currentClassifier = Classifiers.IndexOf( value);
-            NotifyPropertyChanged();
-        }
-    }
-    Task OnCurrentClassifierChanged(int selected)
-    {
-        CurrentClassifier=Classifiers[ selected];
-        return Task.CompletedTask;
-    }
-    private void SetDate(DateOnly d)
-    {
-        CurrentDate = d;
-    }
-    private void ShowCourseOrReunion(SelectMode mode)
-    {
-        _mode = mode;
-        // ShowProgrammeCourse = mode == SelectMode.Course;
-        //ShowProgrammeReunion = !ShowProgrammeCourse;
-        StateHasChanged();
-    }
-
-    private async Task LoadClassifiersAsync()
-    {
-        var t = pmuService.BrowseAccuracyOfClassifier(new BrowseAccuracyOfClassifierQuery());
-        var (res, response, errors) = await t;
-        if (res)
-        {
-            Classifiers = response.ClassifiersAccuracy;
-            var c = new AccuracyPerClassifierDto() { Classifier = ALL_CLASSIFIER, Percentage = 1.0, PredictionCount = 1, ResultatCount = 1 };
-            Classifiers.Insert(0,c);
-            CurrentClassifier = c;
-        }
-        else
-        {
-            await notification.Warn(errors.AsString());
-        }
-    }
-
-    private async Task LoadPredictedOnly(DateOnly? date)
-    {
-        string? classifier = CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
-        var t = pmuService.BrowsePredictionOnly(new() { Date = date, Classifier = classifier });
-        var (res, response, errors) = await t;
-        if (res)
-        {
-            PredictionsOnly = response.Predicteds;
-
-        }
-        else
-        {
-            await notification.Warn(errors.AsString());
-        }
-    }
-
-    private async Task LoadResultatOfPredicteds(DateOnly? date)
-    {
-        ResultatOfPredictedStatistical.Clear();
-        string? classifier = CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
-        var t = pmuService.BrowseResultatOfPredictedStatistical(new() { Date = date, Classifier = classifier });
-        var (res, response, errors) = await t;
-        if (res)
-        {
-            ResultatOfPredictedStatistical = response.Resultats;
-
-        }
-        else
-        {
-            await notification.Warn(errors.AsString());
-        }
-    }
-    private async Task LoadResultats(DateOnly? date)
-    {
-        var t = pmuService.BrowseResultat(new() { Date = date });
-        var (res, response) = await t;
-        if (res)
-        {
-            Resultats = response.Resultats;
-
-        }
-    }
-    private async Task LoadPredictionAsync(DateOnly? date)
-    {
-        string? classifier = CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
-        var t = pmuService.BrowsePrediction(new() { Date = date,Classifier=classifier });
-        var (res, response,errors) = await t;
-        if (res)
-        {
-            Predicteds = response.Predicteds;
-
-        }
-        else
-        {
-            await notification.Warn(errors.AsString());
-        }
-        //await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task LoadProgammeCourseAsync(DateOnly? date)
-    {
-        if (date is null)
-            return;
-        var t = pmuService.BrowseProgrammeCourse(new() { Date = (DateOnly)date });
-        var (res, response) = await t;
-        if (res)
-            ProgrammeCourses = response.Programmes;
-        //await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task LoadProgammeReunionAsync(DateOnly? date)
-    {
-        if (date is null)
-            return;
-        var t = pmuService.BrowseProgrammeReunion(new() { Date = (DateOnly)date });
-        var (res, response) = await t;
-        if (res)
-            ProgrammeReunions = response.Reunions;
-        //await InvokeAsync(StateHasChanged);
-    }
-    protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-
-    public (int, double) CalculSommeDesMises()
-       => (PredictionsOnly.DistinctBy(x => x.Hash).Count(), ResultatOfPredictedStatistical.DistinctBy(x => x.Hash).Sum(x => x.Dividende));
-    #region Chart
-    LineChart<double> lineChart;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            //await HandleRedraw();
-        }
-    }
-
-    async Task HandleRedraw()
-    {
-        await lineChart.Clear();
-
-        await lineChart.AddLabelsDatasetsAndUpdate(Labels, GetLineChartDataset());
-    }
-
-    LineChartDataset<double> GetLineChartDataset()
-    {
-        return new LineChartDataset<double>
-            {
-                Label = "€",
-                Data = GetChartData(),// RandomizeData(),
-                BackgroundColor = backgroundColors,
-                BorderColor = borderColors,
-                Fill = true,
-                PointRadius = 3,
-                CubicInterpolationMode = "monotone",
-            };
-    }
-
-    string[] Labels = Array.Empty<string>();
-    List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
-    List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
-
-
-
-    List<double> GetChartData()
-    {
-        if (!ResultatOfPredictedStatistical?.Any() ?? false)
-            return new();
-        Dictionary<(int, int), double> res = new();
-        double cumul = 0;
-
-        foreach (var key in ResultatsOfPredicteds.Keys)
-        {
-            var v = ResultatsOfPredicteds[key];
-
-            cumul = cumul + v.Sum(x => x.DividendePlace) - v.Count();
-            res[key] = cumul;
-
-        }
-        return res.Values.ToList();
-    }
-    #endregion
-}

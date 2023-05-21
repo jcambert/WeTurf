@@ -3,7 +3,7 @@ using We.Bootswatch.Components.Web.BasicTheme;
 
 namespace We.Turf.Blazor.Bundling;
 
-public class BootswatchStyleContributor : BundleContributor
+public class StyleContributor : BundleContributor
 {
     public override Task ConfigureBundleAsync(BundleConfigurationContext context)
     {

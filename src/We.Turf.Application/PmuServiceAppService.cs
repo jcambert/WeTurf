@@ -51,6 +51,13 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
         GetProgrammeCourseQuery query
     ) => Mediator.Send(query).AsTaskWrap();
 
+    public Task<Result<GetStatistiqueResponse>> GetStatistics(GetStatistiqueQuery query) =>
+        Mediator.Send(query).AsTaskWrap();
+
+    public Task<Result<GetStatistiqueWithDateResponse>> GetStatisticsWithDate(
+        GetStatistiqueWithDateQuery query
+    ) => Mediator.Send(query).AsTaskWrap();
+
     public Task<Result<LoadCourseIntoDbResponse>> LoadCourseIntoDb(LoadCourseIntoDbQuery query) =>
         Mediator.Send(query).AsTaskWrap();
 

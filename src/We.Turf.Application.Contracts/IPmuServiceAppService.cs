@@ -48,4 +48,10 @@ public interface IPmuServiceAppService : IApplicationService
     Task<Result<BrowseResultatResponse>> BrowseResultat(BrowseResultatQuery query);
 
     Task<Result<BrowsePredictedOnlyResponse>> BrowsePredictionOnly(BrowsePredictedOnlyQuery query);
+
+    Task<Result<GetStatistiqueResponse>> GetStatistics(GetStatistiqueQuery query);
+
+    Task<Result<GetStatistiqueWithDateResponse>> GetStatisticsWithDate(
+        GetStatistiqueWithDateQuery query
+    );
 }

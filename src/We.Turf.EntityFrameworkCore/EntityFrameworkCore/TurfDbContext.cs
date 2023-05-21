@@ -55,6 +55,9 @@ public class TurfDbContext
 
     public DbSet<Classifier> Classifiers { get; set; }
 
+    public DbSet<Stat> Statistiques { get; set; }
+    public DbSet<StatByDate> StatistiquesWithDates { get; set; }
+
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
@@ -242,6 +245,7 @@ public class TurfDbContext
                 b.HasNoKey();
                 b.ToView("turfprogrammereunion");
                 b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+
                 b.Property(x => x.Nombre).HasColumnName("count");
                 b.Property(x => x.Hippodrome).HasColumnName("HippoCourt");
             }
@@ -254,6 +258,22 @@ public class TurfDbContext
                     TurfConsts.DbTablePrefix + nameof(Parameter).ToLower(),
                     TurfConsts.DbSchema
                 );
+            }
+        );
+
+        builder.Entity<Stat>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfstat");
+            }
+        );
+        builder.Entity<StatByDate>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfstatbydate");
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
             }
         );
     }

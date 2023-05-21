@@ -4,9 +4,22 @@ namespace We.Turf.Queries;
 
 public enum TypePari
 {
-    Simple,
+    Place,
     Gagnant,
+    NonArrive,
     Tous
+}
+
+public static class TypePariExtensions
+{
+    public static string AsString(this TypePari pari) =>
+        pari switch
+        {
+            TypePari.Place => "E_SIMPLE_PLACE",
+            TypePari.Gagnant => "E_SIMPLE_GAGNANT",
+            TypePari.NonArrive => "E_NON_ARRIVE",
+            _ => ""
+        };
 }
 
 public interface IBrowseResultatOfPredictedStatisticalQuery

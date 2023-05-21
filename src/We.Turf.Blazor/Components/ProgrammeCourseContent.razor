@@ -5,12 +5,12 @@
 @inject IPmuServiceAppService? AppService;
 @if (Courses != null)
 {
-    
+
 
     <Row>
         <ul>
-            <li>Somme des mises:@SommeDesMises.Mises.ToN2String() €</li>
-            <li>Somme des Dividendes:@SommeDesMises.Dividendes.ToN2String() €</li>
+            <li>Somme des mises:@SommeDesMises.Mise.ToN2String() €</li>
+            <li>Somme des Dividendes:@SommeDesMises.Dividende.ToN2String() €</li>
         </ul>
 
 
@@ -21,8 +21,8 @@
     {
 
         IEnumerable<ResultatPlace> ResultatsCourse = GetResultatsCourse(course);
-
-        <CourseCard>
+        string targetId = $"r{course.Reunion}c{course.Course}";
+        <CourseCard id="@targetId">
             <Column ColumnSize="ColumnSize.IsFull">
 
                 <Row>
@@ -45,7 +45,9 @@
                                 {
                                     <CascadingValue Name="Predicteds" Value="Predicteds">
                                         <CascadingValue Name="Course" Value="course">
-                                            <ResultatPill Type="ResultatPillType.Arrivee" NumeroPmu="item" Index="index" />
+                                            <CascadingValue Name="TypePari" Value="Pari">
+                                                <ResultatPill Type="ResultatPillType.Arrivee" NumeroPmu="item" Index="index"  />
+                                            </CascadingValue>
                                         </CascadingValue>
                                     </CascadingValue>
                                 }
@@ -53,19 +55,36 @@
 
 
                             <Column ColumnSize="ColumnSize.IsHalf">
-                                @foreach (var (item, index) in ResultatsCourse.WithIndex())
+                                @{
+                                    var r = ResultatsCourse.Where(x => x.Count >= (IndiceConfiance ?? 0));
+                                }
+                                @foreach (var (item, index) in r.WithIndex())
                                 {
 
                                     <CascadingValue Name="Predicteds" Value="Predicteds">
                                         <CascadingValue Name="Course" Value="course">
-                                            <ResultatPill Type="ResultatPillType.Prediction" NumeroPmu="item.NumPmu" Index="index" PredictionCount="item.Count" Dividende="item.DividendePlace"/>
+                                            <CascadingValue Name="TypePari" Value="Pari">
+                                                <ResultatPill Type="ResultatPillType.Prediction" NumeroPmu="item.NumPmu" Index="index" PredictionCount="item.Count" Dividende="item.DividendePlace" ShowBadgeUp="Classifier==0"/>
+                                            </CascadingValue>
                                         </CascadingValue>
                                     </CascadingValue>
 
                                 }
-                                @ResultatsCourse.Count()
-                                @ResultatsCourse.Sum(x=>x.DividendePlace).ToN2String()
-                                @((ResultatsCourse.Sum(x => x.DividendePlace) - ResultatsCourse.Count() ).ToN2String())
+                                @if (r.Any())
+                                {
+                                    <em>
+                                        @r.Count()
+                                    </em>
+                                    <em>
+
+                                    @r.Sum(x=>x.DividendePlace).ToN2String() 
+                                    </em>
+                                    <em>
+
+                                    @((r.Sum(x => x.DividendePlace) - r.Count()).ToN2String())
+                                    </em>
+
+                                }
                             </Column>
 
                         </Row>
@@ -86,35 +105,17 @@
     //[CascadingParameter(Name = "Resultats")] public List<ResultatDto> Resultats { get; set; } = new();
     [CascadingParameter(Name = "Resultats")] List<ResultatOfPredictedStatisticalDto> Resultats { get; set; } = new();
     [CascadingParameter(Name = "PredictionsOnly")] public List<PredictedOnlyDto> PredictionsOnly { get; set; } = new();
-    [Parameter] public (int Mises, double Dividendes) SommeDesMises { get; set; } = (0, 0.0);
-
-
-
+    [CascadingParameter(Name = "TypePari")] public TypePari Pari { get; set; } = TypePari.Tous;
     [CascadingParameter(Name = "ResultatsOfPredicteds")] public Dictionary<(int, int), IEnumerable<ResultatPlace>> ResultatsOfPredicteds { get; set; } = new();
+
+    [Parameter] public SommeDesMises SommeDesMises { get; set; } = new(0, 0.0);
+    [Parameter] public int? IndiceConfiance{ get; set; }
+    [Parameter,EditorRequired] public int Classifier{ get; set; }
+
+
 
 
     IEnumerable<ResultatPlace> GetResultatsCourse(ProgrammeCourseDto course) => ResultatsOfPredicteds.ContainsKey((course.Reunion, course.Course)) ? ResultatsOfPredicteds[(course.Reunion, course.Course)] : new List<ResultatPlace>();
 
-   /* public (int, double) CalculSommeDesMises()
-        => (PredictionsOnly.Count(), Resultats.Sum(x => x.Dividende));*/
-
-
     
-
-    /*public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        await base.SetParametersAsync(parameters);
-        parameters.TryGetValue<List<PredictedDto>>(nameof(Predicteds), out var value0);
-        parameters.TryGetValue<List<ProgrammeCourseDto>>(nameof(Courses), out var value1);
-        parameters.TryGetValue<List<ResultatOfPredictedStatisticalDto>>(nameof(Resultats), out var value2);
-        parameters.TryGetValue<List<PredictedOnlyDto>>(nameof(PredictionsOnly), out var value3);
-       
-
-        if ( (value0?.Any() ?? false) && (value1?.Any() ?? false) && (value2?.Any() ?? false) && (value3?.Any() ?? false))
-            InternalInitialization();
-
-
-        
-
-    }*/
 }

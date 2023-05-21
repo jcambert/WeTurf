@@ -27,5 +27,7 @@ public class TurfApplicationAutoMapperProfile : Profile
         CreateMap<ToPredict, ToPredictDto>().ReverseMap();
         CreateMap<Parameter, ParameterDto>().ReverseMap();
         CreateMap<Classifier, ClassifierDto>().ReverseMap();
+        CreateMap<Stat, StatDto>().ReverseMap();
+        CreateMap<StatByDate, StatByDateDto>().ReverseMap();
     }
 }

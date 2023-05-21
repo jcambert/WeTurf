@@ -38,8 +38,9 @@ using We.Turf.Blazor.Menus;
 using We.Turf.EntityFrameworkCore;
 using We.Turf.Localization;
 using We.Turf.MultiTenancy;
+using We.Blazor;
 #if MEDIATR
-﻿using MediatR;
+using MediatR;
 #endif
 #if MEDIATOR
 using Mediator;
@@ -60,32 +61,38 @@ namespace We.Turf.Blazor;
     typeof(AbpSettingManagementBlazorServerModule),
     typeof(WeAspNetCoreComponentsServerBasicThemeModule),
     typeof(WeAspNetCoreComponentsWebBasicThemeModule)
-   )]
+)]
 public class TurfBlazorModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.PreConfigure<AbpMvcDataAnnotationsLocalizationOptions>(options =>
-        {
-            options.AddAssemblyResource(
-                typeof(TurfResource),
-                typeof(TurfDomainModule).Assembly,
-                typeof(TurfDomainSharedModule).Assembly,
-                typeof(TurfApplicationModule).Assembly,
-                typeof(TurfApplicationContractsModule).Assembly,
-                typeof(TurfBlazorModule).Assembly
-            );
-        });
-
-        PreConfigure<OpenIddictBuilder>(builder =>
-        {
-            builder.AddValidation(options =>
+        context.Services.PreConfigure<AbpMvcDataAnnotationsLocalizationOptions>(
+            options =>
             {
-                options.AddAudiences("Turf");
-                options.UseLocalServer();
-                options.UseAspNetCore();
-            });
-        });
+                options.AddAssemblyResource(
+                    typeof(TurfResource),
+                    typeof(TurfDomainModule).Assembly,
+                    typeof(TurfDomainSharedModule).Assembly,
+                    typeof(TurfApplicationModule).Assembly,
+                    typeof(TurfApplicationContractsModule).Assembly,
+                    typeof(TurfBlazorModule).Assembly
+                );
+            }
+        );
+
+        PreConfigure<OpenIddictBuilder>(
+            builder =>
+            {
+                builder.AddValidation(
+                    options =>
+                    {
+                        options.AddAudiences("Turf");
+                        options.UseLocalServer();
+                        options.UseAspNetCore();
+                    }
+                );
+            }
+        );
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -107,128 +114,163 @@ public class TurfBlazorModule : AbpModule
         ConfigureMediator(context);
     }
 
-
-
     private static void ConfigureMediator(ServiceConfigurationContext context)
     {
 #if MEDIATOR
         context.Services.AddMediator();
 #endif
 #if MEDIATR
-        context.Services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssemblies(
-                typeof(AbpExtensionsModule).Assembly,
-                typeof(TurfApplicationModule).Assembly,
-                typeof(WeAspNetCoreComponentsWebBasicThemeModule).Assembly
-            );
-        });
+        context.Services.AddMediatR(
+            cfg =>
+            {
+                cfg.RegisterServicesFromAssemblies(
+                    typeof(AbpExtensionsModule).Assembly,
+                    typeof(TurfApplicationModule).Assembly,
+                    typeof(WeAspNetCoreComponentsWebBasicThemeModule).Assembly
+                );
+            }
+        );
 #endif
 
     }
 
     private void ConfigureJsonConverters()
     {
-        Configure<JsonSerializerOptions>(options =>
-        {
-            options.Converters.Add(new We.Turf.Converters.TimeOnlyConverter());
-            options.Converters.Add(new We.Turf.Converters.DateOnlyConverter());
-        });
+        Configure<JsonSerializerOptions>(
+            options =>
+            {
+                options.Converters.Add(new We.Turf.Converters.TimeOnlyConverter());
+                options.Converters.Add(new We.Turf.Converters.DateOnlyConverter());
+            }
+        );
     }
 
     private static void ConfigureAuthentication(ServiceConfigurationContext context)
     {
-        context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
+        context.Services.ForwardIdentityAuthenticationForBearer(
+            OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme
+        );
     }
 
     private void ConfigureUrls(IConfiguration configuration)
     {
-
-        Configure<AppUrlOptions>(options =>
-        {
-            options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-            options.RedirectAllowedUrls.AddRange((configuration["App:RedirectAllowedUrls"] ?? string.Empty).Split(','));
-        });
+        Configure<AppUrlOptions>(
+            options =>
+            {
+                options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
+                options.RedirectAllowedUrls.AddRange(
+                    (configuration["App:RedirectAllowedUrls"] ?? string.Empty).Split(',')
+                );
+            }
+        );
     }
 
     private void ConfigureBundles()
     {
-        Configure<AbpBundlingOptions>(options =>
-        {
+        Configure<AbpBundlingOptions>(
+            options =>
+            {
+                //BLAZOR UI
+                options.StyleBundles.Configure(
+                    BlazorBasicThemeBundles.Styles.Global,
+                    bundle =>
+                    {
+                        bundle.AddFiles("/blazor-global-styles.css");
+                        //You can remove the following line if you don't use Blazor CSS isolation for components
+                        bundle.AddFiles("/We.Turf.Blazor.styles.css");
+                        bundle.AddFiles("/global-styles.css");
+                        bundle.AddContributors(typeof(StyleContributor));
+                    }
+                );
 
-
-            //BLAZOR UI
-            options.StyleBundles.Configure(
-                BlazorBasicThemeBundles.Styles.Global,
-                bundle =>
-                {
-                    bundle.AddFiles("/blazor-global-styles.css");
-                    //You can remove the following line if you don't use Blazor CSS isolation for components
-                    bundle.AddFiles("/We.Turf.Blazor.styles.css");
-                    bundle.AddFiles("/global-styles.css");
-                    bundle.AddContributors(typeof(BootswatchStyleContributor));
-                }
-            );
-
-            options.ScriptBundles.Configure(
-                BlazorBasicThemeBundles.Scripts.Global,
-                bundle =>
-                {
-                    bundle.AddContributors(typeof(BootswatchSciptContributor));
-                }
-            );
-
-        });
+                options.ScriptBundles.Configure(
+                    BlazorBasicThemeBundles.Scripts.Global,
+                    bundle =>
+                    {
+                        bundle.AddContributors(typeof(SciptContributor));
+                    }
+                );
+            }
+        );
     }
 
     private void ConfigureVirtualFileSystem(IWebHostEnvironment hostingEnvironment)
     {
         if (hostingEnvironment.IsDevelopment())
         {
-            Configure<AbpVirtualFileSystemOptions>(options =>
-            {
-                options.FileSets.ReplaceEmbeddedByPhysical<TurfDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}We.Turf.Domain.Shared"));
-                options.FileSets.ReplaceEmbeddedByPhysical<TurfDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}We.Turf.Domain"));
-                options.FileSets.ReplaceEmbeddedByPhysical<TurfApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}We.Turf.Application.Contracts"));
-                options.FileSets.ReplaceEmbeddedByPhysical<TurfApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}We.Turf.Application"));
-                options.FileSets.ReplaceEmbeddedByPhysical<TurfBlazorModule>(hostingEnvironment.ContentRootPath);
-            });
+            Configure<AbpVirtualFileSystemOptions>(
+                options =>
+                {
+                    options.FileSets.ReplaceEmbeddedByPhysical<TurfDomainSharedModule>(
+                        Path.Combine(
+                            hostingEnvironment.ContentRootPath,
+                            $"..{Path.DirectorySeparatorChar}We.Turf.Domain.Shared"
+                        )
+                    );
+                    options.FileSets.ReplaceEmbeddedByPhysical<TurfDomainModule>(
+                        Path.Combine(
+                            hostingEnvironment.ContentRootPath,
+                            $"..{Path.DirectorySeparatorChar}We.Turf.Domain"
+                        )
+                    );
+                    options.FileSets.ReplaceEmbeddedByPhysical<TurfApplicationContractsModule>(
+                        Path.Combine(
+                            hostingEnvironment.ContentRootPath,
+                            $"..{Path.DirectorySeparatorChar}We.Turf.Application.Contracts"
+                        )
+                    );
+                    options.FileSets.ReplaceEmbeddedByPhysical<TurfApplicationModule>(
+                        Path.Combine(
+                            hostingEnvironment.ContentRootPath,
+                            $"..{Path.DirectorySeparatorChar}We.Turf.Application"
+                        )
+                    );
+                    options.FileSets.ReplaceEmbeddedByPhysical<TurfBlazorModule>(
+                        hostingEnvironment.ContentRootPath
+                    );
+                    options.FileSets.ReplaceEmbeddedByPhysical<WeComponentBase>(
+                        Path.Combine(
+                            hostingEnvironment.ContentRootPath,
+                            $"..{Path.DirectorySeparatorChar}We.Blazor"
+                        )
+                    );
+                    // options.FileSets.ReplaceEmbeddedByPhysical< WeComponentBase>(hostingEnvironment.ContentRootPath);
+                    //èoptions.FileSets.ReplaceEmbeddedByPhysical<WeComponentBase>(hostingEnvironment.WebRootPath);
+                    //options.FileSets.AddEmbedded<WeComponentBase>();
+                }
+            );
         }
     }
 
     private static void ConfigureSwaggerServices(IServiceCollection services)
     {
-
         services.AddAbpSwaggerGen(
             options =>
             {
-
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Turf API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
 
-                options.MapType<DateOnly>(() => new OpenApiSchema
-                {
-                    Type = "string",
-                    Format = "date",
-                });
+                options.MapType<DateOnly>(
+                    () => new OpenApiSchema { Type = "string", Format = "date", }
+                );
             }
         );
     }
 
     private static void ConfigureBlazorise(ServiceConfigurationContext context)
     {
-        context.Services
-            .AddBootstrap5Providers()
-            .AddFontAwesomeIcons();
+        context.Services.AddBootstrap5Providers().AddFontAwesomeIcons();
     }
 
     private void ConfigureMenu(ServiceConfigurationContext context)
     {
-        Configure<AbpNavigationOptions>(options =>
-        {
-            options.MenuContributors.Add(new TurfMenuContributor());
-        });
+        Configure<AbpNavigationOptions>(
+            options =>
+            {
+                options.MenuContributors.Add(new TurfMenuContributor());
+            }
+        );
         /* Configure<WeMenuStyleOptions>(options =>
          {
              options.DefaultStyle = WeMenuStyle.LeftSide;
@@ -237,29 +279,35 @@ public class TurfBlazorModule : AbpModule
 
     private void ConfigureRouter(ServiceConfigurationContext context)
     {
-        Configure<AbpRouterOptions>(options =>
-        {
-            options.AppAssembly = typeof(TurfBlazorModule).Assembly;
-        });
+        Configure<AbpRouterOptions>(
+            options =>
+            {
+                options.AppAssembly = typeof(TurfBlazorModule).Assembly;
+            }
+        );
     }
 
     private void ConfigureAutoApiControllers()
     {
-        Configure<AbpAspNetCoreMvcOptions>(options =>
-        {
-            // options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
-            //options.ConventionalControllers.Create(typeof(TurfHttpApiModule).Assembly);
-            //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
+        Configure<AbpAspNetCoreMvcOptions>(
+            options =>
+            {
+                // options.ConventionalControllers.Create(typeof(TurfApplicationModule).Assembly);
+                //options.ConventionalControllers.Create(typeof(TurfHttpApiModule).Assembly);
+                //options.ConventionalControllers.Create(typeof(WeAspNetCoreComponentsServerBasicThemeModule).Assembly);
 
-        });
+            }
+        );
     }
 
     private void ConfigureAutoMapper()
     {
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<TurfBlazorModule>();
-        });
+        Configure<AbpAutoMapperOptions>(
+            options =>
+            {
+                options.AddMaps<TurfBlazorModule>();
+            }
+        );
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -294,15 +342,13 @@ public class TurfBlazorModule : AbpModule
 
         app.UseUnitOfWork();
         app.UseAuthorization();
-        app.UseSwagger(options =>
-        {
-
-        });
-        app.UseAbpSwaggerUI(options =>
-        {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Turf API");
-
-        });
+        app.UseSwagger(options => { });
+        app.UseAbpSwaggerUI(
+            options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Turf API");
+            }
+        );
         app.UseConfiguredEndpoints();
     }
 }

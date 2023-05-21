@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
 using Volo.Abp.Domain.Entities;
 using We.Csv;
 
 namespace We.Turf.Entities;
 
+[DebuggerDisplay("{Date}-{Reunion}-{Course}-{NumeroPmu}-{Rapport}-{Dividende}")]
 public class ResultatOfPredicted : Entity<Guid>
 {
     public string? Classifier { get; set; }
