@@ -78,7 +78,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_files", "_files", "{FDAEEF
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "We.Blazor", "libraries\We.Blazor\We.Blazor.csproj", "{8B74A244-C05B-44D8-AA3C-061ED8070D2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Blazor", "libraries\We.Blazor\We.Blazor.csproj", "{8B74A244-C05B-44D8-AA3C-061ED8070D2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

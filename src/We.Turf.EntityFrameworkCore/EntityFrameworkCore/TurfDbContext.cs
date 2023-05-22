@@ -55,7 +55,10 @@ public class TurfDbContext
     public DbSet<Classifier> Classifiers { get; set; }
     public DbSet<Stat> Statistiques { get; set; }
     public DbSet<StatByDate> StatistiquesWithDates { get; set; }
-    public DbSet<PredictionByDate> PredictionsByDates{get;set;}
+    public DbSet<PredictionByDate> PredictionsByDates { get; set; }
+
+    public DbSet<ResultatOfPredictedWithoutClassifier> ResultatOfPredictedWithoutClassifier { get; set; }
+
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
@@ -282,7 +285,14 @@ public class TurfDbContext
                 b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
             }
         );
-
-        
+        builder.Entity<ResultatOfPredictedWithoutClassifier>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfresultatofpredictedwithoutclassifier");
+                b.Property(x => x.Dividende).HasColumnName("dividende");
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }
+        );
     }
 }

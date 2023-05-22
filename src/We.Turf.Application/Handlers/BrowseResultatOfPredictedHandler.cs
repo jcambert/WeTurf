@@ -4,7 +4,7 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-internal class ResultatOfPredictedByDate : Specification<ResultatOfPredicted>
+file class ResultatOfPredictedByDate : Specification<ResultatOfPredicted>
 {
     public ResultatOfPredictedByDate(DateOnly date) : base(e => e.Date == date) { }
 }

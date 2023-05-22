@@ -4,7 +4,7 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-internal class ResultatByDate : Specification<Resultat>
+file class ResultatByDate : Specification<Resultat>
 {
     public ResultatByDate(DateOnly date) : base(e => e.Date == date) { }
 }

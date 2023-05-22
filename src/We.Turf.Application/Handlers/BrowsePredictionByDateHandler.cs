@@ -23,7 +23,7 @@ public class BrowsePredictionByDateHandler : AbpHandler.With<BrowsePredictionByD
     }
 #if MEDIATOR
     public override async ValueTask<Result<BrowsePredictionByDateResponse>> Handle(
-        BrowsePredictionByDateQueryBrowsePredictionByDateQuery request,
+        BrowsePredictionByDateQuery request,
         CancellationToken cancellationToken
     )
 #else

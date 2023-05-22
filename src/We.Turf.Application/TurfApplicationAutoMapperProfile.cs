@@ -29,5 +29,8 @@ public class TurfApplicationAutoMapperProfile : Profile
         CreateMap<Classifier, ClassifierDto>().ReverseMap();
         CreateMap<Stat, StatDto>().ReverseMap();
         CreateMap<StatByDate, StatByDateDto>().ReverseMap();
+        CreateMap<PredictionByDate, PredictionByDateDto>().ReverseMap();
+        CreateMap<ResultatOfPredictedWithoutClassifier, ResultatOfPredictedWithoutClassifierDto>()
+            .ReverseMap();
     }
 }

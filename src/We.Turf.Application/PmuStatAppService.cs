@@ -18,31 +18,64 @@ public class PmuStatAppService : TurfAppService, IPmuStatAppService
         TypePari pari = TypePari.Tous
     )
     {
-        var res0=await PmuService.BrowsePredictionBydate(new(){Date=date});
-        int mise=res0?res0.Predictions.Count():0;
-        if(pari==TypePari.Tous)
-            mise*=2;
-
-        var t = PmuService.GetStatisticsWithDate(
-            new()
-            {
-                Start = date,
-                Classifier = classifier,
-                Pari = pari,
-                IncludeNonArrive = true
-            }
-        );
-        var (res, response, errors) = await t;
-        if (res)
+        int mise = 0;
+        double dividende = 0.0;
+        bool _all_classifier = classifier == TurfDomainConstants.ALL_CLASSIFIER;
+        if (_all_classifier)
         {
-            var stats = response.Stats;
-            int mise = stats.Sum(x => x.Mise);
-            double dividende = stats.Sum(x => x.Dividende);
-            return Result.Create<SommeDesMises>(new SommeDesMises(mise, dividende));
+            var t0 = PmuService.BrowsePredictionBydate(new() { Date = date });
+            var (res0, resp0, errors0) = await t0;
+            if (res0)
+            {
+                mise = resp0.Predictions.Count();
+            }
+            else
+            {
+                return Result.Failure<SommeDesMises>(
+                    "Impossible de recuperer les predictions par date"
+                );
+            }
+            if (pari == TypePari.Tous)
+                mise *= 2;
+
+            var t1 = PmuService.BrowseResultatOfPredictedWithoutClassifier(new() { Date = date,Pari=pari,IncludeNonArrive=true });
+            var (res1, resp1, errors1) = await t1;
+            if (res0)
+            {
+                dividende = resp1.Resultats.Sum(x => x?.Dividende ?? 0.0);
+            }
+            else
+            {
+                return Result.Failure<SommeDesMises>(
+                    "Impossible de recuperer les resultats des predictions sans classificateur par date"
+                );
+            }
+            return Result.Create(new SommeDesMises(mise, dividende));
         }
         else
         {
-            return Result.Failure<SommeDesMises>(errors.ToArray());
+            var t = PmuService.GetStatisticsWithDate(
+                new()
+                {
+                    Start = date,
+                    Classifier = classifier,
+                    Pari = pari,
+                    IncludeNonArrive = true
+                }
+            );
+            var (res, response, errors) = await t;
+            if (res)
+            {
+                var stats = response.Stats;
+                mise = stats.Sum(x => x.Mise);
+
+                dividende = stats.Sum(x => x.Dividende);
+                return Result.Create(new SommeDesMises(mise, dividende));
+            }
+            else
+            {
+                return Result.Failure<SommeDesMises>(errors.ToArray());
+            }
         }
     }
 }

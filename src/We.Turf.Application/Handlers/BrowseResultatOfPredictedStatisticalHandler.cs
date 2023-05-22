@@ -4,29 +4,29 @@ using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
-internal class ResultatOfPredictedStatisticalByDate : Specification<ResultatOfPredicted>
+file class ResultatOfPredictedStatisticalByDate : Specification<ResultatOfPredicted>
 {
     public ResultatOfPredictedStatisticalByDate(DateOnly date) : base(e => e.Date == date) { }
 }
 
-internal class ResultatOfPredictedStatisticalByClassifier : Specification<ResultatOfPredicted>
+file class ResultatOfPredictedStatisticalByClassifier : Specification<ResultatOfPredicted>
 {
     public ResultatOfPredictedStatisticalByClassifier(string classifier)
         : base(e => e.Classifier == classifier) { }
 }
 
-internal class ResultatOfPredictedStatisticalByPari : Specification<ResultatOfPredicted>
+file class ResultatOfPredictedStatisticalByPari : Specification<ResultatOfPredicted>
 {
     public ResultatOfPredictedStatisticalByPari(string pari) : base(e => e.Pari == pari) { }
 }
 
-internal class ResultatOfPredictedStatisticalByCourse : Specification<ResultatOfPredicted>
+file class ResultatOfPredictedStatisticalByCourse : Specification<ResultatOfPredicted>
 {
     public ResultatOfPredictedStatisticalByCourse(DateOnly date, int reunion, int course)
         : base(e => e.Date == date && e.Reunion == reunion && e.Course == course) { }
 }
 
-internal class ResultatOfPredictedStatisticalSpecification : Specification<ResultatOfPredicted>
+file class ResultatOfPredictedStatisticalSpecification : Specification<ResultatOfPredicted>
 {
     public ResultatOfPredictedStatisticalSpecification()
     {

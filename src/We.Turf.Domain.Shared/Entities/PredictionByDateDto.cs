@@ -1,4 +1,3 @@
-
 namespace We.Turf.Entities;
 
 [Serializable]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -20,7 +20,8 @@ public class TurfDbContextFactory : IDesignTimeDbContextFactory<TurfDbContext>
         var configuration = BuildConfiguration();
 
         var builder = new DbContextOptionsBuilder<TurfDbContext>().UseNpgsql(
-            configuration.GetConnectionString("Default")
+            configuration.GetConnectionString("Default"),
+            a => { }
         );
 
         return new TurfDbContext(builder.Options);

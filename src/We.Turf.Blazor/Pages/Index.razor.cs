@@ -36,7 +36,7 @@ public partial class Index : WeComponentBase
     IUiNotificationService Notification { get; set; }
 #pragma warning restore CS8618
 
-    private const string ALL_CLASSIFIER = "tous";
+
     private DateOnly? _date;
     private DateOnly? Today;
     private int _currentClassifier,
@@ -326,7 +326,7 @@ public partial class Index : WeComponentBase
             Classifiers = response.ClassifiersAccuracy;
             var c = new AccuracyPerClassifierDto()
             {
-                Classifier = ALL_CLASSIFIER,
+                Classifier = TurfDomainConstants.ALL_CLASSIFIER,
                 Percentage = 1.0,
                 PredictionCount = 1,
                 ResultatCount = 1
@@ -343,7 +343,9 @@ public partial class Index : WeComponentBase
     private async Task LoadPredictedOnly(DateOnly? date)
     {
         string? classifier =
-            CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
+            CurrentClassifier.Classifier == TurfDomainConstants.ALL_CLASSIFIER
+                ? null
+                : CurrentClassifier.Classifier;
         var t = PmuService.BrowsePredictionOnly(new() { Date = date, Classifier = classifier, });
         var (res, response, errors) = await t;
         if (res)
@@ -360,7 +362,9 @@ public partial class Index : WeComponentBase
     {
         ResultatOfPredictedStatistical.Clear();
         string? classifier =
-            CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
+            CurrentClassifier.Classifier == TurfDomainConstants.ALL_CLASSIFIER
+                ? null
+                : CurrentClassifier.Classifier;
         var t = PmuService.BrowseResultatOfPredictedStatistical(
             new()
             {
@@ -397,7 +401,9 @@ public partial class Index : WeComponentBase
     private async Task LoadPredictionAsync(DateOnly? date)
     {
         string? classifier =
-            CurrentClassifier.Classifier == ALL_CLASSIFIER ? null : CurrentClassifier.Classifier;
+            CurrentClassifier.Classifier == TurfDomainConstants.ALL_CLASSIFIER
+                ? null
+                : CurrentClassifier.Classifier;
         var t = PmuService.BrowsePrediction(new() { Date = date, Classifier = classifier });
         var (res, response, errors) = await t;
         if (res)
@@ -453,9 +459,7 @@ public partial class Index : WeComponentBase
         }
         var t = PmuStatService.GetSommeDesMise(
             (DateOnly)CurrentDate,
-            (CurrentClassifier.Classifier == ALL_CLASSIFIER)
-              ? string.Empty
-              : CurrentClassifier.Classifier,
+            CurrentClassifier.Classifier,
             CurrentPari
         );
         var (res, response, errors) = await t;

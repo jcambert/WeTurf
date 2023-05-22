@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using We.AbpExtensions;
 using We.Results;
 using We.Turf.Entities;
@@ -27,29 +28,29 @@ public class GetStatistiqueHandler
     }
 }
 
-internal class StatistiqueByDate : Specification<StatByDate>
+file class StatistiqueByDate : Specification<StatByDate>
 {
     public StatistiqueByDate(DateOnly date) : base(e => e.Date == date) { }
 }
 
-internal class StatistiqueByInterval : Specification<StatByDate>
+file class StatistiqueByInterval : Specification<StatByDate>
 {
     public StatistiqueByInterval(DateOnly start_date, DateOnly end_date)
         : base(e => e.Date >= start_date && e.Date <= end_date) { }
 }
 
-internal class StatistiqueByClassifier : Specification<StatByDate>
+file class StatistiqueByClassifier : Specification<StatByDate>
 {
     public StatistiqueByClassifier(string classifier) : base(e => e.Classifier == classifier) { }
 }
 
-internal class StatistiqueByPari : Specification<StatByDate>
+file class StatistiqueByPari : Specification<StatByDate>
 {
     public StatistiqueByPari(string pari, bool includeNonArrivee)
         : base(
             e =>
                 e.Pari == pari
-                || (includeNonArrivee ? e.Pari == TypePari.NonArrive.AsString() : true)
+                || (includeNonArrivee ? e.Pari == null : true)
         ) { }
 }
 
@@ -85,14 +86,15 @@ public class GetStatistiqueWithDateHandler
             else
                 query = query.GetQuery(new StatistiqueByDate((DateOnly)request.Start));
 
-        if (!string.IsNullOrEmpty(request.Classifier))
+        if (request.Classifier != TurfDomainConstants.ALL_CLASSIFIER)
             query = query.GetQuery(new StatistiqueByClassifier(request.Classifier));
 
         if (request.Pari != TypePari.Tous)
             query = query.GetQuery(
                 new StatistiqueByPari(request.Pari.AsString(), request.IncludeNonArrive)
             );
-
+        var s=query.ToQueryString();
+        LogDebug( s );
         var res = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new GetStatistiqueWithDateResponse(MapToDtoList(res));
     }

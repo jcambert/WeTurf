@@ -4,6 +4,11 @@ namespace We.Turf;
 
 public interface IPmuServiceAppService : IApplicationService
 {
+    Task<
+        Result<BrowseResultatOfPredictedWithoutClassifierResponse>
+    > BrowseResultatOfPredictedWithoutClassifier(
+        BrowseResultatOfPredictedWithoutClassifierQuery query
+    );
     Task<Result<BrowseClassifierResponse>> BrowseClassifier(BrowseClassifierQuery query);
     Task<Result<BrowseProgrammeReunionResponse>> BrowseProgrammeReunion(
         BrowseProgrammeReunionQuery query
@@ -53,5 +58,9 @@ public interface IPmuServiceAppService : IApplicationService
 
     Task<Result<GetStatistiqueWithDateResponse>> GetStatisticsWithDate(
         GetStatistiqueWithDateQuery query
+    );
+
+    Task<Result<BrowsePredictionByDateResponse>> BrowsePredictionBydate(
+        BrowsePredictionByDateQuery query
     );
 }

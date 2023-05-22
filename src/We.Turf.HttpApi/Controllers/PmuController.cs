@@ -32,6 +32,11 @@ public class PmuController : TurfController, IPmuServiceAppService
     ) => pmuService.BrowsePrediction(query);
 
     [HttpGet]
+    public Task<Result<BrowsePredictionByDateResponse>> BrowsePredictionBydate(
+        [FromQuery] BrowsePredictionByDateQuery query
+    ) => pmuService.BrowsePredictionBydate(query);
+
+    [HttpGet]
     public Task<Result<BrowsePredictedOnlyResponse>> BrowsePredictionOnly(
         [FromQuery] BrowsePredictedOnlyQuery query
     ) => pmuService.BrowsePredictionOnly(query);
@@ -67,6 +72,13 @@ public class PmuController : TurfController, IPmuServiceAppService
     > BrowseResultatOfPredictedStatistical(
         [FromQuery] BrowseResultatOfPredictedStatisticalQuery query
     ) => pmuService.BrowseResultatOfPredictedStatistical(query);
+
+    [HttpGet]
+    public Task<
+        Result<BrowseResultatOfPredictedWithoutClassifierResponse>
+    > BrowseResultatOfPredictedWithoutClassifier(
+        [FromQuery] BrowseResultatOfPredictedWithoutClassifierQuery query
+    ) => pmuService.BrowseResultatOfPredictedWithoutClassifier(query);
 
     [HttpGet]
     public Task<Result<BrowseResultatPerClassifierResponse>> BrowseResultatPerClassifier(
