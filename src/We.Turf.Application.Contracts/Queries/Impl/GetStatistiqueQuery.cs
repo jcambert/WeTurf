@@ -15,6 +15,8 @@ public class GetStatistiqueWithDateQuery : IGetStatistiqueWithDateQuery
     public string Classifier { get; set; }
     public TypePari Pari { get; set; }
 
+    public bool IncludeNonArrive { get; set; }
+
     [JsonIgnore]
     public string PariAsString => Pari.AsString();
 }

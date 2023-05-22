@@ -18,19 +18,25 @@ public class PmuStatAppService : TurfAppService, IPmuStatAppService
         TypePari pari = TypePari.Tous
     )
     {
+        var res0=await PmuService.BrowsePredictionBydate(new(){Date=date});
+        int mise=res0?res0.Predictions.Count():0;
+        if(pari==TypePari.Tous)
+            mise*=2;
+
         var t = PmuService.GetStatisticsWithDate(
             new()
             {
                 Start = date,
                 Classifier = classifier,
-                Pari = pari
+                Pari = pari,
+                IncludeNonArrive = true
             }
         );
         var (res, response, errors) = await t;
         if (res)
         {
             var stats = response.Stats;
-            int mise = stats.Sum(x=>x.Mise);
+            int mise = stats.Sum(x => x.Mise);
             double dividende = stats.Sum(x => x.Dividende);
             return Result.Create<SommeDesMises>(new SommeDesMises(mise, dividende));
         }

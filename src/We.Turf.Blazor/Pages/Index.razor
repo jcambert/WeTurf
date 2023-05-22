@@ -11,32 +11,32 @@
         <Column Class="col-sm-4 col-md-4 col-lg-2  mx-auto ">
             <Field>
                 <FieldLabel>Indice de confiance</FieldLabel>
-            <Select TValue="int" SelectedValue="@_indiceConfiance" SelectedValueChanged="@OnCurrentIndiceConfianceChanged">
-                @for (int i = 0; i < Classifiers.Count - 1; i++)
-                {
-                    var j = i + 1;
-                    <SelectItem Value="j">
-                        @(
-                    j
-                    )
-                    </SelectItem>
-                }
+                <Select TValue="int" SelectedValue="@_indiceConfiance" SelectedValueChanged="@OnCurrentIndiceConfianceChanged">
+                    @for (int i = 0; i < Classifiers.Count - 1; i++)
+                    {
+                        var j = i + 1;
+                        <SelectItem Value="j">
+                            @(
+                        j
+                        )
+                        </SelectItem>
+                    }
 
 
-            </Select>
+                </Select>
             </Field>
         </Column>
     }
     <Column Class="col-sm-4 col-md-4 col-lg-2  mx-auto ">
         <Field>
             <FieldLabel>Classificateur</FieldLabel>
-        <Select TValue="int" SelectedValue="@_currentClassifier" SelectedValueChanged="@OnCurrentClassifierChanged">
-            @foreach (var (item, index) in Classifiers.OrderByDescending(x => x.Percentage).WithIndex())
-            {
-                <SelectItem Value="index">@item.Classifier.Replace("classifier","").ToPascalCase()</SelectItem>
-            }
+            <Select TValue="int" SelectedValue="@_currentClassifier" SelectedValueChanged="@OnCurrentClassifierChanged">
+                @foreach (var (item, index) in Classifiers.OrderByDescending(x => x.Percentage).WithIndex())
+                {
+                    <SelectItem Value="index">@item.Classifier.Replace("classifier","").ToPascalCase()</SelectItem>
+                }
 
-        </Select>
+            </Select>
         </Field>
 
     </Column>
@@ -44,12 +44,13 @@
     <Column Class="col-sm-4 col-md-4 col-lg-2  mx-auto ">
         <Field>
             <FieldLabel>Type de Pari</FieldLabel>
-        <Select TValue="TypePari" SelectedValue="@_currentPari" SelectedValueChanged="@OnCurrentPariChanged">
+            <Select TValue="TypePari" SelectedValue="@_currentPari" SelectedValueChanged="@OnCurrentPariChanged">
 
-            <SelectItem Value="TypePari.Place">Placé</SelectItem>
-            <SelectItem Value="TypePari.Gagnant">Gagnant</SelectItem>
+                <SelectItem Value="TypePari.Place">Placé</SelectItem>
+                <SelectItem Value="TypePari.Gagnant">Gagnant</SelectItem>
+                <SelectItem Value="TypePari.Tous">Placé/Gagnant</SelectItem>
 
-        </Select>
+            </Select>
         </Field>
     </Column>
 </Row>
@@ -85,7 +86,7 @@
                                     <CascadingValue Name="Resultats" Value="ResultatOfPredictedStatistical">
                                         <CascadingValue Name="PredictionsOnly" Value="PredictionsOnly">
                                             <CascadingValue Name="TypePari" Value="CurrentPari">
-                                                <ProgrammeCourseContent SommeDesMises="SommeDesMises" IndiceConfiance="IndiceConfiance" Classifier="_currentClassifier"/>
+                                                <ProgrammeCourseContent SommeDesMises="SommeDesMises" IndiceConfiance="IndiceConfiance" Classifier="_currentClassifier" />
                                             </CascadingValue>
                                         </CascadingValue>
                                     </CascadingValue>

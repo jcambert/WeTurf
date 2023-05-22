@@ -52,12 +52,10 @@ public class TurfDbContext
     public DbSet<ProgrammeReunion> ProgrammeReunions { get; set; }
     public DbSet<AccuracyPerClassifier> AccuracyPerClassifiers { get; set; }
     public DbSet<Parameter> Parameters { get; set; }
-
     public DbSet<Classifier> Classifiers { get; set; }
-
     public DbSet<Stat> Statistiques { get; set; }
     public DbSet<StatByDate> StatistiquesWithDates { get; set; }
-
+    public DbSet<PredictionByDate> PredictionsByDates{get;set;}
     //Identity
     public DbSet<IdentityUser> Users { get; set; }
     public DbSet<IdentityRole> Roles { get; set; }
@@ -276,5 +274,15 @@ public class TurfDbContext
                 b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
             }
         );
+        builder.Entity<PredictionByDate>(
+            b =>
+            {
+                b.HasNoKey();
+                b.ToView("turfpredictionbydate");
+                b.Property(x => x.Date).HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }
+        );
+
+        
     }
 }

@@ -12,6 +12,8 @@ public interface IGetStatistiqueWithDateQuery : WeM.IQuery<GetStatistiqueWithDat
     DateOnly? End { get; set; }
     string Classifier { get; set; }
     TypePari Pari { get; set; }
+
+    bool IncludeNonArrive { get; set; }
 }
 
 public sealed record GetStatistiqueWithDateResponse(List<StatByDateDto> Stats) : WeM.Response;

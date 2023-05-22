@@ -4,12 +4,12 @@ using We.Results;
 
 namespace We.Turf.Handlers;
 
-internal class PredictionByDate : Specification<Predicted>
+file class PredictionByDate : Specification<Predicted>
 {
     public PredictionByDate(DateOnly date) : base(e => e.Date == date) { }
 }
 
-internal class PredictionByClassifier : Specification<Predicted>
+file class PredictionByClassifier : Specification<Predicted>
 {
     public PredictionByClassifier(string classifier) : base(e => e.Classifier == classifier) { }
 }

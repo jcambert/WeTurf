@@ -45,7 +45,12 @@ internal class StatistiqueByClassifier : Specification<StatByDate>
 
 internal class StatistiqueByPari : Specification<StatByDate>
 {
-    public StatistiqueByPari(string pari) : base(e => e.Pari == pari) { }
+    public StatistiqueByPari(string pari, bool includeNonArrivee)
+        : base(
+            e =>
+                e.Pari == pari
+                || (includeNonArrivee ? e.Pari == TypePari.NonArrive.AsString() : true)
+        ) { }
 }
 
 public class GetStatistiqueWithDateHandler
@@ -84,7 +89,9 @@ public class GetStatistiqueWithDateHandler
             query = query.GetQuery(new StatistiqueByClassifier(request.Classifier));
 
         if (request.Pari != TypePari.Tous)
-            query = query.GetQuery(new StatistiqueByPari(request.Pari.AsString()));
+            query = query.GetQuery(
+                new StatistiqueByPari(request.Pari.AsString(), request.IncludeNonArrive)
+            );
 
         var res = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new GetStatistiqueWithDateResponse(MapToDtoList(res));
