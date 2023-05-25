@@ -38,7 +38,14 @@ public class PmuStatAppService : TurfAppService, IPmuStatAppService
             if (pari == TypePari.Tous)
                 mise *= 2;
 
-            var t1 = PmuService.BrowseResultatOfPredictedWithoutClassifier(new() { Date = date,Pari=pari,IncludeNonArrive=true });
+            var t1 = PmuService.BrowseResultatOfPredictedWithoutClassifier(
+                new()
+                {
+                    Date = date,
+                    Pari = pari,
+                    IncludeNonArrive = true
+                }
+            );
             var (res1, resp1, errors1) = await t1;
             if (res0)
             {
@@ -54,6 +61,15 @@ public class PmuStatAppService : TurfAppService, IPmuStatAppService
         }
         else
         {
+            var res00 = await Mediator.Send(
+                new ResultatOfPredictedCountByReunionCourseQuery()
+                {
+                    Date = date,
+                    Classifier = classifier ?? string.Empty,
+                    Pari = pari,
+                }
+            );
+
             var t = PmuService.GetStatisticsWithDate(
                 new()
                 {
@@ -67,7 +83,7 @@ public class PmuStatAppService : TurfAppService, IPmuStatAppService
             if (res)
             {
                 var stats = response.Stats;
-                mise = stats.Sum(x => x.Mise);
+                mise = res00.Value.Resultats.Sum(x => x.NombreDePrediction);
 
                 dividende = stats.Sum(x => x.Dividende);
                 return Result.Create(new SommeDesMises(mise, dividende));

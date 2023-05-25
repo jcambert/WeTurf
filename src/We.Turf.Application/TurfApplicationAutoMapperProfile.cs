@@ -32,5 +32,10 @@ public class TurfApplicationAutoMapperProfile : Profile
         CreateMap<PredictionByDate, PredictionByDateDto>().ReverseMap();
         CreateMap<ResultatOfPredictedWithoutClassifier, ResultatOfPredictedWithoutClassifierDto>()
             .ReverseMap();
+
+        CreateMap<
+            ResultatOfPredictedCountByReunionCourse,
+            ResultatOfPredictedCountByReunionCourseDto
+        >();
     }
 }

@@ -74,13 +74,7 @@
                                 }
                                 @if (r.Any())
                                 {
-                                    <em>
-                                        @r.Count()
-                                    </em>
-                                    <em>
-
-                                        @r.Sum(x=>x.DividendePlace).ToN2String()
-                                    </em>
+                                   
                                     <em>
 
                                         @((r.Sum(x => x.DividendePlace) - r.Count()).ToN2String())
