@@ -124,6 +124,11 @@ public abstract class Specification<T> : ISpecification<T>
         return this;
     }
 
+    protected virtual void AddGroupBy(Expression<Func<T, object>> expression)
+    {
+        GroupBy = expression;
+    }
+
     /// <summary>
     /// Applying Paging
     /// </summary>

@@ -37,5 +37,7 @@ public class TurfApplicationAutoMapperProfile : Profile
             ResultatOfPredictedCountByReunionCourse,
             ResultatOfPredictedCountByReunionCourseDto
         >();
+
+        CreateMap<Predicted, MiseDto>();
     }
 }

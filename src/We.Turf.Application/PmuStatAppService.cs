@@ -21,6 +21,11 @@ public class PmuStatAppService : TurfAppService, IPmuStatAppService
         int mise = 0;
         double dividende = 0.0;
         bool _all_classifier = classifier == TurfDomainConstants.ALL_CLASSIFIER;
+
+        var res00 = await Mediator.Send(
+            new GetMiseQuery() { Date = date, Classifier = classifier }
+        );
+
         if (_all_classifier)
         {
             var t0 = PmuService.BrowsePredictionBydate(new() { Date = date });
@@ -61,15 +66,6 @@ public class PmuStatAppService : TurfAppService, IPmuStatAppService
         }
         else
         {
-            var res00 = await Mediator.Send(
-                new ResultatOfPredictedCountByReunionCourseQuery()
-                {
-                    Date = date,
-                    Classifier = classifier ?? string.Empty,
-                    Pari = pari,
-                }
-            );
-
             var t = PmuService.GetStatisticsWithDate(
                 new()
                 {
@@ -83,7 +79,7 @@ public class PmuStatAppService : TurfAppService, IPmuStatAppService
             if (res)
             {
                 var stats = response.Stats;
-                mise = res00.Value.Resultats.Sum(x => x.NombreDePrediction);
+                mise = res00.Value.Mises.Sum(x => x.Somme);
 
                 dividende = stats.Sum(x => x.Dividende);
                 return Result.Create(new SommeDesMises(mise, dividende));
