@@ -1,10 +1,3 @@
-using AutoMapper.QueryableExtensions;
-using System.Security.Cryptography;
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
-using We.Utilities;
-
 namespace We.Turf.Handlers;
 
 internal class PredictedOnlyByDate : Specification<Predicted>
@@ -39,17 +32,10 @@ public class BrowsePredictedOnlyHandler
     public BrowsePredictedOnlyHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
 
-#if MEDIATOR
-    public override async ValueTask<Result<BrowsePredictedOnlyResponse>> Handle(
+    protected override async Task<Result<BrowsePredictedOnlyResponse>> InternalHandle(
         BrowsePredictedOnlyQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async ValueTask<Result<BrowsePredictedOnlyResponse>> Handle(
-        BrowsePredictedOnlyQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         LogTrace($"{nameof(BrowsePredictedOnlyHandler)}");
 
@@ -66,18 +52,10 @@ public class BrowsePredictedOnlyHandler
         if (!string.IsNullOrEmpty(request.Classifier))
             query = query.GetQuery(new PredictedOnlyByClassifier(request.Classifier));
 
-        /*
-        query = query
-            .Distinct()
-            .OrderBy(x => x.Reunion)
-            .ThenBy(x => x.Course)
-            .ThenBy(x => x.NumeroPmu);*/
-
         query = query.GetQuery(new PredictedOnlySpecification());
 
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
         var res = MapToDtoList(result);
-        // res.ForEach(x => x.Id = Guid.Empty);
         res = res.DistinctBy(x => x.Hash).ToList();
         return new BrowsePredictedOnlyResponse(res);
     }

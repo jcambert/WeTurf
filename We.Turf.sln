@@ -80,6 +80,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_files", "_files", "{FDAEEF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Blazor", "libraries\We.Blazor\We.Blazor.csproj", "{8B74A244-C05B-44D8-AA3C-061ED8070D2F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_snippets", "_snippets", "{3163C8F3-4CC5-4AB3-A44D-F0EB7C006417}"
+	ProjectSection(SolutionItems) = preProject
+		_snippets\Specification.snippet = _snippets\Specification.snippet
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
@@ -16,17 +13,13 @@ public class ResultatOfPredictedCountByReunionCourseHandler
 {
     public ResultatOfPredictedCountByReunionCourseHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
-#if MEDIATOR
-    public override async ValueTask<Result<ResultatOfPredictedCountByReunionCourseResponse>> Handle(
+
+    protected override async Task<
+        Result<ResultatOfPredictedCountByReunionCourseResponse>
+    > InternalHandle(
         ResultatOfPredictedCountByReunionCourseQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async Task<Result<ResultatOfPredictedCountByReunionCourseResponse>> Handle(
-        ResultatOfPredictedCountByReunionCourseQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         var query0 = await Repository.GetQueryableAsync();
 

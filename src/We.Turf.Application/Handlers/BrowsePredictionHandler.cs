@@ -1,7 +1,3 @@
-using We.Turf.Entities;
-using We.AbpExtensions;
-using We.Results;
-
 namespace We.Turf.Handlers;
 
 file class PredictionByDate : Specification<Predicted>
@@ -25,17 +21,8 @@ public class BrowsePredictionHandler
 {
     public BrowsePredictionHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     { }
-#if MEDIATOR
-    public override async ValueTask<Result<BrowsePredictionResponse>> Handle(
-        BrowsePredictionQuery request,
-        CancellationToken cancellationToken
-    )
-#else
-    public override async Task<Result<BrowsePredictionResponse>> Handle(
-        BrowsePredictionQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
+
+    protected override async Task<Result<BrowsePredictionResponse>> InternalHandle(BrowsePredictionQuery request, CancellationToken cancellationToken)
     {
         LogTrace($"{nameof(BrowsePredictionHandler)}");
         var date = request.Date ?? DateOnly.FromDateTime(DateTime.Now);

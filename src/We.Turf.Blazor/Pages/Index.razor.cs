@@ -34,6 +34,9 @@ public partial class Index : WeComponentBase
 
     [Inject]
     IUiNotificationService Notification { get; set; }
+
+    [Inject]
+    NavigationManager Navigation { get; set; }
 #pragma warning restore CS8618
 
 
@@ -66,6 +69,10 @@ public partial class Index : WeComponentBase
 
     protected override void OnInitialized()
     {
+        DateOnly _minDate = new DateOnly(2023, 1, 1);
+        if (CurrentDate < _minDate)
+            Navigation.NavigateTo($"/{_minDate.ToString("ddMMYYYY")}", true, true);
+
         _whenClassifierChanged = this.WhenPropertyChanged
             .Where(e => e.EventArgs.PropertyName == nameof(CurrentClassifier))
             .Select(e => (_date, _currentClassifier))
@@ -80,6 +87,13 @@ public partial class Index : WeComponentBase
                 }
             );
 
+        this.WhenPropertyChanged
+            .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate) && CurrentDate < _minDate)
+            .Subscribe(e =>
+            {
+                Navigation?.NavigateTo($"/{_minDate.ToString("ddMMyyyy")}", true, true);
+            });
+        ;
         _whenDateChangedToToday = this.WhenPropertyChanged
             .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
             .Select(e => _date)
@@ -126,7 +140,7 @@ public partial class Index : WeComponentBase
                 }
             );
         this.WhenPropertyChanged
-            .Where(e => e.EventArgs.PropertyName == "IndiceConfiance")
+            .Where(e => e.EventArgs.PropertyName == nameof(IndiceConfiance))
             .Select(e => IndiceConfiance)
             .Subscribe(
                 async i =>

@@ -1,12 +1,8 @@
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
-
 namespace We.Turf.Handlers;
 
-file class ResultatByDate : Specification<Resultat>
+file class ResultatByDateSpec : Specification<Resultat>
 {
-    public ResultatByDate(DateOnly date) : base(e => e.Date == date) { }
+    public ResultatByDateSpec(DateOnly date) : base(e => e.Date == date) { }
 }
 
 public class BrowseResultatHandler
@@ -14,23 +10,15 @@ public class BrowseResultatHandler
 {
     public BrowseResultatHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     { }
-#if MEDIATOR
-    public override async ValueTask<Result<BrowseResultatResponse>> Handle(
-        BrowseResultatQuery request,
-        CancellationToken cancellationToken
-    )
-#else
-    public override async Task<Result<BrowseResultatResponse>> Handle(
-        BrowseResultatQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
+
+
+    protected override async Task<Result<BrowseResultatResponse>> InternalHandle(BrowseResultatQuery request, CancellationToken cancellationToken)
     {
         LogTrace($"{nameof(BrowseResultatHandler)}");
         var date = request.Date ?? DateOnly.FromDateTime(DateTime.Now);
 
         var query = await Repository.GetQueryableAsync();
-        query = query.GetQuery(new ResultatByDate(date));
+        query = query.GetQuery(new ResultatByDateSpec(date));
 
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new BrowseResultatResponse(MapToDtoList(result));

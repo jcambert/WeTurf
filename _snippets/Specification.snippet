@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>Class de Specification</Title>
+            <Author>Jc Ambert</Author>
+            <Description>Creer une classe de specification</Description>
+            <Shortcut>spec</Shortcut>
+        </Header>
+        <Snippet>
+            <Code Language="CSharp">
+                <![CDATA[file class $Name$Spec : Specification<$Entity$>
+{
+    
+    public $Name$Spec() : base() { }
+}]]>
+            </Code>
+            <Declarations>
+                <Literal>
+                    <ID>Name</ID>
+                    <ToolTip>The name of the specification class</ToolTip>
+                    <Default>NameOfSpecificationClass</Default>
+                </Literal>
+                <Literal>
+                    <ID>Entity</ID>
+                    <ToolTip>The entity Db name</ToolTip>
+                    <Default>Entity</Default>
+                </Literal>
+            </Declarations>
+
+        </Snippet>
+    </CodeSnippet>
+</CodeSnippets>

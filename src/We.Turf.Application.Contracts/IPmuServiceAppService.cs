@@ -63,4 +63,6 @@ public interface IPmuServiceAppService : IApplicationService
     Task<Result<BrowsePredictionByDateResponse>> BrowsePredictionBydate(
         BrowsePredictionByDateQuery query
     );
+
+    Task<Result<GetMiseResponse>> GetMise(GetMiseQuery query);
 }

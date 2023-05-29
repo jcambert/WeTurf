@@ -1,7 +1,3 @@
-using Microsoft.Extensions.Logging;
-using System.IO;
-using We.AbpExtensions;
-using We.Results;
 using We.Utilities;
 
 namespace We.Turf.Handlers;
@@ -21,17 +17,11 @@ public class LoadOutputFolderIntoDbHandler
             _errors.AddRange(result.Errors);
         }
     }
-#if MEDIATOR
-    public override async ValueTask<Result<LoadOutputFolderIntoDbResponse>> Handle(
+
+    protected override async Task<Result<LoadOutputFolderIntoDbResponse>> InternalHandle(
         LoadOutputFolderIntoDbQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async Task<Result<LoadOutputFolderIntoDbResponse>> Handle(
-        LoadOutputFolderIntoDbQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         LogTrace($"Start Handling {nameof(LoadOutputFolderIntoDbHandler)}");
         try

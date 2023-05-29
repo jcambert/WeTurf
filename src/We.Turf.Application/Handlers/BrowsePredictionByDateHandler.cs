@@ -1,11 +1,5 @@
-using Microsoft.Extensions.Logging;
-using Volo.Abp.AspNetCore.Components.Notifications;
-using Volo.Abp.Linq;
-using Volo.Abp.ObjectMapping;
-using We.AbpExtensions;
-using We.Turf.Entities;
-using We.Results;
 namespace We.Turf.Handlers;
+
 
 file class PredictionByDateSpec : Specification<PredictionByDate>
 {
@@ -14,6 +8,7 @@ file class PredictionByDateSpec : Specification<PredictionByDate>
 
 file class PredictionByReunionSpec : Specification<PredictionByDate>
 {
+    
     public PredictionByReunionSpec(int reunion,int course) : base(e => e.Reunion == reunion && e.Course==course) { }
 }
 public class BrowsePredictionByDateHandler : AbpHandler.With<BrowsePredictionByDateQuery, BrowsePredictionByDateResponse, PredictionByDate, PredictionByDateDto>
@@ -21,17 +16,8 @@ public class BrowsePredictionByDateHandler : AbpHandler.With<BrowsePredictionByD
     public BrowsePredictionByDateHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-#if MEDIATOR
-    public override async ValueTask<Result<BrowsePredictionByDateResponse>> Handle(
-        BrowsePredictionByDateQuery request,
-        CancellationToken cancellationToken
-    )
-#else
-    public override async Task<Result<BrowsePredictionByDateResponse>> Handle(
-        BrowsePredictionByDateQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
+
+    protected override async Task<Result<BrowsePredictionByDateResponse>> InternalHandle(BrowsePredictionByDateQuery request, CancellationToken cancellationToken)
     {
         LogTrace($"{nameof(BrowsePredictionByDateHandler)}");
         var date = request.Date ?? DateOnly.FromDateTime(DateTime.Now);
@@ -39,8 +25,8 @@ public class BrowsePredictionByDateHandler : AbpHandler.With<BrowsePredictionByD
         var query = await Repository.GetQueryableAsync();
         query = query.GetQuery(new PredictionByDateSpec(date));
 
-        if(request.Reunion is not null && request.Course is not null)
-            query=query.GetQuery(new PredictionByReunionSpec((int)request.Reunion,(int)request.Course));
+        if (request.Reunion is not null && request.Course is not null)
+            query = query.GetQuery(new PredictionByReunionSpec((int)request.Reunion, (int)request.Course));
 
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new BrowsePredictionByDateResponse(MapToDtoList(result));

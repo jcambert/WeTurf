@@ -1,13 +1,8 @@
-using Volo.Abp.Domain.Repositories;
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
-
 namespace We.Turf.Handlers;
 
-internal class BrowseProgrammeReunionByDate : Specification<ProgrammeReunion>
+file class BrowseProgrammeReunionByDateSpec : Specification<ProgrammeReunion>
 {
-    public BrowseProgrammeReunionByDate(DateOnly date) : base(e => e.Date == date) { }
+    public BrowseProgrammeReunionByDateSpec(DateOnly date) : base(e => e.Date == date) { }
 }
 
 public class BrowseProgrammeReunionHandler
@@ -21,20 +16,11 @@ public class BrowseProgrammeReunionHandler
     public BrowseProgrammeReunionHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
 
-#if MEDIATOR
-    public override async ValueTask<Result<BrowseProgrammeReunionResponse>> Handle(
-        BrowseProgrammeReunionQuery request,
-        CancellationToken cancellationToken
-    )
-#else
-    public override async Task<Result<BrowseProgrammeReunionResponse>> Handle(
-        BrowseProgrammeReunionQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
+
+    protected override async Task<Result<BrowseProgrammeReunionResponse>> InternalHandle(BrowseProgrammeReunionQuery request, CancellationToken cancellationToken)
     {
         var query = await Repository.GetQueryableAsync();
-        query = query.GetQuery(new BrowseProgrammeReunionByDate(request.Date));
+        query = query.GetQuery(new BrowseProgrammeReunionByDateSpec(request.Date));
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new BrowseProgrammeReunionResponse(MapToDtoList(result));
     }

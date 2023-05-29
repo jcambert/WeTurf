@@ -57,6 +57,9 @@ public class PmuServiceAppService : TurfAppService, IPmuServiceAppService
         BrowseResultatPerClassifierQuery query
     ) => Mediator.Send(query).AsTaskWrap();
 
+    public Task<Result<GetMiseResponse>> GetMise(GetMiseQuery query) =>
+        Mediator.Send(query).AsTaskWrap();
+
     public Task<Result<GetProgrammeCourseResponse>> GetProgrammeCourse(
         GetProgrammeCourseQuery query
     ) => Mediator.Send(query).AsTaskWrap();

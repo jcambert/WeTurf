@@ -1,12 +1,7 @@
 using Microsoft.Extensions.Logging;
-using System.IO;
 using System.Reactive.Linq;
-using We.AbpExtensions;
 using We.Csv;
-using We.Results;
-using We.Turf.Entities;
 using We.Utilities;
-using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace We.Turf.Handlers;
 
@@ -21,17 +16,11 @@ public class LoadToPredictIntoDbHandler
 {
     public LoadToPredictIntoDbHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
-#if MEDIATOR
-    public override async ValueTask<Result<LoadToPredictIntoDatabaseResponse>> Handle(
+
+    protected override async Task<Result<LoadToPredictIntoDatabaseResponse>> InternalHandle(
         LoadToPredictIntoDbQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async Task<Result<LoadToPredictIntoDatabaseResponse>> Handle(
-        LoadToPredictIntoDbQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         try
         {

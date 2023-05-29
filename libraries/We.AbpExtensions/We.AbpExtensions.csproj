@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.0.1" />
+    
+    
     <PackageReference Include="Volo.Abp.AspNetCore.Components" Version="7.0.3" />
     <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="7.0.3" />
     <PackageReference Include="Volo.Abp.Ddd.Domain" Version="7.0.3" />
@@ -17,5 +18,14 @@
     <ProjectReference Include="..\We.Mediatr\We.Mediatr.csproj" />
     <ProjectReference Include="..\We.Result\We.Results.csproj" />
   </ItemGroup>
-
+    <ItemGroup Condition="'$(MediatorName)'=='bogard'">
+        <PackageReference Include="$(MediatorBogardLibraryName)" Version="$(MediatorBogardVersion)" />
+        <PackageReference Include="$(MediatorBogardAbstractionLibraryName)" Version="$(MediatorBogardAbstractionVersion)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(MediatorName)'=='othamar'">
+        <PackageReference Include="$(MediatorOthamarAbstractionLibraryName)" Version="$(MediatorOthamarAbstractionVersion)" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(UseFluentValidation)'=='true'">
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
+    </ItemGroup>
 </Project>

@@ -100,7 +100,7 @@ public abstract class Result : IResult
     public static Result<T> Failure<T>(string failure, string message) =>
         new Failure<T>(new Error(failure, message));
 
-    public static Result<T> Failure<T>(int code, string failure, string message) =>
+    public static Result<T> Failure<T>(string code, string failure, string message) =>
         new Failure<T>(new Error(code, failure, message));
 
     //public static Result<T> ValidWithFailure<T>(T result,params Exception[] exceptions) => new ValidWithFailure<T>(result,exceptions);

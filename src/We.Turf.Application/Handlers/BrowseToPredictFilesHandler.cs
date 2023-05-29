@@ -1,7 +1,3 @@
-using System.IO;
-using We.AbpExtensions;
-using We.Results;
-
 namespace We.Turf.Handlers;
 
 public class BrowseToPredictFilesHandler
@@ -10,18 +6,12 @@ public class BrowseToPredictFilesHandler
     public BrowseToPredictFilesHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
 
-#if MEDIATOR
-    public override ValueTask<Result<BrowseToPredictFilesResponse>> Handle(
+    protected override async Task<Result<BrowseToPredictFilesResponse>> InternalHandle(
         BrowseToPredictFilesQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override Task<Result<BrowseToPredictFilesResponse>> Handle(
-        BrowseToPredictFilesQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
+        await Task.Delay(5);
         var files = Directory.EnumerateFiles(request.Path, "*.csv");
         if (!files.Any())
             return Result.Failure<BrowseToPredictFilesResponse>(

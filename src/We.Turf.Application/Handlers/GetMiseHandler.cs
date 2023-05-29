@@ -1,78 +1,87 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
+using System.Security.Cryptography;
 
 namespace We.Turf.Handlers;
 
-file class GetMiseByDateSpec : Specification<Predicted>
+[Dependency(ServiceLifetime.Scoped, ReplaceServices = true)]
+[ExposeServices(typeof(IValidator<GetMiseQuery>))]
+public class GetMiseQueryValidator : AbstractValidator<GetMiseQuery>
 {
-    public GetMiseByDateSpec(DateOnly date) : base(e => e.Date == date)
+    public GetMiseQueryValidator()
     {
-        this.AddDistinct();
-        this.AddOrderBy(e => e.Reunion);
-        this.AddOrderBy(e => e.Course);
-        this.AddGroupBy(e => new { e.Date, e.Reunion, e.Course });
-
-
+        this.RuleFor(x => x.Date).GreaterThanOrEqualTo(TurfDomainConstants.MIN_DATE);
+        this.RuleFor(x => x.Reunion).NotNull().When(x => x.Course != null);
+        this.RuleFor(x => x.Course).NotNull().When(x => x.Reunion != null);
     }
 }
 
-file class GetMiseByReunionCourseSpec : Specification<Predicted>
-{
-    public GetMiseByReunionCourseSpec(DateOnly date, int Reunion, int course) : base(e => e.Date == date && e.Reunion == Reunion && e.Course == course)
-    {
-        this.AddDistinct();
-        this.AddOrderBy(e => e.Reunion);
-        this.AddOrderBy(e => e.Course);
-        this.AddGroupBy(e => new { e.Date, e.Reunion, e.Course });
-    }
-}
-
-file class GetMiseByClassifierSpec : Specification<Predicted>
-{
-    public GetMiseByClassifierSpec(string classifier) : base(e => e.Classifier == classifier)
-    {
-
-    }
-}
 public class GetMiseHandler : AbpHandler.With<GetMiseQuery, GetMiseResponse, Predicted, MiseDto>
 {
+    public GetMiseHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider) { }
 
-    public GetMiseHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
+    protected override async Task<Result<GetMiseResponse>> InternalHandle(
+        GetMiseQuery request,
+        CancellationToken cancellationToken
+    )
     {
-    }
-
-    private static Specification<Predicted> GetSpecification(GetMiseQuery request)
-        => request switch
-        {
-            { Reunion: { }, Course: { } } => new GetMiseByReunionCourseSpec(request.Date, (int)request.Reunion, (int)request.Course),
-            _ => new GetMiseByDateSpec(request.Date)
-        };
-
-
-#if MEDIATOR
-    public override async ValueTask<Result<GetMiseResponse>> Handle(GetMiseQuery request, CancellationToken cancellationToken)
-#else
-    public override async Task<Result<GetMiseResponse>> Handle(GetMiseQuery request, CancellationToken cancellationToken)
-#endif
-    {
+        List<MiseDto> result = new();
         var query = await Repository.GetQueryableAsync();
-        //query = query.GetQuery( GetSpecification(request));
-        IQueryable<MiseDto> q0 = q0 = from q in query
-                                      orderby q.Date, q.Classifier, q.Reunion, q.Course
-                                      group q by new { q.Date, q.Classifier, q.Reunion, q.Course } into qq
-                                      select new MiseDto() { Date = qq.Key.Date, Classifier = qq.Key.Classifier, Reunion = qq.Key.Reunion, Course = qq.Key.Course, Somme = qq.Count() };
-        q0 = q0.Where(x => x.Date == request.Date);
-        if (request.Reunion is not null && request.Course is not null)
-            q0 = q0.Where(x =>  x.Reunion == request.Reunion && x.Course == request.Course);
-        ;
-        if (!string.IsNullOrEmpty(request.Classifier))
-            q0 = q0.Where(x => x.Classifier == request.Classifier);
-        var sql = q0.ToQueryString();
-        LogDebug(sql);
-        var res = await AsyncExecuter.ToListAsync(q0, cancellationToken);
-        return new GetMiseResponse(res);
+        if (!request.Classifier.IsAllClassifier())
+        {
+            IQueryable<MiseDto> q0 =
+                from q in query
+                where q.Date == request.Date && q.Classifier == request.Classifier
+                orderby q.Date ,q.Classifier ,q.Reunion ,q.Course
+                group q by new { q.Date, q.Classifier, q.Reunion, q.Course } into qq
+                select new MiseDto()
+                {
+                    Date = qq.Key.Date,
+                    Classifier = qq.Key.Classifier,
+                    Reunion = qq.Key.Reunion,
+                    Course = qq.Key.Course,
+                    Somme = qq.Count()
+                };
 
+            if (request.Reunion is not null && request.Course is not null)
+                q0 = q0.Where(x => x.Reunion == request.Reunion && x.Course == request.Course);
+
+            var sql = q0.ToQueryString();
+            LogDebug(sql);
+            result = await AsyncExecuter.ToListAsync(q0, cancellationToken);
+        }
+        else
+        {
+            var q0 = (
+                from q in query
+                where q.Date == request.Date
+                orderby q.Date ,q.NumeroPmu ,q.Reunion ,q.Course
+                select new
+                {
+                    Date = q.Date,
+                    NumeroPmu = q.NumeroPmu,
+                    Reunion = q.Reunion,
+                    Course = q.Course
+                }
+            ).Distinct();
+            if (request.Reunion is not null && request.Course is not null)
+                q0 = q0.Where(x => x.Reunion == request.Reunion && x.Course == request.Course);
+            var sql = q0.ToQueryString();
+            LogDebug(sql);
+            var res = await AsyncExecuter.ToListAsync(q0, cancellationToken);
+            result = res.Select(
+                    x =>
+                        new MiseDto
+                        {
+                            Date = x.Date,
+                            Reunion = x.Reunion,
+                            Course = x.Course,
+                            Somme = 1
+                        }
+                )
+                .ToList();
+        }
+
+        return new GetMiseResponse(result);
     }
 }

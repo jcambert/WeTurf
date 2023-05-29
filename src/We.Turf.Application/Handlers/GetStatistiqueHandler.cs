@@ -1,7 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
 
 namespace We.Turf.Handlers;
 
@@ -11,17 +8,8 @@ public class GetStatistiqueHandler
     public GetStatistiqueHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     { }
 
-#if MEDIATOR
-    public override async ValueTask<Result<GetStatistiqueResponse>> Handle(
-        GetStatistiqueQuery request,
-        CancellationToken cancellationToken
-    )
-#else
-    public override async Task<Result<GetStatistiqueResponse>> Handle(
-        GetStatistiqueQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
+
+    protected override async Task<Result<GetStatistiqueResponse>> InternalHandle(GetStatistiqueQuery request, CancellationToken cancellationToken)
     {
         var res = await Repository.ToListAsync(cancellationToken);
         return new GetStatistiqueResponse(MapToDtoList(res));
@@ -65,17 +53,9 @@ public class GetStatistiqueWithDateHandler
     public GetStatistiqueWithDateHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
 
-#if MEDIATOR
-    public override async ValueTask<Result<GetStatistiqueWithDateResponse>> Handle(
-        GetStatistiqueWithDateQuery request,
-        CancellationToken cancellationToken
-    )
-#else
-    public override async Task<Result<GetStatistiqueWithDateResponse>> Handle(
-        GetStatistiqueWithDateQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
+
+
+    protected override async Task<Result<GetStatistiqueWithDateResponse>> InternalHandle(GetStatistiqueWithDateQuery request, CancellationToken cancellationToken)
     {
         var query = await Repository.GetQueryableAsync();
         if (request.Start is not null)
@@ -93,8 +73,8 @@ public class GetStatistiqueWithDateHandler
             query = query.GetQuery(
                 new StatistiqueByPari(request.Pari.AsString(), request.IncludeNonArrive)
             );
-        var s=query.ToQueryString();
-        LogDebug( s );
+        var s = query.ToQueryString();
+        LogDebug(s);
         var res = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new GetStatistiqueWithDateResponse(MapToDtoList(res));
     }

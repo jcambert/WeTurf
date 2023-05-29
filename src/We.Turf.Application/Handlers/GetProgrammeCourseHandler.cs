@@ -1,7 +1,3 @@
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
-
 namespace We.Turf.Handlers;
 
 public class GetProgrammeCourseHandler
@@ -16,17 +12,10 @@ public class GetProgrammeCourseHandler
     public GetProgrammeCourseHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
 
-#if MEDIATOR
-    public override async ValueTask<Result<GetProgrammeCourseResponse>> Handle(
+    protected override async Task<Result<GetProgrammeCourseResponse>> InternalHandle(
         GetProgrammeCourseQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async Task<Result<GetProgrammeCourseResponse>> Handle(
-        GetProgrammeCourseQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         var query = await Repository.GetQueryableAsync();
         query = query.GetQuery(new ProgrammeCourseById(request.Id));

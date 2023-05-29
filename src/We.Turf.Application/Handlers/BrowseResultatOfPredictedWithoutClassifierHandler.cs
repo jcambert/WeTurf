@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
-
 namespace We.Turf.Handlers;
 
 
@@ -29,14 +20,12 @@ public class BrowseResultatOfPredictedWithoutClassifierHandler : AbpHandler.With
     public BrowseResultatOfPredictedWithoutClassifierHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
-#if MEDIATOR
-    public override async ValueTask<Result<BrowseResultatOfPredictedWithoutClassifierResponse>> Handle(BrowseResultatOfPredictedWithoutClassifierQuery request, CancellationToken cancellationToken)
-#else
-    public override async Task<Result<BrowseResultatOfPredictedWithoutClassifierResponse>> Handle(BrowseResultatOfPredictedWithoutClassifierQuery request, CancellationToken cancellationToken)
-#endif
+
+
+    protected override async Task<Result<BrowseResultatOfPredictedWithoutClassifierResponse>> InternalHandle(BrowseResultatOfPredictedWithoutClassifierQuery request, CancellationToken cancellationToken)
     {
         LogTrace($"{nameof(BrowseResultatOfPredictedWithoutClassifierResponse)}");
-       
+
 
         var date = request.Date ?? DateOnly.FromDateTime(DateTime.Now);
 
@@ -60,7 +49,7 @@ public class BrowseResultatOfPredictedWithoutClassifierHandler : AbpHandler.With
                 new ByPariSpec(request.Pari.AsString(), request.IncludeNonArrive)
             );
 
-       
+
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new BrowseResultatOfPredictedWithoutClassifierResponse(MapToDtoList(result));
     }

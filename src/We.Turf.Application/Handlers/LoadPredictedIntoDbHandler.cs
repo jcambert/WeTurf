@@ -1,9 +1,6 @@
 using Microsoft.Extensions.Logging;
 using System.Reactive.Linq;
-using We.AbpExtensions;
 using We.Csv;
-using We.Results;
-using We.Turf.Entities;
 using We.Utilities;
 
 namespace We.Turf.Handlers;
@@ -29,17 +26,10 @@ public class LoadPredictedIntoDbHandler
         _reader = serviceProvider.GetRequiredService<ICsvReader<Predicted>>();
     }
 
-#if MEDIATOR
-    public override async ValueTask<Result<LoadPredictedIntoDbResponse>> Handle(
+    protected override async Task<Result<LoadPredictedIntoDbResponse>> InternalHandle(
         LoadPredictedIntoDbQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async Task<Result<LoadPredictedIntoDbResponse>> Handle(
-        LoadPredictedIntoDbQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         try
         {

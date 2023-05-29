@@ -17,7 +17,7 @@ public abstract class TriggerBaseHandler<TQuery, TResponse> : AbpHandler.With<TQ
         ObjectMapper.Map<ScrapTriggerDto, ScrapTrigger>(triggerDto);
 
     protected ScrapTrigger Map(ScrapTriggerDto triggerDto, ScrapTrigger trigger) =>
-        ObjectMapper.Map<ScrapTriggerDto, ScrapTrigger>(triggerDto, trigger);
+        ObjectMapper.Map(triggerDto, trigger);
 
     protected ScrapTriggerDto ReverseMap(ScrapTrigger trigger) =>
         ObjectMapper.Map<ScrapTrigger, ScrapTriggerDto>(trigger);

@@ -1,5 +1,4 @@
-﻿using Dawn;
-using MediatR;
+using Dawn;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AspNetCore.Components.Notifications;
 using Volo.Abp.DependencyInjection;

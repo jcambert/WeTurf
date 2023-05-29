@@ -1,10 +1,6 @@
 using Microsoft.Extensions.Logging;
-using System.IO;
 using System.Reactive.Linq;
-using We.AbpExtensions;
 using We.Csv;
-using We.Results;
-using We.Turf.Entities;
 using We.Utilities;
 
 namespace We.Turf.Handlers;
@@ -14,17 +10,11 @@ public class LoadCourseIntoDbHandler
 {
     public LoadCourseIntoDbHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider)
     { }
-#if MEDIATOR
-    public override async ValueTask<Result<LoadCourseIntoDbResponse>> Handle(
+
+    protected override async Task<Result<LoadCourseIntoDbResponse>> InternalHandle(
         LoadCourseIntoDbQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async Task<Result<LoadCourseIntoDbResponse>> Handle(
-        LoadCourseIntoDbQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         try
         {

@@ -1,7 +1,3 @@
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
-
 namespace We.Turf.Handlers;
 
 public class BrowseResultatPerClassifierHandler
@@ -14,17 +10,11 @@ public class BrowseResultatPerClassifierHandler
 {
     public BrowseResultatPerClassifierHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
-#if MEDIATOR
-    public override async ValueTask<Result<BrowseResultatPerClassifierResponse>> Handle(
+
+    protected override async Task<Result<BrowseResultatPerClassifierResponse>> InternalHandle(
         BrowseResultatPerClassifierQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async Task<Result<BrowseResultatPerClassifierResponse>> Handle(
-        BrowseResultatPerClassifierQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         var query = await Repository.GetQueryableAsync();
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);

@@ -1,7 +1,3 @@
-using We.AbpExtensions;
-using We.Results;
-using We.Turf.Entities;
-
 namespace We.Turf.Handlers;
 
 file class ResultatOfPredictedStatisticalByDate : Specification<ResultatOfPredicted>
@@ -47,17 +43,9 @@ public class BrowseResultatOfPredictedStatisticalHandler
 {
     public BrowseResultatOfPredictedStatisticalHandler(IAbpLazyServiceProvider serviceProvider)
         : base(serviceProvider) { }
-#if MEDIATOR
-    public override async ValueTask<Result<BrowseResultatOfPredictedStatisticalResponse>> Handle(
-        BrowseResultatOfPredictedStatisticalQuery request,
-        CancellationToken cancellationToken
-    )
-#else
-    public override async Task<Result<BrowseResultatOfPredictedStatisticalResponse>> Handle(
-        BrowseResultatOfPredictedStatisticalQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
+
+
+    protected override async Task<Result<BrowseResultatOfPredictedStatisticalResponse>> InternalHandle(BrowseResultatOfPredictedStatisticalQuery request, CancellationToken cancellationToken)
     {
         LogTrace($"{nameof(BrowseResultatOfPredictedStatisticalHandler)}");
         if (request.Date is null)
@@ -91,12 +79,6 @@ public class BrowseResultatOfPredictedStatisticalHandler
             );
 
         query = query.GetQuery(new ResultatOfPredictedStatisticalSpecification());
-        /*query = query
-            .Distinct()
-            
-            .OrderBy(x => x.Reunion)
-            .ThenBy(x => x.Course)
-            .ThenBy(x => x.NumeroPmu);*/
         var result = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new BrowseResultatOfPredictedStatisticalResponse(MapToDtoList(result));
     }

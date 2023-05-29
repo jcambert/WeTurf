@@ -30,6 +30,7 @@
     <MediatorBogardVersion>12.0.1</MediatorBogardVersion>
     <MediatorBogardAbstractionLibraryName>MediatR.Contracts</MediatorBogardAbstractionLibraryName>
     <MediatorBogardAbstractionVersion>2.0.1</MediatorBogardAbstractionVersion>
+    <UseFluentValidation>true</UseFluentValidation>
   </PropertyGroup>
 
    <PropertyGroup Condition="'$(Platform)'=='AnyCPU' and '$(MediatorName)'=='bogard'">
@@ -38,7 +39,9 @@
     <PropertyGroup Condition="'$(Platform)'=='AnyCPU' and '$(MediatorName)'=='othamar'">
         <DefineConstants>$(DefineConstants);MEDIATOR</DefineConstants>
     </PropertyGroup>
-
+  <PropertyGroup Condition="'$(Platform)'=='AnyCPU' and '$(UseFluentValidation)'=='true'">
+    <DefineConstants>$(DefineConstants);FLUENTVALIDATION</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CSharpier.MsBuild" Version="0.16.0">
       <PrivateAssets>all</PrivateAssets>

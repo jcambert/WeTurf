@@ -1,6 +1,4 @@
-using We.AbpExtensions;
 using We.Processes;
-using We.Results;
 
 namespace We.Turf.Handlers;
 
@@ -10,17 +8,10 @@ public class ResultatHandler : AbpHandler.With<ResultatQuery, ResultatResponse>
 
     public ResultatHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider) { }
 
-#if MEDIATOR
-    public override async ValueTask<Result<ResultatResponse>> Handle(
+    protected override async Task<Result<ResultatResponse>> InternalHandle(
         ResultatQuery request,
         CancellationToken cancellationToken
     )
-#else
-    public override async Task<Result<ResultatResponse>> Handle(
-        ResultatQuery request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         var exe = Python;
         string args = string.Empty;
