@@ -25,14 +25,15 @@ public static class ResultExtensions
         return result.IsSuccess ? onSuccess() : onFailure(result);
     }
 
-    /*  public static async Task<TOut> Match<TIn,TOut>(
-          this Task<Result<TIn>> resultTask,
-          Func<TIn, TOut> onSuccess,
-          Func<Result, TOut> onFailure)
-      {
-          Result<TIn> result = await resultTask;
-          return result ? onSuccess(result.Value) : onFailure(result);
-      }*/
+    public static async Task<TOut> Match<TIn, TOut>(
+        this Task<Result<TIn>> resultTask,
+        Func<TIn, TOut> onSuccess,
+        Func<Result, TOut> onFailure
+    )
+    {
+        Result<TIn> result = await resultTask;
+        return result ? onSuccess(result.Value) : onFailure(result);
+    }
 
     /// <summary>
     /// Ensure that a result statisfy predicate
@@ -94,20 +95,13 @@ public static class ResultExtensions
     /// <param name="result"></param>
     /// <param name="func"></param>
     /// <returns></returns>
-#if MEDIATOR
+
     public static Task<Result> Bind<TIn>(this Result<TIn> result, Func<TIn, Task<Result>> func)
-#else
-    public static Task<Result> Bind<TIn>(this Result<TIn> result, Func<TIn, Task<Result>> func)
-#endif
     {
         Guard.Argument(result).NotNull();
         Guard.Argument(func).NotNull();
         if (!result)
-#if MEDIATOR
             return Task.FromResult(Result.Failure(result.Errors.ToArray()));
-#else
-            return Task.FromResult(Result.Failure(result.Errors.ToArray()));
-#endif
         return func(result.Value);
     }
 

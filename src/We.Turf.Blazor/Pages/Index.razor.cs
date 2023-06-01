@@ -89,10 +89,12 @@ public partial class Index : WeComponentBase
 
         this.WhenPropertyChanged
             .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate) && CurrentDate < _minDate)
-            .Subscribe(e =>
-            {
-                Navigation?.NavigateTo($"/{_minDate.ToString("ddMMyyyy")}", true, true);
-            });
+            .Subscribe(
+                e =>
+                {
+                    Navigation?.NavigateTo($"/{_minDate.ToString("ddMMyyyy")}", true, true);
+                }
+            );
         ;
         _whenDateChangedToToday = this.WhenPropertyChanged
             .Where(e => e.EventArgs.PropertyName == nameof(CurrentDate))
