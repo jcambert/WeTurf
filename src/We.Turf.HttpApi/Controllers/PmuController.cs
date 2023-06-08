@@ -27,6 +27,11 @@ public class PmuController : TurfController, IPmuServiceAppService
     ) => pmuService.BrowseClassifier(query);
 
     [HttpGet]
+    public Task<Result<BrowseDisciplineResponse>> BrowseDiscipline(
+        [FromQuery] BrowseDisciplineQuery query
+    ) => pmuService.BrowseDiscipline(query);
+
+    [HttpGet]
     public Task<Result<BrowsePredictionResponse>> BrowsePrediction(
         [FromQuery] BrowsePredictionQuery query
     ) => pmuService.BrowsePrediction(query);

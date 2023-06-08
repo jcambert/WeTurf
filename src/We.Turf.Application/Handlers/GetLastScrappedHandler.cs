@@ -11,11 +11,16 @@ public class GetLastScrappedHandler
         CancellationToken cancellationToken
     )
     {
-        var result = await Repository.FirstOrDefaultAsync(cancellationToken);
-        if (result == null)
+        try
         {
-            return NotFound($"{nameof(LastScrapped)} didn't exists");
+            var result = await Repository.FirstOrDefaultAsync(cancellationToken);
+            if (result == null)
+            {
+                return NotFound($"{nameof(LastScrapped)} didn't exists");
+            }
+            return new GetLastScrappedResponse(MapToDto(result));
         }
-        return new GetLastScrappedResponse(MapToDto(result));
+        catch (Exception) { }
+        return NotFound($"{nameof(LastScrapped)} didn't exists");
     }
 }

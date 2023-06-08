@@ -8,4 +8,5 @@ public interface ILoadToPredictIntoDbQuery : WeM.IQuery<LoadToPredictIntoDatabas
     bool Rename { get; set; }
 }
 
-public sealed record LoadToPredictIntoDatabaseResponse(List<ToPredictDto> Courses) : WeM.Response;
+public sealed record LoadToPredictIntoDatabaseResponse(List<ToPredictDto> Participants)
+    : WeM.Response;

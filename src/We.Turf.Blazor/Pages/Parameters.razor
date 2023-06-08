@@ -2,6 +2,7 @@
 @using Volo.Abp.AspNetCore.Components.Notifications;
 @using We.Turf.Entities;
 @using We.Results;
+@using We.Turf.Queries;
 @inject IPmuScrapAppService Scrapper;
 @inject IUiNotificationService? UiNotificationService;
 <Div Class="mb-3">
@@ -58,37 +59,28 @@
 
 @code {
     public ParameterDto? Parameter { get; set; } = null;
-    /* public string BaseScrapFolder { get; set; } = string.Empty;
-      public string InputScrapFolder { get; set; } = string.Empty;
-      public string OutputScrapFolder { get; set; } = string.Empty;
-      public string PredictionFilename { get; set; } = string.Empty;
-      public string CourseFilename { get; set; } = string.Empty;
-      public bool ScrapInFolder { get; set; } = false;
-      public string InputScrapFolderMonthPattern { get; set; } = string.Empty;*/
 
     Visibility InputScrapFolderMonthPatternVisibility => !(Parameter?.ScrapInFolder) ?? true ? Visibility.Invisible : Visibility.Visible;
 
     protected async Task Sauver()
     {
-        var res= await Scrapper.UpdateParameter(new Queries.UpdateParameterQuery() { Parameter = Parameter });
-        if (res)
-        {
-            UiNotificationService?.Success("Les parametres ont été sauvegardés");
-        }
-        else
-        {
-            UiNotificationService?.Error(res.Errors.AsString());
-        }
+        await Result.Create(new UpdateParameterQuery() { Parameter = Parameter })
+        .Bind(q => Scrapper.UpdateParameter(q))
+        .OnAsync(
+            r => UiNotificationService?.Success("Les parametres ont été sauvegardés"),
+            fail => UiNotificationService?.Error(fail.Errors.AsString())
+        );
 
     }
 
     protected override async Task OnInitializedAsync()
     {
-        var res = await Scrapper.GetParameter(new());
-        if (res)
-        {
-            Parameter = res.Value.Parameter;
-            
-        }
+        await Result.Create(new GetParameterQuery())
+        .Bind(q => Scrapper.GetParameter(q))
+        .OnAsync(
+            r => Parameter = r.Parameter,
+            fail => Parameter = new()
+        );
+       
     }
 }

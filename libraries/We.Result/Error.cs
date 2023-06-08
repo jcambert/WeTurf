@@ -14,6 +14,7 @@ public static class HttpStatusCode
     public const string FORBIDDEN = "ERR403";
     public const string NOT_FOUND = "ERR404";
     public const string INTERNAL_SERVER_ERROR = "ERR500";
+    public const string OK = "ERR200";
 }
 
 public class Error

@@ -58,7 +58,7 @@ public class LoadPredictedIntoDbHandler
                         {
                             Logger.LogInformation("{Index} / {Response}", o.Index, o);
                             predicted.Add(o.Value);
-                        },
+                        } /*,
                         () =>
                         {
                             if (request.Rename)
@@ -67,12 +67,15 @@ public class LoadPredictedIntoDbHandler
                                     request.Filename.GenerateCopyName(null),
                                     true
                                 );
-                        }
+                        }*/
                     );
 
                 var result = await _reader.Start(cancellationToken);
 
                 await Repository.InsertManyAsync(predicted, true, cancellationToken);
+
+                if (request.Rename)
+                    File.Move(request.Filename, request.Filename.GenerateCopyName(null), true);
 
                 if (result.Errors.Any())
                     return Result.ValidWithFailure(

@@ -20,13 +20,13 @@
 <div class="mb-3">
     <Fields>
         <Field ColumnSize="ColumnSize.Is1.OnDesktop">
-            <Check TValue="bool" @bind-Checked="@scrap">Scrap</Check>
+            <Check TValue="bool" @bind-Checked="@scrap">A Predire</Check>
         </Field>
         <Field ColumnSize="ColumnSize.Is1.OnDesktop">
-            <Check TValue="bool" @bind-Checked="@predict">Predict</Check>
+            <Check TValue="bool" @bind-Checked="@predict">Chevaux predits</Check>
         </Field>
         <Field ColumnSize="ColumnSize.Is1.OnDesktop">
-            <Check TValue="bool" @bind-Checked="@resultat">Resulat</Check>
+            <Check TValue="bool" @bind-Checked="@resultat">Resulats</Check>
         </Field>
         <Field ColumnSize="ColumnSize.Is1.OnDesktop">
             <Check TValue="bool" @bind-Checked="@scrapByFolderMonth">Par Dossier</Check>
@@ -56,7 +56,7 @@
     </Fields>
 </div>
 <div class="mb-3">
-
+    <Button Color="Color.Primary" Clicked="ClearConsole" Disabled="@isExtractRunning">Effacer la console</Button>
     <Button Color="Color.Primary" Clicked="Extract" Loading="@isExtractRunning" Disabled="@isExtractRunning" Visibility="@ExtractDatasVisibility">Extraction et Prediction</Button>
     <Button Color="Color.Secondary" Clicked="InsertDatas" Loading="@isInsertDatasRunning" Disabled="@isInsertDatasRunning" Visibility="@InsertDatasVisibility">Inserer dans la Base de données</Button>
 </div>
@@ -114,7 +114,7 @@
 
     bool isExtractRunning = false;
     bool isInsertDatasRunning = false;
-    bool CanInsertdatas => ToPredictFiles.Any() && PredictedFiles.Any() && CoursesFiles.Any() && ResultatsFiles.Any();
+    bool CanInsertdatas => ToPredictFiles.Any() || PredictedFiles.Any() || CoursesFiles.Any() || ResultatsFiles.Any();
     Visibility InsertDatasVisibility => CanInsertdatas ? Visibility.Visible : Visibility.Invisible;
     Visibility ExtractDatasVisibility => isInsertDatasRunning ? Visibility.Invisible : Visibility.Visible;
     Visibility HideIfLoadFromFolder => scrapByFolderMonth ? Visibility.Invisible : Visibility.Visible;
@@ -137,13 +137,13 @@
         if (!string.IsNullOrEmpty(Start))
             scrapByFolderMonth = IsValidMonthYear(Start);
 
-
-        var res = await Scrapper.GetParameter(new());
-        if (res)
-        {
-            Parameter = res.Value.Parameter;
-
-        }
+        await Result.Create(new GetParameterQuery())
+        .Bind(q => Scrapper.GetParameter(q))
+        .OnAsync(
+            r => Parameter = r.Parameter,
+            fail => Parameter = null
+        );
+        
 
         ConsoleOutput = string.Empty;
         Output.OnOutput.Subscribe(x => ConsoleOutput = $"{ConsoleOutput}\n{x}");
@@ -173,19 +173,7 @@
     }
 
 
-    /*string BaseInnerFolder
-    {
-    get
-    {
-    if (Parameter is null)
-    return string.Empty;
-    if (!string.IsNullOrEmpty(InnerFolder) && setInFolder)
-    return $"{Parameter.BaseScrapFolder}{Path.DirectorySeparatorChar}{InnerFolder}";
-    if (!setInFolder)
-    return Parameter?.BaseScrapFolder ?? string.Empty;
-    return string.Empty;
-    }
-    }*/
+
 
     string InputFolder
     {
@@ -226,44 +214,51 @@
             UiNotificationService?.Warn($"ToPredictFilePath {ToPredictFilePath} n'existe pas");
         else
         {
-            //var res0 = await Scrapper.BrowseToPredictFiles(new() { Path = @"e:\projets\pmu_scrapper\input" });
-            var res0 = await Scrapper.BrowseToPredictFiles(new() { Path = ToPredictFilePath });
-            if (res0)
-                files.AddRange(res0.Value.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.ToPredict }));
+            await Result.Create(new BrowseToPredictFilesQuery() { Path = ToPredictFilePath })
+            .Bind(q => Scrapper.BrowseToPredictFiles(q))
+            .OnAsync(
+                r => files.AddRange(r.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.ToPredict }))
+            );
         }
 
         if (!File.Exists(PredictedFilename))
             UiNotificationService?.Warn($"PredictedFilename {PredictedFilename} n'existe pas");
         else
         {
-            //var res1 = await Scrapper.BrowsePredictedFiles(new() { Filename = @"e:\projets\pmu_scrapper\output\predicted.csv" });
-            var res1 = await Scrapper.BrowsePredictedFiles(new() { Filename = PredictedFilename });
-            if (res1)
-                files.Add(new FileWithContent() { Path = res1.Value.File, Type = PmuFileType.Predicted });
+            await Result.Create(new BrowsePredictedFilesQuery() { Filename = PredictedFilename })
+            .Bind(q => Scrapper.BrowsePredictedFiles(q))
+            .OnAsync(
+                r => files.Add(new FileWithContent() { Path = r.File, Type = PmuFileType.Predicted })
 
-
+            );
         }
 
         if (!File.Exists(CourseFilename))
             UiNotificationService?.Warn($"CourseFilename {CourseFilename} n'existe pas");
         else
         {
-            //var res2 = await Scrapper.BrowseCourseFiles(new() { Filename = @"e:\projets\pmu_scrapper\output\courses.csv" });
-            var res2 = await Scrapper.BrowseCourseFiles(new() { Filename = CourseFilename });
-            if (res2)
-                files.Add(new FileWithContent() { Path = res2.Value.File, Type = PmuFileType.Course });
+
+            await Result.Create(new BrowseCourseFilesQuery() { Filename = CourseFilename })
+            .Bind(q => Scrapper.BrowseCourseFiles(q))
+            .OnAsync(
+                r => files.Add(new FileWithContent() { Path = r.File, Type = PmuFileType.Course })
+            );
         }
 
         if (!Directory.Exists(OutputFilePath))
             UiNotificationService?.Warn($"OutputFilePath {OutputFilePath} n'existe pas");
         else
         {
-            //var res3 = await Scrapper.BrowseResultatsFiles(new() { Path = @"e:\projets\pmu_scrapper\output" });
-            var res3 = await Scrapper.BrowseResultatsFiles(new() { Path = OutputFilePath });
-            if (res3)
-                files.AddRange(res3.Value.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.Resultat }));
+
+            await Result.Create(new BrowseResultatsFilesQuery() { Path = OutputFilePath })
+            .Bind(q => Scrapper.BrowseResultatsFiles(q))
+            .OnAsync(
+                r => files.AddRange(r.Files.Select(x => new FileWithContent() { Path = x, Type = PmuFileType.Resultat }))
+            );
+
 
         }
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task<(DateOnly, DateOnly)> ParseDate(string startDate, string endDate)
@@ -273,11 +268,12 @@
 
         if (!res_start)
         {
-            var ldate_result = await Scrapper.GetLastScrapped(new());
-            if (ldate_result)
-                _date_start = DateOnly.FromDateTime(ldate_result.Value.LastScrapped.LastDate).AddDays(1);
-            else
-                _date_start = DateOnlyExtensions.Now;
+            await Result.Create(new GetLastScrappedQuery())
+            .Bind(q => Scrapper.GetLastScrapped(q))
+            .OnAsync(
+                r => _date_start = DateOnly.FromDateTime(r.LastScrapped.LastDate).AddDays(1),
+                fail => _date_start = DateOnlyExtensions.Now
+            );
         }
         if (!res_end)
         {
@@ -295,42 +291,77 @@
         }
         return (_date_start, _date_end);
     }
+
+    public void ClearConsole() => ConsoleOutput = string.Empty;
+
     public async Task Extract()
     {
         isExtractRunning = true;
-        ConsoleOutput = string.Empty;
+
         var dates = await ParseDate(InnerStart, InnerEnd);
         Output.WriteLine("Démarrage");
         if (scrap)
         {
 
             Output.WriteLine($"Scrap Start:{dates.Item1.ToShortDateString()} to Scrap End:{dates.Item2.ToShortDateString()}\nLaunched ...");
-
-            var result0 = await Scrapper.Scrap(
+            await Result.Create(new ScrapQuery()
+                {
+                    Start = dates.Item1,
+                    End = dates.Item2,
+                    DeleteFilesIfExists = true,
+                    UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty,
+                })
+                .Bind(q => Scrapper.Scrap(q))
+                .OnAsync(
+                    r => { },
+                    fail => Output.WriteLine(fail.Errors.AsString())
+                );
+                /*var result0 = await Scrapper.Scrap(
                 new ScrapQuery()
-                    {
-                        Start = dates.Item1,
-                        End = dates.Item2,
-                        DeleteFilesIfExists = true,
-                        UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty,
-                    });
+                {
+                Start = dates.Item1,
+                End = dates.Item2,
+                DeleteFilesIfExists = true,
+                UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty,
+    });
 
-            if (!result0)
-                Output.WriteLine(result0.Errors);
+    if (!result0)
+        Output.WriteLine(result0.Errors);*/
         }
 
         if (predict)
         {
             Output.WriteLine("Prediction");
-            var result0 = await Scrapper.Predict(new PredictQuery() { UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty, DeleteFilesIfExists = !scrapByFolderMonth });
-            if (!result0)
-                Output.WriteLine(result0.Errors);
+
+            await Result.Create(new PredictQuery() { UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty, DeleteFilesIfExists = !scrapByFolderMonth })
+            .Bind(q => Scrapper.Predict(q))
+            .OnAsync(
+                r => { },
+                fail => Output.WriteLine(fail.Errors.AsString())
+            );
+
+
+            /*var result0 = await Scrapper.Predict(new PredictQuery() { UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty, DeleteFilesIfExists = !scrapByFolderMonth });
+                if (!result0)
+                    Output.WriteLine(result0.Errors);*/
         }
 
         if (resultat)
         {
             Output.WriteLine("Resultats");
-            var result0 = await Scrapper.Resultats(new ResultatQuery()
+            await Result.Create(new ResultatQuery()
+                {
+                    Start = dates.Item1,
+                    End = dates.Item2,
+                    UseFolder = scrapByFolderMonth ? InnerFolder : string.Empty,
+                    DeleteFilesIfExists = !scrapByFolderMonth
+                })
+                .Bind(q => Scrapper.Resultats(q))
+                .OnAsync(
+                    r => { },
+                    fail => Output.WriteLine(fail.Errors.AsString())
+                );
+            /*var result0 = await Scrapper.Resultats(new ResultatQuery()
                 {
                     Start = dates.Item1,
                     End = dates.Item2,
@@ -338,7 +369,7 @@
                     DeleteFilesIfExists = !scrapByFolderMonth
                 });
             if (!result0)
-                Output.WriteLine(result0.Errors);
+                Output.WriteLine(result0.Errors);*/
         }
 
         Output.WriteLine("Fini..");
@@ -352,59 +383,78 @@
     {
         ConsoleOutput = string.Empty;
         isInsertDatasRunning = true;
-        Action<Result> handle = (res) =>
+        Action<Result> handleError = res =>
         {
-            if (res.HasError)
-            {
-                UiNotificationService?.Warn("Regarder la console", "Attention");
-                Output.WriteLine(res.Errors.AsString("[ERROR]"));
-            }
-            else
-            {
-                Output.WriteLine("Terminé");
-                UiNotificationService?.Success("Tout c'est bien passé!!", "Confirmation");
-            }
+            UiNotificationService?.Warn("Regarder la console", "Attention");
+            Output.WriteLine(res.Errors.AsString("[ERROR]"));
         };
+        Action<string, string> handleSuccess = (title, msg) =>
+        {
+            Output.WriteLine(msg);
+            UiNotificationService?.Success(msg, title);
+        };
+
         if (scrap && predict && resultat)
         {
-            var res = await AppService.LoadOutputFolderIntoDb(new LoadOutputFolderIntoDbQuery() { Folder = OutputFilePath });
-            handle(res);
+            await Result.Create(new LoadOutputFolderIntoDbQuery())
+            .Bind(q => AppService.LoadOutputFolderIntoDb(q))
+            .OnAsync(
+                r => handleSuccess("Confirmation", "Toutes les insertions se sont bien déroulées"),
+                fail => handleError(fail)
+            );
 
         }
         else
         {
 
-            if (scrap)
+            if (scrap && ToPredictFiles.Any())
             {
                 Output.Write("Insertion des chevaux a predire");
                 var f = ToPredictFiles.First();
-                var res = await AppService.LoadToPredictIntoDatabase(new LoadToPredictIntoDbQuery() { Filename = f.Path, Rename = false });
 
-                handle(res);
-
+                await Result.Create(new LoadToPredictIntoDbQuery() { Filename = f.Path, Rename = false })
+                .Bind(q => AppService.LoadToPredictIntoDatabase(q))
+                .OnAsync(
+                    r => handleSuccess("A Predire", $"{r.Participants.Count} participants inserées"),
+                    fail => handleError(fail)
+                    );
             }
-            if (predict)
+            if (predict && PredictedFiles.Any())
             {
                 Output.Write("Insertion des chevaux predis");
                 foreach (var f in PredictedFiles)
                 {
-                    var res = await AppService.LoadPredictedIntoDb(new LoadPredictedIntoDbQuery() { Filename = f.Path, Rename = false });
-                    handle(res);
+                    await Result.Create(new LoadPredictedIntoDbQuery() { Filename = f.Path, Rename = false })
+                    .Bind(q => AppService.LoadPredictedIntoDb(q))
+                    .OnAsync(
+                        r => handleSuccess("Prediction", $"{r.Predicted.Count} participants inserés"),
+                        fail => handleError(fail)
+                    );
+
                 }
-                
+
             }
-            if (resultat)
+            if (resultat && (ResultatsFiles.Any() || CoursesFiles.Any()))
             {
                 Output.Write("Insertion des resultats");
                 foreach (var f in ResultatsFiles)
                 {
-                    var res = await AppService.LoadResultatIntoDb(new LoadResultatIntoDbQuery() { Filename = f.Path, Rename = false });
-                    handle(res);
+                    await Result.Create(new LoadResultatIntoDbQuery() { Filename = f.Path, Rename = false })
+                    .Bind(q => AppService.LoadResultatIntoDb(q))
+                    .OnAsync(
+                        r => handleSuccess("Resultat", $"{r.Resultats.Count} resultats inserés"),
+                        fail => handleError(fail)
+                    );
+
                 }
                 foreach (var f in CoursesFiles)
                 {
-                    var res = await AppService.LoadCourseIntoDb(new LoadCourseIntoDbQuery() { Filename = f.Path, Rename = false });
-                    handle(res);
+                    await Result.Create(new LoadCourseIntoDbQuery() { Filename = f.Path, Rename = false })
+                    .Bind(q => AppService.LoadCourseIntoDb(q))
+                    .OnAsync(
+                        r => handleSuccess("Course", $"{r.Courses.Count} courses inserées"),
+                        fail => handleError(fail)
+                    );
                 }
 
             }

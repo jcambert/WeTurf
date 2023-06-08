@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using We.Turf.Localization;
 using We.Turf.MultiTenancy;
 using Volo.Abp.Identity.Blazor;
@@ -43,6 +43,27 @@ public class TurfMenuContributor : IMenuContributor
                 order: 1
             )
         );
+        context.Menu.Items.Insert(
+            2,
+            new ApplicationMenuItem(
+                TurfMenus.Parameters,
+                l["Menu:Parameters"],
+                "/parameters",
+                icon: "fas fa-gear",
+                order: 1
+            )
+        );
+        context.Menu.Items.Insert(
+            3,
+            new ApplicationMenuItem(
+                TurfMenus.Swagger,
+                l["Menu:Swagger"],
+                "/swagger",
+                icon: "fas fa-fire",
+                order: 1
+            )
+        );
+
 #pragma warning disable CS1634,CS0162,IDE0035
         if (MultiTenancyConsts.IsEnabled)
         {

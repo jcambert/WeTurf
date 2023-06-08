@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Volo.Abp.DependencyInjection;
 using We.AbpExtensions;
 using We.Bootswatch.Components.Web.BasicTheme.Commands;
@@ -11,20 +8,16 @@ namespace We.Bootswatch.Components.Web.BasicTheme.Handlers;
 
 public class ApplyThemeHandler : AbpHandler.With<ApplyThemeCommand, ApplyThemeResult>
 {
+    // public NavigationManager NavigationManager { get; }
+
     public ApplyThemeHandler(IAbpLazyServiceProvider serviceProvider) : base(serviceProvider) { }
 
     private NavigationManager NavigationManager => GetRequiredService<NavigationManager>();
-#if MEDIATOR
-    public override ValueTask<Result<ApplyThemeResult>> Handle(
+
+    protected override Task<Result<ApplyThemeResult>> InternalHandle(
         ApplyThemeCommand request,
         CancellationToken cancellationToken
     )
-#else
-    public override Task<Result<ApplyThemeResult>> Handle(
-        ApplyThemeCommand request,
-        CancellationToken cancellationToken
-    )
-#endif
     {
         try
         {

@@ -4,6 +4,8 @@ namespace We.Turf;
 
 public interface IPmuServiceAppService : IApplicationService
 {
+    Task<Result<BrowseDisciplineResponse>> BrowseDiscipline(BrowseDisciplineQuery query);
+
     Task<
         Result<BrowseResultatOfPredictedWithoutClassifierResponse>
     > BrowseResultatOfPredictedWithoutClassifier(

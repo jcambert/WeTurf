@@ -153,6 +153,7 @@ public class Reader<T> : ICsvReader<T> where T : class, new()
         {
             Logger?.LogTrace("Start reading");
             bool skipped = false;
+            LineRead = 0;
             while (!reader.EndOfStream)
             {
                 try
@@ -168,16 +169,7 @@ public class Reader<T> : ICsvReader<T> where T : class, new()
                     }
                     var v = _onReadLineMapping(line, Separator);
                     LineRead++;
-#if DEBUG
-                    if (LineRead == 4326)
-                    {
-                        if (!Debugger.IsAttached)
-                        {
-                            Debugger.Launch();
-                        }
-                        Debugger.Break();
-                    }
-#endif
+
                     _onReadLine.OnNext(new ReaderResponse<T>(LineRead, v, this));
                 }
                 catch (ReaderColumnSetException ex)
@@ -193,7 +185,7 @@ public class Reader<T> : ICsvReader<T> where T : class, new()
                 }
             }
         }
-        _onReadLine.OnCompleted();
+        //_onReadLine.OnCompleted();
         if (exceptions.Any())
         {
             var res = Result.ValidWithFailure(exceptions.ToArray());

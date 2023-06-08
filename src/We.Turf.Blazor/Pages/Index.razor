@@ -34,12 +34,26 @@
             <Select TValue="int" SelectedValue="@_currentClassifier" SelectedValueChanged="@OnCurrentClassifierChanged">
                 @foreach (var (item, index) in Classifiers.OrderByDescending(x => x.Percentage).WithIndex())
                 {
-                    <SelectItem Value="index">@item.Classifier.Replace("classifier","").ToPascalCase()</SelectItem>
+                    <SelectItem Value="index">@item.Classifier.Replace("classifier","").Replace('_',' ').ToPascalCase()</SelectItem>
                 }
 
             </Select>
         </Field>
 
+    </Column>
+
+    <Column Class="col-sm-4 col-md-4 col-lg-2  mx-auto ">
+        <Field>
+            <FieldLabel>Discipline</FieldLabel>
+            <Select TValue="string" SelectedValue="@_currentDiscipline" SelectedValueChanged="@OnCurrentDisciplineChanged">
+
+                @foreach (var (item, index) in Disciplines.WithIndex())
+                {
+                    <SelectItem Value="index">@item.Nom.Replace('_',' ').ToPascalCase()</SelectItem>
+                }
+
+            </Select>
+        </Field>
     </Column>
 
     <Column Class="col-sm-4 col-md-4 col-lg-2  mx-auto ">

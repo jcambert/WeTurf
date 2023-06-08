@@ -1,7 +1,6 @@
-﻿using Blazorise.Charts;
+using Blazorise.Charts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System.Diagnostics;
 using System.Reactive.Linq;
 using Volo.Abp.AspNetCore.Components.Notifications;
 using We.Blazor;
@@ -45,6 +44,7 @@ public partial class Index : WeComponentBase
     private int _currentClassifier,
         _indiceConfiance;
     private TypePari _currentPari = TypePari.Place;
+    private string _currentDiscipline = string.Empty;
 
     private SelectMode? _mode;
     private bool ShowProgrammeCourse => _mode == SelectMode.Course;
@@ -58,6 +58,8 @@ public partial class Index : WeComponentBase
         new();
     private List<PredictedOnlyDto> PredictionsOnly { get; set; } = new();
     private List<AccuracyPerClassifierDto> Classifiers { get; set; } = new();
+
+    private List<DisciplineDto> Disciplines { get; set; } = new();
 
     private Dictionary<(int, int), IEnumerable<ResultatPlace>> ResultatsOfPredicteds = new();
 
@@ -103,6 +105,7 @@ public partial class Index : WeComponentBase
             .Subscribe(
                 async date =>
                 {
+                    await LoadDisciplinesAsync();
                     await LoadClassifiersAsync();
                     await LoadPredictionAsync(date);
                 }
@@ -118,6 +121,7 @@ public partial class Index : WeComponentBase
                     await LoadProgammeCourseAsync(date);
                     await LoadProgammeReunionAsync(date);
                     await LoadResultats(date);
+                    await LoadDisciplinesAsync();
                     await LoadClassifiersAsync();
                     await LoadPredictionAsync(date);
                     await LoadResultatOfPredicteds(date);
@@ -267,6 +271,12 @@ public partial class Index : WeComponentBase
         }
     }
 
+    public DisciplineDto CurrentDiscipline
+    {
+        get => Disciplines.FirstOrDefault(x => x.Nom == _currentDiscipline) ?? Disciplines[0];
+        set => _currentDiscipline = value.Nom;
+    }
+
     public AccuracyPerClassifierDto CurrentClassifier
     {
         get => Classifiers[_currentClassifier];
@@ -278,6 +288,12 @@ public partial class Index : WeComponentBase
 
             NotifyPropertyChanged();
         }
+    }
+
+    Task OnCurrentDisciplineChanged(string selected)
+    {
+        CurrentDiscipline = Disciplines.FirstOrDefault(x => x.Nom == selected) ?? Disciplines[0];
+        return Task.CompletedTask;
     }
 
     Task OnCurrentClassifierChanged(int selected)
@@ -331,29 +347,67 @@ public partial class Index : WeComponentBase
         StateHasChanged();
     }
 
+    private async Task LoadDisciplinesAsync()
+    {
+        if (Disciplines.Any())
+            return;
+
+        await Result
+            .Create(new BrowseDisciplineQuery())
+            .Bind(q => PmuService.BrowseDiscipline(q))
+            .OnAsync(
+                r =>
+                {
+                    Disciplines.AddRange(r.Discipline);
+                    Disciplines.Insert(0, new DisciplineDto() { Nom = "Toutes" });
+                }
+            );
+    }
+
     private async Task LoadClassifiersAsync()
     {
         if (Classifiers.Any())
             return;
-        var t = PmuService.BrowseAccuracyOfClassifier(new BrowseAccuracyOfClassifierQuery());
-        var (res, response, errors) = await t;
-        if (res)
-        {
-            Classifiers = response.ClassifiersAccuracy;
-            var c = new AccuracyPerClassifierDto()
-            {
-                Classifier = TurfDomainConstants.ALL_CLASSIFIER,
-                Percentage = 1.0,
-                PredictionCount = 1,
-                ResultatCount = 1
-            };
-            Classifiers.Insert(0, c);
-            _currentClassifier = 0;
-        }
-        else
-        {
-            await Notification.Warn(errors.AsString());
-        }
+
+        await Result
+            .Create(new BrowseAccuracyOfClassifierQuery())
+            .Bind(q => PmuService.BrowseAccuracyOfClassifier(q))
+            .OnAsync(
+                r =>
+                {
+                    Classifiers = r.ClassifiersAccuracy;
+                    var c = new AccuracyPerClassifierDto()
+                    {
+                        Classifier = TurfDomainConstants.ALL_CLASSIFIER,
+                        Percentage = 1.0,
+                        PredictionCount = 1,
+                        ResultatCount = 1
+                    };
+                    Classifiers.Insert(0, c);
+                    _currentClassifier = 0;
+                },
+                fail => InvokeAsync(() => Notification.Warn(fail.Errors.AsString()))
+            );
+
+        /* var t = PmuService.BrowseAccuracyOfClassifier(new BrowseAccuracyOfClassifierQuery());
+         var (res, response, errors) = await t;
+         if (res)
+         {
+             Classifiers = response.ClassifiersAccuracy;
+             var c = new AccuracyPerClassifierDto()
+             {
+                 Classifier = TurfDomainConstants.ALL_CLASSIFIER,
+                 Percentage = 1.0,
+                 PredictionCount = 1,
+                 ResultatCount = 1
+             };
+             Classifiers.Insert(0, c);
+             _currentClassifier = 0;
+         }
+         else
+         {
+             await Notification.Warn(errors.AsString());
+         }*/
     }
 
     private async Task LoadPredictedOnly(DateOnly? date)
@@ -381,7 +435,22 @@ public partial class Index : WeComponentBase
             CurrentClassifier.Classifier == TurfDomainConstants.ALL_CLASSIFIER
                 ? null
                 : CurrentClassifier.Classifier;
-        var t = PmuService.BrowseResultatOfPredictedStatistical(
+
+        await Result
+            .Create(
+                new BrowseResultatOfPredictedStatisticalQuery()
+                {
+                    Date = date,
+                    Classifier = classifier,
+                    Pari = _currentPari
+                }
+            )
+            .Bind(q => PmuService.BrowseResultatOfPredictedStatistical(q))
+            .OnAsync(
+                r => ResultatOfPredictedStatistical = r.Resultats,
+                fail => InvokeAsync(() => Notification.Warn(fail.Errors.AsString()))
+            );
+        /*var t = PmuService.BrowseResultatOfPredictedStatistical(
             new()
             {
                 Date = date,
@@ -397,12 +466,19 @@ public partial class Index : WeComponentBase
         else
         {
             await Notification.Warn(errors.AsString());
-        }
+        }*/
     }
 
     private async Task LoadResultats(DateOnly? date)
     {
-        var t = PmuService.BrowseResultat(new() { Date = date });
+        await Result
+            .Create(new BrowseResultatQuery() { Date = date })
+            .Bind(q => PmuService.BrowseResultat(q))
+            .OnAsync(
+                r => Resultats = r.Resultats,
+                fail => InvokeAsync(() => Notification.Warn(fail.Errors.AsString()))
+            );
+        /*var t = PmuService.BrowseResultat(new() { Date = date });
         var (res, response, errors) = await t;
         if (res)
         {
@@ -411,7 +487,7 @@ public partial class Index : WeComponentBase
         else
         {
             await Notification.Warn(errors.AsString());
-        }
+        }*/
     }
 
     private async Task LoadPredictionAsync(DateOnly? date)
@@ -420,7 +496,16 @@ public partial class Index : WeComponentBase
             CurrentClassifier.Classifier == TurfDomainConstants.ALL_CLASSIFIER
                 ? null
                 : CurrentClassifier.Classifier;
-        var t = PmuService.BrowsePrediction(new() { Date = date, Classifier = classifier });
+
+        await Result
+            .Create(new BrowsePredictionQuery() { Date = date, Classifier = classifier })
+            .Bind(q => PmuService.BrowsePrediction(q))
+            .OnAsync(
+                r => Predicteds = r.Predicteds,
+                fail => InvokeAsync(() => Notification.Warn(fail.Errors.AsString()))
+            );
+
+        /*var t = PmuService.BrowsePrediction(new() { Date = date, Classifier = classifier });
         var (res, response, errors) = await t;
         if (res)
         {
@@ -429,7 +514,7 @@ public partial class Index : WeComponentBase
         else
         {
             await Notification.Warn(errors.AsString());
-        }
+        }*/
         //await InvokeAsync(StateHasChanged);
     }
 
@@ -437,24 +522,41 @@ public partial class Index : WeComponentBase
     {
         if (date is null)
             return;
-        var t = PmuService.BrowseProgrammeCourse(new() { Date = (DateOnly)date });
+
+        await Result
+            .Create(new BrowseProgrammeCourseQuery() { Date = (DateOnly)date })
+            .Bind(q => PmuService.BrowseProgrammeCourse(q))
+            .OnAsync(
+                r => ProgrammeCourses = r.Programmes,
+                fail => InvokeAsync(() => Notification.Warn(fail.Errors.AsString()))
+            );
+        /*var t = PmuService.BrowseProgrammeCourse(new() { Date = (DateOnly)date });
         var (res, response, errors) = await t;
         if (res)
             ProgrammeCourses = response.Programmes;
         else
-            await Notification.Warn(errors.AsString());
+            await Notification.Warn(errors.AsString());*/
     }
 
     private async Task LoadProgammeReunionAsync(DateOnly? date)
     {
         if (date is null)
             return;
-        var t = PmuService.BrowseProgrammeReunion(new() { Date = (DateOnly)date });
+
+        await Result
+            .Create(new BrowseProgrammeReunionQuery() { Date = (DateOnly)date })
+            .Bind(q => PmuService.BrowseProgrammeReunion(q))
+            .OnAsync(
+                r => ProgrammeReunions = r.Reunions,
+                fail => InvokeAsync(() => Notification.Warn(fail.Errors.AsString()))
+            );
+
+        /*var t = PmuService.BrowseProgrammeReunion(new() { Date = (DateOnly)date });
         var (res, response, errors) = await t;
         if (res)
             ProgrammeReunions = response.Reunions;
         else
-            await Notification.Warn(errors.AsString());
+            await Notification.Warn(errors.AsString());*/
     }
 
     public async Task<SommeDesMises> CalculSommeDesMises()
@@ -473,16 +575,31 @@ public partial class Index : WeComponentBase
             await Notification.Warn("Je ne peux pas calculter la somme des mise. La date est null");
             return new SommeDesMises(0, 0.0);
         }
-        var t = PmuStatService.GetSommeDesMise(
+
+        var res = await Result
+            .Create(
+                PmuStatService.GetSommeDesMise(
+                    (DateOnly)CurrentDate,
+                    CurrentClassifier.Classifier,
+                    CurrentPari
+                )
+            )
+            .Bind(q => q)
+            .Match(
+                r => Result.Success(r),
+                fail => Result.Failure<SommeDesMises>(fail.Errors.ToArray())
+            );
+
+        /*var t = PmuStatService.GetSommeDesMise(
             (DateOnly)CurrentDate,
             CurrentClassifier.Classifier,
             CurrentPari
         );
-        var (res, response, errors) = await t;
+        var (res, response, errors) = await t;*/
         if (res)
-            return response;
+            return res.Value;
         else
-            await Notification.Warn(errors.AsString());
+            await Notification.Warn(res.Errors.AsString());
         return new SommeDesMises(0, 0.0);
     }
 

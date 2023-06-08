@@ -1,22 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Volo.Abp.DependencyInjection;
-using We.Bootswatch.Components.Web.BasicTheme.Commands;
 using We.Bootswatch.Components.Web.BasicTheme;
-using We.Results;
-using We.Results;
-using We.AbpExtensions;
-using Microsoft.AspNetCore.Mvc;
-using We.Mediatr;
-#if MEDIATOR
-using Mediator;
-#endif
-#if MEDIATR
-using MediatR;
-#endif
+
 namespace We.Bootswatch.Server.BasicTheme.Themes.Basic;
 
 public partial class ThemeSwitch
@@ -40,7 +23,7 @@ public partial class ThemeSwitch
                 },
                 r =>
                 {
-                    notif.Error(r.Errors.JoinAsString("\n"));
+                    notif.Error(r.Errors.AsString());
                     return new BadRequestResult();
                 }
             );

@@ -228,6 +228,8 @@ public static class AbpHandler
         #region Result
         protected Result<TResponse> NotFound(string failure, string message = null) =>
             Result.Failure<TResponse>(HttpStatusCode.NOT_FOUND, failure, message);
+
+        protected Result Ok() => Result.Success(HttpStatusCode.OK);
         #endregion
     }
 
