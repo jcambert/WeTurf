@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-
 namespace We.Utilities;
 
 public enum Padding
@@ -26,15 +24,28 @@ public static class StringExtensions
         }
     }
 
-    public static string EnsureEndsWith(this string value, string suffix)
+    public static string EnsureEndsWith(
+        this string value,
+        string suffix,
+        StringComparison comparisonType = StringComparison.Ordinal
+    )
     {
         ArgumentNullException.ThrowIfNull(value);
-        if (string.IsNullOrEmpty(value))
+
+        if (value.EndsWith(suffix, comparisonType))
             return value;
-        if (!value.EndsWith(suffix))
-            return $"{value}{suffix}";
-        return value;
+
+        return value + suffix;
     }
+
+    /* public static string EnsureEndsWith(this string value, string suffix)
+     {
+         if (string.IsNullOrEmpty(value))
+             return value;
+         if (!value.EndsWith(suffix))
+             return $"{value}{suffix}";
+         return value;
+     }*/
 
     public static string Pad(
         this string value,

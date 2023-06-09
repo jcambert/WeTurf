@@ -1,6 +1,7 @@
 #if MEDIATOR
 global using Mediator;
-#else
+#endif
+#if MEDIATR
 global using MediatR;
 #endif
 global using We.Results;

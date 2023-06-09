@@ -1,9 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <Title>A Set of Utilities</Title>
+    <Description>Extenions Utilities for Date, File,Enumerable,Properties,Regex, and string</Description>
+    
   </PropertyGroup>
 
   <ItemGroup>

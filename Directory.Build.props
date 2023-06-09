@@ -42,10 +42,10 @@
   <PropertyGroup Condition="'$(Platform)'=='AnyCPU' and '$(UseFluentValidation)'=='true'">
     <DefineConstants>$(DefineConstants);FLUENTVALIDATION</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>
+ <!-- <ItemGroup>
     <PackageReference Include="CSharpier.MsBuild" Version="0.16.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
+  </ItemGroup>-->
 </Project>
