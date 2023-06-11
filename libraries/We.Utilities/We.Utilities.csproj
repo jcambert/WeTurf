@@ -6,6 +6,7 @@
     <Nullable>disable</Nullable>
     <Title>A Set of Utilities</Title>
     <Description>Extenions Utilities for Date, File,Enumerable,Properties,Regex, and string</Description>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     
   </PropertyGroup>
 

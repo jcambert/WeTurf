@@ -35,25 +35,7 @@ public static class ResultExtensions
         return result ? await onSuccess(result.Value) : await onFailure(result);
     }
 
-    public static async Task OnAsync<T>(
-        this Task<Result<T>> resultTask,
-        Action<T> onSuccess,
-        Action<Result> onFailure
-    )
-    {
-        Result<T> result = await resultTask;
-        if (result)
-            onSuccess(result.Value);
-        else
-            onFailure(result);
-    }
-
-    public static async Task OnAsync<T>(this Task<Result<T>> resultTask, Action<T> onSuccess)
-    {
-        Result<T> result = await resultTask;
-        if (result)
-            onSuccess(result.Value);
-    }
+    
 
     public static IActionResult HandleFailure(this ControllerBase controller, Result result) =>
         result switch

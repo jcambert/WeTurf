@@ -314,7 +314,7 @@ public class TurfBlazorModule : AbpModule
     {
         var env = context.GetEnvironment();
         var app = context.GetApplicationBuilder();
-
+        
         app.UseAbpRequestLocalization();
 
         if (env.IsDevelopment())

@@ -4,8 +4,7 @@ public interface IQueryHandler<TQuery> : IRequestHandler<TQuery> where TQuery : 
 
 public interface IQueryHandler<TQuery, TResponse> : IRequestHandler<TQuery, Result<TResponse>>
     where TQuery : IQuery<TResponse>
-    where TResponse : Response
-{ }
+    where TResponse : Response { }
 
 public static class Handler
 {

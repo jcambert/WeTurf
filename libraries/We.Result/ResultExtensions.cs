@@ -125,6 +125,26 @@ public static class ResultExtensions
         return func(result.Value);
     }
 
+    public static async Task OnAsync<T>(
+        this Task<Result<T>> resultTask,
+        Action<T> onSuccess,
+        Action<Result> onFailure
+    )
+    {
+        Result<T> result = await resultTask;
+        if (result)
+            onSuccess(result.Value);
+        else
+            onFailure(result);
+    }
+
+    public static async Task OnAsync<T>(this Task<Result<T>> resultTask, Action<T> onSuccess)
+    {
+        Result<T> result = await resultTask;
+        if (result)
+            onSuccess(result.Value);
+    }
+
     /// <summary>
     /// Return a result as a task
     /// usefull for async method
