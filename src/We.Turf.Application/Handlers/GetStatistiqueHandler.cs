@@ -2,6 +2,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace We.Turf.Handlers;
 
+#region Normal Stat
+file class StatistiqueByClassifier_ : Specification<Stat>
+{
+    public StatistiqueByClassifier_(string classifier) : base(e => e.Classifier == classifier) { }
+}
+
+file class StatistiqueByPari_ : Specification<Stat>
+{
+    public StatistiqueByPari_(string pari, bool includeNonArrivee)
+        : base(
+            e =>
+                e.Pari == pari
+                || (includeNonArrivee ? e.Pari == null : true)
+        )
+    { }
+}
+
 public class GetStatistiqueHandler
     : AbpHandler.With<GetStatistiqueQuery, GetStatistiqueResponse, Stat, StatDto>
 {
@@ -11,11 +28,23 @@ public class GetStatistiqueHandler
 
     protected override async Task<Result<GetStatistiqueResponse>> InternalHandle(GetStatistiqueQuery request, CancellationToken cancellationToken)
     {
-        var res = await Repository.ToListAsync(cancellationToken);
+        var query = await Repository.GetQueryableAsync();
+        if (request.Classifier is not null)
+            query = query.GetQuery(new StatistiqueByClassifier_(request.Classifier));
+        if (request.Pari != TypePari.Tous)
+            query = query.GetQuery(
+                new StatistiqueByPari_(request.Pari.AsString(), request.IncludeNonArrive)
+            );
+        var s = query.ToQueryString();
+        LogDebug(s);
+        var res = await AsyncExecuter.ToListAsync(query, cancellationToken);
         return new GetStatistiqueResponse(MapToDtoList(res));
     }
 }
 
+#endregion
+
+#region Stats with Dat
 file class StatistiqueByDate : Specification<StatByDate>
 {
     public StatistiqueByDate(DateOnly date) : base(e => e.Date == date) { }
@@ -79,3 +108,4 @@ public class GetStatistiqueWithDateHandler
         return new GetStatistiqueWithDateResponse(MapToDtoList(res));
     }
 }
+#endregion

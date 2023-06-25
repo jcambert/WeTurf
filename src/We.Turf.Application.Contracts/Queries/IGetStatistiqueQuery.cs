@@ -2,7 +2,10 @@ using We.Turf.Entities;
 
 namespace We.Turf.Queries;
 
-public interface IGetStatistiqueQuery : WeM.IQuery<GetStatistiqueResponse> { }
+public interface IGetStatistiqueQuery : WeM.IQuery<GetStatistiqueResponse> {
+    string Classifier { get; set; }
+    TypePari Pari { get; set; }
+}
 
 public sealed record GetStatistiqueResponse(List<StatDto> Stats) : WeM.Response;
 

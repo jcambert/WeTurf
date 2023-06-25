@@ -1,0 +1,49 @@
+@page "/stats/{classifier}"
+@using We.Blazor;
+@using We.Turf.Entities
+@using We.Turf.Queries
+@inherits TurfComponentBase
+@inject IPmuServiceAppService service;
+@inject INotificationService notification;
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is3">
+        
+    </Column>
+</Row>
+
+@code {
+    private TypePari _pari = TypePari.Tous;
+    private List<StatDto> Stats = new();
+
+    [Parameter]
+    public string? Classifier { get; set; }
+
+    public TypePari Pari
+    {
+        get => _pari;
+        set
+        {
+            if (value != _pari)
+            {
+                _pari = value;
+                NotifyPropertyChanged();
+            }
+            else
+                _pari = value;
+
+
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var q = new GetStatistiqueQuery() { Classifier = Classifier };
+        await Result.Create(q)
+        .Bind(q => service.GetStatistics(q))
+        .OnAsync(
+            r => Stats.AddRange(r.Stats),
+            fail => notification.Warning(fail.Errors.AsString())
+        );
+    }
+}

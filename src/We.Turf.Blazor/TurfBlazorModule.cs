@@ -234,9 +234,6 @@ public class TurfBlazorModule : AbpModule
                             $"..{Path.DirectorySeparatorChar}We.Blazor"
                         )
                     );
-                    // options.FileSets.ReplaceEmbeddedByPhysical< WeComponentBase>(hostingEnvironment.ContentRootPath);
-                    //èoptions.FileSets.ReplaceEmbeddedByPhysical<WeComponentBase>(hostingEnvironment.WebRootPath);
-                    //options.FileSets.AddEmbedded<WeComponentBase>();
                 }
             );
         }
