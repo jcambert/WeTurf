@@ -1,4 +1,4 @@
-﻿namespace We.Results;
+namespace We.Results;
 
 /// <summary>
 /// A failure Result
@@ -18,7 +18,11 @@ public sealed class Failure<T> : Result<T>, IFailure
 {
     internal Failure() : base(default) { }
 
-    internal Failure(params Error[] errors) : base(default, false, errors) { }
+    internal Failure(T value,params Error[] errors) : base(value,false,errors) { }
+
+    internal Failure(T value,params Exception[] errors) : this(value,Error.Create( errors)) { }
+
+    internal Failure(params Error[] errors) : this(default, errors) { }
 
     internal Failure(params Exception[] exceptions) : this(Error.Create(exceptions)) { }
 }

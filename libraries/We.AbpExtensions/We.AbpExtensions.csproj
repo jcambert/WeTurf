@@ -5,7 +5,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.2</Version>
         <PackageOutputPath>$(OutputPath)</PackageOutputPath>
         <PackageTags>ABP MEDIATOR HANDLER QUERIES</PackageTags>
         <Description>Abp extensions Handlers and Queries</Description>

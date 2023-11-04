@@ -7,7 +7,6 @@
         <Title>A Set of Utilities</Title>
         <Description>Extenions Utilities for Date, File,Enumerable,Properties,Regex, and string</Description>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Version>1.0.2</Version>
         <PackageOutputPath>$(OutputPath)</PackageOutputPath>
         <PackageTags>EXTENSIONS UTILITIES</PackageTags>
         <Description>A set of extensions utilities</Description>

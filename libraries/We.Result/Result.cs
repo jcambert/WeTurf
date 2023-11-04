@@ -103,10 +103,18 @@ public abstract class Result : IResult
     public static Result<T> Failure<T>(string code, string failure, string message) =>
         new Failure<T>(new Error(code, failure, message));
 
-    //public static Result<T> ValidWithFailure<T>(T result,params Exception[] exceptions) => new ValidWithFailure<T>(result,exceptions);
+    public static Result<T> Failure<T>(T value, string failure) =>
+        new Failure<T>(value, new Error(failure));
 
-    //public static Result ValidWithFailure<T>(params T[] exceptions) where T:Exception => new ValidWithFailure(exceptions);
+    public static Result<T> Failure<T>(T value,string failure,string message)=>
+        new Failure<T>(value,new Error(failure,message));
 
+    public static Result<T> Failure<T>(T value, string code, string failure, string message) =>
+        new Failure<T>(value, new Error(code, failure, message));
+
+    public static Result<T> Failure<T>(T value,params Exception[] exceptions) =>
+        new Failure<T>(value,exceptions);
+ 
     /// <summary>
     /// Create a Success with failure Result based on Exception
     /// </summary>
