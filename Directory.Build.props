@@ -23,9 +23,9 @@
     <DotNetVersion>7.0.0</DotNetVersion>
     <MediatorName>othamar</MediatorName>
     <MediatorOthamarLibraryName>Mediator.SourceGenerator</MediatorOthamarLibraryName>
-    <MediatorOthamarVersion>2.1.1</MediatorOthamarVersion>
+    <MediatorOthamarVersion>2.1.7</MediatorOthamarVersion>
     <MediatorOthamarAbstractionLibraryName>Mediator.Abstractions</MediatorOthamarAbstractionLibraryName>
-    <MediatorOthamarAbstractionVersion>2.1.1</MediatorOthamarAbstractionVersion>
+    <MediatorOthamarAbstractionVersion>2.1.7</MediatorOthamarAbstractionVersion>
     <MediatorBogardLibraryName>MediatR</MediatorBogardLibraryName>
     <MediatorBogardVersion>12.0.1</MediatorBogardVersion>
     <MediatorBogardAbstractionLibraryName>MediatR.Contracts</MediatorBogardAbstractionLibraryName>

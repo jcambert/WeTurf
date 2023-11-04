@@ -4,6 +4,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PrivateAssets>all</PrivateAssets>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Title>We Mediatr</Title>
+        <Version>1.0.2</Version>
+        <PackageOutputPath>$(OutputPath)</PackageOutputPath>
+        <PackageTags>MEDIATOR HANDLER QUERIES</PackageTags>
+        <Description>Mediator Helper</Description>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Platform)'=='AnyCPU' and '$(MediatorName)'=='bogard'">
         <DefineConstants>$(DefineConstants);MEDIATR</DefineConstants>
@@ -24,6 +30,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\We.Result\We.Results.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Mediator.Abstractions" Version="2.1.7" />
     </ItemGroup>
 
 </Project>

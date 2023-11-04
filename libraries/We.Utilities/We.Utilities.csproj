@@ -1,17 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <Title>A Set of Utilities</Title>
-    <Description>Extenions Utilities for Date, File,Enumerable,Properties,Regex, and string</Description>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <Title>A Set of Utilities</Title>
+        <Description>Extenions Utilities for Date, File,Enumerable,Properties,Regex, and string</Description>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Version>1.0.2</Version>
+        <PackageOutputPath>$(OutputPath)</PackageOutputPath>
+        <PackageTags>EXTENSIONS UTILITIES</PackageTags>
+        <Description>A set of extensions utilities</Description>
+        <Title>A set of extensions utilitie</Title>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Reactive" Version="6.0.0" />
+    </ItemGroup>
 
 </Project>

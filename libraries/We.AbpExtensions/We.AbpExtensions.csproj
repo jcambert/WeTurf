@@ -1,25 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>Abp extensions Handlers and Queries</Title>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Version>1.0.2</Version>
+        <PackageOutputPath>$(OutputPath)</PackageOutputPath>
+        <PackageTags>ABP MEDIATOR HANDLER QUERIES</PackageTags>
+        <Description>Abp extensions Handlers and Queries</Description>
+        <Title>Abp extensions Handlers and Queries</Title>
+    </PropertyGroup>
 
-  <ItemGroup>
-    
-    
-    <PackageReference Include="Volo.Abp.AspNetCore.Components" Version="7.0.3" />
-    <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="7.0.3" />
-    <PackageReference Include="Volo.Abp.Ddd.Domain" Version="7.0.3" />
-  </ItemGroup>
+    <ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\We.Mediatr\We.Mediatr.csproj" />
-    <ProjectReference Include="..\We.Result\We.Results.csproj" />
-  </ItemGroup>
+
+        <PackageReference Include="Volo.Abp.AspNetCore.Components" Version="7.4.0" />
+        <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="7.4.0" />
+        <PackageReference Include="Volo.Abp.Ddd.Domain" Version="7.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\We.Mediatr\We.Mediatr.csproj" />
+        <ProjectReference Include="..\We.Result\We.Results.csproj" />
+    </ItemGroup>
     <ItemGroup Condition="'$(MediatorName)'=='bogard'">
         <PackageReference Include="$(MediatorBogardLibraryName)" Version="$(MediatorBogardVersion)" />
         <PackageReference Include="$(MediatorBogardAbstractionLibraryName)" Version="$(MediatorBogardAbstractionVersion)" />
@@ -28,6 +32,9 @@
         <PackageReference Include="$(MediatorOthamarAbstractionLibraryName)" Version="$(MediatorOthamarAbstractionVersion)" />
     </ItemGroup>
     <ItemGroup Condition="'$(UseFluentValidation)'=='true'">
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Update="Mediator.Abstractions" Version="2.1.7" />
     </ItemGroup>
 </Project>
