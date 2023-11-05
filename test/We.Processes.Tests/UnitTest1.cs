@@ -211,7 +211,7 @@ namespace We.Processes.Tests
 
         [Theory]
         [InlineData("-c", "print('Hi')")]
-        public string RunPythonScript(string cmd, string args)
+        public void RunPythonScript(string cmd, string args)
         {
             ProcessStartInfo start =
                 new()
@@ -227,9 +227,10 @@ namespace We.Processes.Tests
             {
                 string result = reader.ReadToEnd();
                 output.WriteLine($"{result}");
-                return result;
+                Assert.False(string.IsNullOrEmpty(result));
+                
             }
-            return string.Empty;
+            Assert.True(reader != null);
         }
     }
 }
