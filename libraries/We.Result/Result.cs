@@ -31,7 +31,7 @@ public abstract class Result : IResult
     /// <summary>
     /// Is a success result
     /// </summary>
-    public bool IsSuccess { get; }
+    public bool IsSuccess { get; internal set; }
 
     /// <summary>
     /// Is a failure result
@@ -170,7 +170,9 @@ public abstract class Result : IResult
 /// <typeparam name="T"></typeparam>
 public abstract class Result<T> : Result, IResult<T>
 {
-    private readonly T result;
+    private  T result;
+
+    protected Result() : this(default) { }
 
     protected Result(T result) : this(result, true, Array.Empty<Error>()) { }
 
@@ -182,7 +184,14 @@ public abstract class Result<T> : Result, IResult<T>
     /// <summary>
     /// Inner Value
     /// </summary>
-    public T Value => result;
+    public T Value
+    {
+        get => result;
+        internal set
+        {
+            result = value;
+        }
+    }
 
     public void Deconstruct(out bool success, out T value) => (success, value) = (IsSuccess, Value);
 

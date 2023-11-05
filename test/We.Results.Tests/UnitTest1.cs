@@ -58,7 +58,31 @@ namespace We.Results.Tests
         [Fact]
         public void TestReactiveResult()
         {
-            Result<int> result = Result.Create(10);
+            /*Result<int> result = Result.Create(10);
+            ReactiveResult reactiveResult = Result.CreateReactive();
+            reactiveResult.OnSuccess.Subscribe(_output.WriteLine("Success"));
+            reactiveResult.OnFailure.Subscribe(_output.WriteLine("Failure"));*/
+            ReactiveResult<int> result = new ReactiveResult<int>();
+            result.Match(
+                value => _output.WriteLine($"Succes 0:{value}"),
+                errors => _output.WriteLine($"Error 0:{errors.AsString()}"),
+                ()=>_output.WriteLine("The result is completed")
+                );
+
+            /*result.Match(
+                value => _output.WriteLine($"Succes 1:{value}"),
+                errors => _output.WriteLine($"Error 1:{errors.AsString()}"));
+                result.Fail(new ApplicationException("RIEN"));
+            */
+
+            result.Ok(15);result.Reset();
+            result.Complete();
+            result.Ok(10); result.Reset();
+            result.Fail(new ApplicationException("RIEN"));
+            result.Reset();
+            result.Ok(5);
+
+            
         }
     }
 }
