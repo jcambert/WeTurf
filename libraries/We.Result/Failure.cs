@@ -22,6 +22,7 @@ public sealed class Failure<T> : Result<T>, IFailure
 
     internal Failure(T value,params Exception[] errors) : this(value,Error.Create( errors)) { }
 
+
     internal Failure(params Error[] errors) : this(default, errors) { }
 
     internal Failure(params Exception[] exceptions) : this(Error.Create(exceptions)) { }

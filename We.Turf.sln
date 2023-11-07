@@ -74,6 +74,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_files", "_files", "{FDAEEF
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		BuildAndDeployLocalNugetLibraries.cmd = BuildAndDeployLocalNugetLibraries.cmd
 		common.props = common.props
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
@@ -85,7 +86,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_snippets", "_snippets", "{
 		_snippets\Specification.snippet = _snippets\Specification.snippet
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "We.Results.Tests", "test\We.Results.Tests\We.Results.Tests.csproj", "{7064F97E-7EAA-485E-AD53-467B39AB3E33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "We.Results.Tests", "test\We.Results.Tests\We.Results.Tests.csproj", "{7064F97E-7EAA-485E-AD53-467B39AB3E33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -114,7 +114,10 @@ public abstract class Result : IResult
 
     public static Result<T> Failure<T>(T value,params Exception[] exceptions) =>
         new Failure<T>(value,exceptions);
- 
+
+    public static Result<T> Failure<T>(T value, params Error[] errors) =>
+        new Failure<T>(value, errors);
+
     /// <summary>
     /// Create a Success with failure Result based on Exception
     /// </summary>
